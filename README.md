@@ -12,7 +12,7 @@ TODO: Guide users through getting your code up and running on their own system. 
 TODO: Describe and show how to build your code and run the tests. 
 
 # Contributor
-Team Lead/Front End: Aidan York \n
-Backend: Preston Brown \n
-Database Engineer: Yushus Komarlu \n
-Frontend: Will Gresham \n
+Team Lead/Front End: Aidan York     
+Backend: Preston Brown  
+Database Engineer: Yushus Komarlu  
+Frontend: Will Gresham  
