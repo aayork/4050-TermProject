@@ -48,9 +48,11 @@ TODO: Guide users through getting your code up and running on their own system. 
 4.	API references
 
 # Build and Test
-## How to run
+## How to run React
     cd my-app
     npm run dev
+## How to run Django
+    python3 CinemaProject/manage.py runserver
 
 # Contributor
 Team Lead/Frontend: Aidan York
