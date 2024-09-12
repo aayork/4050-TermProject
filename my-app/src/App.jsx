@@ -8,9 +8,9 @@ function App() {
 
   return (
     <>
-      <div class="flex flex-col">
-        <div class="text-lg">New</div>
-        <div class="text-sm">Testing</div>
+      <div className="flex flex-col">
+        <div className="text-lg">New</div>
+        <div className="text-sm">Testing</div>
         <div>Tailwind</div>
       </div>
     </>
