@@ -8,10 +8,8 @@ function App() {
 
   return (
     <>
-      <div class="flex flex-col">
-        <div class="text-lg">New</div>
-        <div class="text-sm">Testing</div>
-        <div>Tailwind</div>
+      <div className="flex flex-col">
+        <p>Welcome to Movie Monkey!</p>
       </div>
     </>
   );

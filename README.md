@@ -43,6 +43,9 @@ TODO: Guide users through getting your code up and running on their own system. 
   ## Django Framework
     1. Install Django
       pip install Django
+  ## Node Packages
+    1. Tailwind requires
+      npm install autoprefixer --save-dev
 2.	Software dependencies
 3.	Latest releases
 4.	API references
