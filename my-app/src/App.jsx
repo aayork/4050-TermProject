@@ -1,16 +1,21 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
+import { NavBar } from "./components/NavBar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowseMovies } from "./pages/BrowseMovies";
+import { HomePage } from "./pages/HomePage";
+import { Login } from "./pages/Login";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <div className="flex flex-col">
-        <p>Welcome to Movie Monkey!</p>
-      </div>
+      <NavBar />
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/browse" element={<BrowseMovies />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Router>
     </>
   );
 }
