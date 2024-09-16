@@ -6,11 +6,11 @@ export function Login() {
         <div className="border"></div>
         <div className="text-white flex flex-col my-2">
           <label className="text-sm">Username</label>
-          <input className="userName"></input>
+          <input className="userName text-black"></input>
         </div>
         <div className=" text-white flex flex-col my-2">
           <label className="text-sm">Password</label>
-          <input className="password"></input>
+          <input className="password text-black"></input>
           <a className="text-xs py-1" href="/forgotPassword">
             Forgot Password
           </a>
