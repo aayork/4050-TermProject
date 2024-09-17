@@ -1,3 +1,10 @@
+import { Card } from "../components/Card";
+
 export function BrowseMovies() {
-  return <div>BrowseMovies</div>;
+  return (
+    <div className="grid-flow-col-dense">
+      <Card />
+      <Card />
+    </div>
+  );
 }
