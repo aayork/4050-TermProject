@@ -1,6 +1,5 @@
 import "./App.css";
 import { NavBar } from "./components/NavBar";
-import { Card } from "./components/Card";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { BrowseMovies } from "./pages/BrowseMovies";
 import { HomePage } from "./pages/HomePage";
