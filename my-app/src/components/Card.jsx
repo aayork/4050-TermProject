@@ -1,17 +1,15 @@
-import { useState } from "react";
-
 export function Card() {
   return (
-    <div className="card glass w-96 m-10 p-3">
+    <div className="card glass w-96 m-10 p-0">
       <figure>
         <img
-          src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+          src="https://i.ebayimg.com/images/g/iO0AAOSwO6phoMW5/s-l1200.jpg"
           alt="car!"
         />
       </figure>
       <div className="card-body">
-        <h2 className="card-title">Life hack</h2>
-        <p>How to park your car at your garage?</p>
+        <h2 className="card-title">Movie Title</h2>
+        <p>What even is a movie?</p>
         <div className="card-actions justify-end">
           <button className="btn btn-primary">Learn now!</button>
         </div>
