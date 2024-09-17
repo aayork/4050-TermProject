@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { login } from "../utils/API";
 
 export function Login() {
   //set init form state
@@ -21,11 +22,18 @@ export function Login() {
     event.preventDefault();
 
     console.log(formState);
+
+    try {
+      await login(formState.email, formState.password);
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert(error);
+    }
   };
 
   return (
     <div className="flex justify-center align-center h-full">
-      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12">
+      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12 w-1/4">
         <h1 className="text-lg mb-2 text-white font-semibold ">Login</h1>
         <div className="border"></div>
         <form action="" onSubmit={handleFormSubmit}>
@@ -54,8 +62,8 @@ export function Login() {
             >
               Login
             </button>
-            <a className="text-xs text-white underline" href="/login">
-              Don't have an account? Create One!
+            <a className="text-xs text-white underline" href="/createAccount">
+              Don&apos;t have an account? Create One!
             </a>
           </div>
         </form>

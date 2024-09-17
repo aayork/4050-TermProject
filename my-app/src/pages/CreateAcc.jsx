@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { register } from "../utils/API";
 
 export function CreateAcc() {
   // set initial form state
@@ -28,6 +29,18 @@ export function CreateAcc() {
       alert("Passwords do not match");
     } else {
       console.log(formState);
+
+      try {
+        await register(
+          formState.firstName,
+          formState.lastName,
+          formState.email,
+          formState.password
+        );
+      } catch (error) {
+        console.error("Error during registration:", error);
+        alert(error);
+      }
     }
   };
 
