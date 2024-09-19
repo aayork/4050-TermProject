@@ -24,16 +24,21 @@ export function Login() {
     console.log(formState);
 
     try {
-      await login({ email: formState.email, password: formState.password });
+      const result = await login({
+        username: formState.username,
+        password: formState.password,
+      });
+
+      console.log(result);
+      alert(result);
     } catch (error) {
-      console.error("Error during login:", error);
       alert(error);
     }
   };
 
   return (
     <div className="flex justify-center align-center h-full">
-      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12 w-1/4">
+      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12 min-w-fit w-1/4">
         <h1 className="text-lg mb-2 text-white font-semibold ">Login</h1>
         <div className="border"></div>
         <form action="" onSubmit={handleFormSubmit}>

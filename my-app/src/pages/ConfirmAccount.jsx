@@ -10,9 +10,10 @@ export function ConfirmAccount() {
       if (key) {
         try {
           await confirmEmail(key);
+
+          alert("Your account has been confirmed");
         } catch (error) {
-          console.error("Error during confirmation:", error);
-          alert("There was an error confirming your account.");
+          alert(error);
         }
       }
     };

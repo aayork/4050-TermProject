@@ -7,6 +7,7 @@ export function CreateAcc() {
     firstName: "",
     lastName: "",
     email: "",
+    username: "",
     password: "",
     confirmPassword: "",
   });
@@ -28,17 +29,18 @@ export function CreateAcc() {
     if (formState.password !== formState.confirmPassword) {
       alert("Passwords do not match");
     } else {
-      console.log(formState);
-
       try {
-        await register({
+        const result = await register({
           firstName: formState.firstName,
           lastName: formState.lastName,
           email: formState.email,
+          username: formState.username,
           password: formState.password,
         });
+
+        console.log(result);
+        alert(result);
       } catch (error) {
-        console.error("Error during registration:", error);
         alert(error);
       }
     }
@@ -46,7 +48,7 @@ export function CreateAcc() {
 
   return (
     <div className="flex justify-center align-center h-full">
-      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12 w-1/4">
+      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12 min-w-fit w-1/5">
         <h1 className="text-lg mb-2 text-white font-semibold ">
           Create Account
         </h1>
@@ -73,8 +75,17 @@ export function CreateAcc() {
           <div className="text-white flex flex-col my-2">
             <label className="text-sm">Email</label>
             <input
-              className="userName text-black px-1 rounded"
+              className="email text-black px-1 rounded"
               name="email"
+              type="text"
+              onChange={handleChange}
+            ></input>
+          </div>
+          <div className="text-white flex flex-col my-2">
+            <label className="text-sm">Username</label>
+            <input
+              className="userName text-black px-1 rounded"
+              name="username"
               type="text"
               onChange={handleChange}
             ></input>
