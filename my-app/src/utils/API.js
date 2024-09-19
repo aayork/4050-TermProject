@@ -1,18 +1,23 @@
 export const register = async ({ firstName, lastName, email, password }) => {
-  const response = await fetch("/api/auth/signup", {
+
+  const response = await fetch("http://localhost:8000/api/auth/register/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      firstName,
-      lastName,
-      email,
-      password,
+      email: email,
+      username: email,
+      password1: password,
+      password2: password,
+      first_name: firstName,
+      last_name: lastName,
     }),
   });
 
   await errorCheck(response);
+
+  console.log(response)
 
   const { token } = await response.json();
 
@@ -20,16 +25,17 @@ export const register = async ({ firstName, lastName, email, password }) => {
 };
 
 export const login = async ({ email, password }) => {
-  const response = await fetch("/api/auth/login", {
+  const response = await fetch("http://localhost:8000/api/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
       email: email,
-      password,
+      password: password,
     }),
   });
+
 
   await errorCheck(response);
 
@@ -39,6 +45,18 @@ export const login = async ({ email, password }) => {
 
   return isAdmin;
 };
+
+export const confirmEmail = async (key) => {
+  const response = await fetch("http://locahost:8000/api/auth/account-confirm-email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({key})
+  })
+
+  await errorCheck(response);
+}
 
 export const logout = async () => {
   const response = await fetch("/api/account/logout", {
@@ -54,17 +72,9 @@ export const logout = async () => {
 };
 
 const errorCheck = async (res) => {
-  const status = res.status;
-
   if (!res.ok) {
-    const response = await res.json();
-
-    if (response.errors) {
-      for (const { message, type } of response.errors) {
-        throw new Error(type, { cause: message });
-      }
-    } else {
-      throw new Error(status, { cause: response });
+    const errorData = await response.json();
+    console.error("Error:", errorData);
+    throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  }
 };

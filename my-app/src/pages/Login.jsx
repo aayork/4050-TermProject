@@ -24,9 +24,9 @@ export function Login() {
     console.log(formState);
 
     try {
-      await login(formState.email, formState.password);
+      await login({ email: formState.email, password: formState.password });
     } catch (error) {
-      console.error("Error during registration:", error);
+      console.error("Error during login:", error);
       alert(error);
     }
   };
@@ -40,7 +40,7 @@ export function Login() {
           <div className="text-white flex flex-col my-2">
             <label className="text-sm">Email</label>
             <input
-              className="userName text-black px-1"
+              className="userName text-black px-1 rounded"
               name="email"
               type="text"
               onChange={handleChange}
@@ -49,7 +49,7 @@ export function Login() {
           <div className=" text-white flex flex-col my-2">
             <label className="text-sm">Password</label>
             <input
-              className="password text-black px-1"
+              className="password text-black px-1 rounded"
               name="password"
               type="password"
               onChange={handleChange}

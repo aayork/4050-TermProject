@@ -31,12 +31,12 @@ export function CreateAcc() {
       console.log(formState);
 
       try {
-        await register(
-          formState.firstName,
-          formState.lastName,
-          formState.email,
-          formState.password
-        );
+        await register({
+          firstName: formState.firstName,
+          lastName: formState.lastName,
+          email: formState.email,
+          password: formState.password,
+        });
       } catch (error) {
         console.error("Error during registration:", error);
         alert(error);
@@ -55,7 +55,7 @@ export function CreateAcc() {
           <div className="text-white flex flex-col my-2">
             <label className="text-sm">First Name</label>
             <input
-              className="firstName text-black px-1"
+              className="firstName text-black px-1 rounded"
               name="firstName"
               type="text"
               onChange={handleChange}
@@ -64,7 +64,7 @@ export function CreateAcc() {
           <div className="text-white flex flex-col my-2">
             <label className="text-sm">Last Name</label>
             <input
-              className="lastName text-black px-1"
+              className="lastName text-black px-1 rounded"
               type="text"
               name="lastName"
               onChange={handleChange}
@@ -73,7 +73,7 @@ export function CreateAcc() {
           <div className="text-white flex flex-col my-2">
             <label className="text-sm">Email</label>
             <input
-              className="userName text-black px-1"
+              className="userName text-black px-1 rounded"
               name="email"
               type="text"
               onChange={handleChange}
@@ -82,7 +82,7 @@ export function CreateAcc() {
           <div className=" text-white flex flex-col my-2">
             <label className="text-sm">Password</label>
             <input
-              className="password text-black px-1"
+              className="password text-black px-1 rounded"
               name="password"
               type="password"
               onChange={handleChange}
@@ -91,7 +91,7 @@ export function CreateAcc() {
           <div className=" text-white flex flex-col my-2">
             <label className="text-sm">Confirm Password</label>
             <input
-              className="password text-black px-1"
+              className="password text-black px-1 rounded"
               name="confirmPassword"
               type="password"
               onChange={handleChange}
