@@ -4,7 +4,6 @@ export function BrowseMovies() {
   return (
     <div className="grid-flow-col-dense">
       <Card />
-      <Card />
     </div>
   );
 }
