@@ -66,7 +66,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'CinemaProject.urls'
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',      # need react app url!!!!
+    'http://localhost:5173',      # need react app url!!!!
 ]
 
 REST_FRAMEWORK = {
@@ -86,9 +86,9 @@ DEFAULT_FROM_EMAIL = "movie.monkey.email@gmail.com"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
-EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/email/confirm/"
+EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:5173/login/"
 # make sure this is set in the front end
-PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = "http://localhost:3000/password-reset/confirm/"
+PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = "http://localhost:5173/password-reset/confirm/"
 # make sure this is set in the front end
 
 SITE_ID = 1
