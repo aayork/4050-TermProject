@@ -1,6 +1,6 @@
 export function Card() {
   return (
-    <div className="card glass w-96 m-10 p-0 shadow-xl">
+    <div className="card glass w-80 m-5 p-0 shadow-xl">
       <figure>
         <img
           src="https://i.ebayimg.com/images/g/iO0AAOSwO6phoMW5/s-l1200.jpg"
