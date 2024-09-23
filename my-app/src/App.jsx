@@ -5,7 +5,6 @@ import { BrowseMovies } from "./pages/BrowseMovies";
 import { HomePage } from "./pages/HomePage";
 import { Login } from "./pages/Login";
 import { CreateAcc } from "./pages/CreateAcc";
-import { ConfirmAccount } from "./pages/ConfirmAccount";
 
 function App() {
   return (
@@ -16,8 +15,8 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/browse" element={<BrowseMovies />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/login/:key" element={<Login />} />
           <Route path="/createAccount" element={<CreateAcc />} />
-          <Route path="/confirmAccount/:key" element={<ConfirmAccount />} />
         </Routes>
       </Router>
     </>

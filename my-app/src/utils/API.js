@@ -33,29 +33,29 @@ export const register = async ({
   return message;
 };
 
-export const login = async ({ email, password }) => {
+export const login = async ({ username, password }) => {
   const response = await fetch("http://localhost:8000/api/auth/login/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      username: email,
+      username: username,
       password: password,
     }),
   });
 
-  const message = await parseResponse(response);
+  const result = await parseResponse(response);
 
   if (!response.ok) {
     let errorMessage = "";
-    for (let i = 0; i < message.length; i++) {
+    for (let i = 0; i < result.length; i++) {
       errorMessage += message[i] + "\n";
     }
     throw new Error(errorMessage);
   }
 
-  return message;
+   localStorage.setItem('auth', result);
 };
 
 export const confirmEmail = async (key) => {
@@ -84,7 +84,7 @@ export const confirmEmail = async (key) => {
 };
 
 export const logout = async () => {
-  const response = await fetch("/api/account/logout", {
+  const response = await fetch("http://localhost:8000/api/auth/logout/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -100,6 +100,8 @@ export const logout = async () => {
     }
     throw new Error(errorMessage);
   }
+
+  localStorage.removeItem("auth");
 
   return message;
 };

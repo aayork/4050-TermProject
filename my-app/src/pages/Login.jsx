@@ -1,13 +1,15 @@
-import { useState } from "react";
-import { login } from "../utils/API";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { login, confirmEmail } from "../utils/API";
 
 export function Login() {
+  const navigate = useNavigate();
+  const { key } = useParams();
   //set init form state
   const [formState, setFormState] = useState({
-    email: "",
+    username: "",
     password: "",
   });
-
   //updated fields on change
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -17,6 +19,23 @@ export function Login() {
     });
   };
 
+  //if there is a key
+  useEffect(() => {
+    const confirmAccount = async () => {
+      if (key) {
+        try {
+          await confirmEmail(key);
+
+          alert("Your account has been confirmed\nPlease login :)");
+        } catch (error) {
+          alert(error);
+        }
+      }
+    };
+
+    confirmAccount();
+  }, []);
+
   // handle form submit
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -24,13 +43,12 @@ export function Login() {
     console.log(formState);
 
     try {
-      const result = await login({
+      await login({
         username: formState.username,
         password: formState.password,
       });
-
-      console.log(result);
-      alert(result);
+      window.dispatchEvent(new Event("storage"));
+      navigate("/");
     } catch (error) {
       alert(error);
     }
@@ -43,10 +61,10 @@ export function Login() {
         <div className="border"></div>
         <form action="" onSubmit={handleFormSubmit}>
           <div className="text-white flex flex-col my-2">
-            <label className="text-sm">Email</label>
+            <label className="text-sm">Username</label>
             <input
               className="userName text-black px-1 rounded"
-              name="email"
+              name="username"
               type="text"
               onChange={handleChange}
             ></input>

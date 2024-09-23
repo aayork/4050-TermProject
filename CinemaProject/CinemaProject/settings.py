@@ -86,7 +86,7 @@ DEFAULT_FROM_EMAIL = "movie.monkey.email@gmail.com"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
-EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:5173/confirmAccount/"
+EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:5173/login/"
 # make sure this is set in the front end
 PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = "http://localhost:5173/password-reset/confirm/"
 # make sure this is set in the front end
