@@ -61,16 +61,16 @@ export function NavBar() {
                     Home
                   </a>
                   <a
-                    href="/about"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
-                  >
-                    About
-                  </a>
-                  <a
                     href="/browse"
                     className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
                   >
                     Browse Movies
+                  </a>
+                  <a
+                    href="/admin"
+                    className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
+                  >
+                    Admin
                   </a>
                 </div>
               </div>
