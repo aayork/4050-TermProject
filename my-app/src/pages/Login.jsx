@@ -38,7 +38,7 @@ export function Login() {
 
   // handle form submit
   const handleFormSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     console.log(formState);
 
