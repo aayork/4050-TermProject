@@ -13,7 +13,7 @@ export function ManageMovieCard({ movie }) {
   }
 
   return (
-    <div className=" w-1/5 m-5 p-0 shadow-xl border border-black rounded-xl">
+    <div className="m-5 p-0 shadow-xl border border-black rounded-xl">
       <div className=" p-2">
         <h2 className="">
           <b className="font-semibold">Title:</b> {title}

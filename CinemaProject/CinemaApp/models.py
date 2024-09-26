@@ -23,7 +23,7 @@ class Genre(models.Model):
 class Movie(models.Model):
     genres = models.ManyToManyField(Genre, related_name='movies', blank=True)
     movieName = models.CharField(max_length=225, blank=False)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     # showtimes = self.showtimes
 
     ### movie info:

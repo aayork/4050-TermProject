@@ -53,17 +53,17 @@ export function Admin() {
           </div>
 
           {selectedTab === "movies" && (
-            <div className="p-6">
+            <div className="py-2 px-4">
               <ManageMovies />
             </div>
           )}
           {selectedTab === "employees" && (
-            <div className="p-6">
+            <div className="py-2 px-4">
               <ManageEmployees />
             </div>
           )}
           {selectedTab === "promos" && (
-            <div className="p-6">
+            <div className="py-2 px-4">
               <ManagePromos />
             </div>
           )}
