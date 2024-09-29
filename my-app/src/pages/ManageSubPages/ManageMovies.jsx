@@ -122,7 +122,7 @@ export function ManageMovies() {
       <div className="flex flex-col">
         <div className="">
           <h1 className="font-semibold"> Currently Showing:</h1>
-          <div className="grid grid-cols-4">
+          <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {movies.map((movie) => (
               <div className="grid-item" key={movie.id}>
                 <ManageMovieCard movie={movie} />
@@ -132,7 +132,7 @@ export function ManageMovies() {
         </div>
         <div className="">
           <h1 className="font-semibold"> Inactive:</h1>
-          <div className="grid grid-cols-4">
+          <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {movies.map((movie) => (
               <div className="grid-item" key={movie.id}>
                 <ManageMovieCard movie={movie} />

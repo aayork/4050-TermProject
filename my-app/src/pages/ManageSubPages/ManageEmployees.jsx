@@ -91,9 +91,9 @@ export function ManageEmployees() {
       <div className="flex flex-col">
         <div className="">
           <h1 className="font-semibold"> Managers:</h1>
-          <div className="grid grid-cols-4">
+          <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {people.map((person) => (
-              <div className="grid-item" key={person.id}>
+              <div className="grid-item min-w-fit" key={person.id}>
                 <EmployeeCard employee={person} />
               </div>
             ))}
@@ -101,9 +101,9 @@ export function ManageEmployees() {
         </div>
         <div className="">
           <h1 className="font-semibold"> Employees:</h1>
-          <div className="grid grid-cols-4">
+          <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {people.map((person) => (
-              <div className="grid-item" key={person.id}>
+              <div className="grid-item min-w-fit" key={person.id}>
                 <EmployeeCard employee={person} />
               </div>
             ))}
