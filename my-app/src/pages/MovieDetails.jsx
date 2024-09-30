@@ -1,3 +1,9 @@
+import { MovieHall } from "../components/MovieHall";
+
 export function MovieDetails() {
-  return <div></div>;
+  return (
+    <div>
+      <MovieHall />
+    </div>
+  );
 }
