@@ -69,7 +69,21 @@ export function Admin() {
           )}
         </div>
       ) : (
-        <div>You do not have access to this page</div>
+        <div className="flex justify-center">
+          <div className="card flex justify-center">
+            <div className="font-semibold text-xl">
+              You do not have access to this page
+            </div>
+            <br />
+            <div className="self-center">
+              Click{" "}
+              <a className="text-blue-700 underline" href="/">
+                here
+              </a>{" "}
+              to return home
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

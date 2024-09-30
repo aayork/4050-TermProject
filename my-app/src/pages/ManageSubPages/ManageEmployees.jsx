@@ -1,6 +1,39 @@
 import { EmployeeCard } from "../../components/EmployeeCard";
+import { useState } from "react";
 
 export function ManageEmployees() {
+  const initForm = {
+    first_name: "",
+    last_name: "",
+    email: "",
+    username: "",
+    password: "",
+    role: "",
+  };
+  const [formState, setFormState] = useState(initForm);
+
+  const cancel = async (event) => {
+    event.preventDefault();
+    setFormState(initForm);
+    document.getElementById("addEmpModal").close();
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormState({
+      ...formState,
+      [name]: value,
+    });
+  };
+
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+
+    console.log(formState);
+    setFormState(initForm);
+    document.getElementById("addEmpModal").close();
+  };
+
   const will = {
     first_name: "Will",
     last_name: "Gresham",
@@ -9,7 +42,7 @@ export function ManageEmployees() {
     id: "123131",
   };
 
-  const aidan = {
+  const Aidan = {
     first_name: "Aidan",
     last_name: "York",
     username: "aayork",
@@ -17,14 +50,14 @@ export function ManageEmployees() {
     id: "15435",
   };
 
-  const people = [will, aidan];
+  const people = [will, Aidan];
 
   return (
     <div>
       <div>
         <button
           className="btn my-2 flex items-center"
-          onClick={() => document.getElementById("addMovieModal").showModal()}
+          onClick={() => document.getElementById("addEmpModal").showModal()}
         >
           Add Employee
           <svg
@@ -42,49 +75,91 @@ export function ManageEmployees() {
             />
           </svg>
         </button>
-        <dialog id="addMovieModal" className="modal">
+        <dialog id="addEmpModal" className="modal">
           <div className="modal-box">
             <h3 className="font-semibold text-lg">Add New Employee</h3>
             <div className="border border-monkey-green"></div>
-            <div className="flex flex-col gap-2 py-2">
-              <label className="input input-bordered flex  input-primary items-center gap-2">
-                First Name :
-                <input type="text" className="grow" placeholder="" />
-              </label>
-              <label className="input input-bordered  input-primary flex items-center gap-2">
-                Last Name :
-                <input type="text" className="grow" placeholder="" />
-              </label>
-              <label className="input input-bordered input-primary flex items-center gap-2">
-                Email :
-                <input type="text" className="grow" placeholder="" />
-              </label>
-              <label className="input input-bordered input-primary flex items-center gap-2">
-                Username :
-                <input type="text" className="grow" placeholder="" />
-              </label>
-              <label className="input input-bordered input-primary flex items-center gap-2">
-                Password :
-                <input type="text" className="grow" placeholder="" />
-              </label>
-              <select className="select select-bordered w-full select-primary">
-                <option disabled selected>
-                  Role
-                </option>
-                <option>Manager</option>
-                <option>Employee</option>
-              </select>
-            </div>
-            <div className="modal-action">
-              <form method="dialog">
-                <button className="btn btn-primary btn-sm mx-2 text-monkey-white">
-                  Close
+            <form method="dialog" onSubmit={handleFormSubmit}>
+              <div className="flex flex-col gap-2 py-2">
+                <label className="input input-bordered flex  input-primary items-center gap-2">
+                  First Name :
+                  <input
+                    type="text"
+                    className="grow"
+                    placeholder=""
+                    name="first_name"
+                    onChange={handleChange}
+                  />
+                </label>
+                <label className="input input-bordered  input-primary flex items-center gap-2">
+                  Last Name :
+                  <input
+                    type="text"
+                    className="grow"
+                    placeholder=""
+                    name="last_name"
+                    onChange={handleChange}
+                  />
+                </label>
+                <label className="input input-bordered input-primary flex items-center gap-2">
+                  Email :
+                  <input
+                    type="text"
+                    className="grow"
+                    placeholder=""
+                    name="email"
+                    onChange={handleChange}
+                  />
+                </label>
+                <label className="input input-bordered input-primary flex items-center gap-2">
+                  Username :
+                  <input
+                    type="text"
+                    className="grow"
+                    placeholder=""
+                    name="username"
+                    onChange={handleChange}
+                  />
+                </label>
+                <label className="input input-bordered input-primary flex items-center gap-2">
+                  Password :
+                  <input
+                    type="text"
+                    className="grow"
+                    placeholder=""
+                    name="password"
+                    onChange={handleChange}
+                  />
+                </label>
+                <select
+                  className="select select-bordered w-full select-primary"
+                  name="role"
+                  defaultValue="Role"
+                  onChange={handleChange}
+                >
+                  <option disabled defaultValue="Role">
+                    Role
+                  </option>
+                  <option value="Manager">Manager</option>
+                  <option value="Employee">Employee</option>
+                </select>
+              </div>
+              <div className="modal-action">
+                <button
+                  className="btn btn-primary btn-sm mx-2 text-monkey-white"
+                  onClick={cancel}
+                >
+                  Cancel
                 </button>
-                <button className="btn btn-primary btn-sm text-monkey-white">
-                  Add
+                <button
+                  className="btn btn-primary btn-sm text-monkey-white"
+                  type="submit"
+                  onSubmit={handleFormSubmit}
+                >
+                  Create
                 </button>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
         </dialog>
       </div>

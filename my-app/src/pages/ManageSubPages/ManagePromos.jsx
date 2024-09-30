@@ -2,17 +2,19 @@ import { useState } from "react";
 import { PromoCard } from "../../components/PromoCard";
 
 export function ManagePromos() {
-  const [formState, setFormState] = useState({
+  const initForm = {
     name: "",
     code: "",
     discount: "",
     startDate: "",
     endDate: "",
-  });
+  };
+  const [formState, setFormState] = useState(initForm);
 
   const cancel = async (event) => {
     event.preventDefault();
-    document.getElementById("addMovieModal").close();
+    setFormState(initForm);
+    document.getElementById("addPromoModal").close();
   };
 
   const handleChange = (event) => {
@@ -27,6 +29,8 @@ export function ManagePromos() {
     event.preventDefault();
 
     console.log(formState);
+    setFormState(initForm);
+    document.getElementById("addPromoModal").close();
   };
 
   const halfOff = {
@@ -38,9 +42,9 @@ export function ManagePromos() {
   };
 
   const quarterOff = {
-    name: "25 Off",
-    code: "QUARTERCUT",
-    discount: "25",
+    name: "Fall Discount",
+    code: "FALL24",
+    discount: "24",
     startDate: "9/29/2024",
     endDate: "10/31/2024",
   };
@@ -52,7 +56,7 @@ export function ManagePromos() {
       <div>
         <button
           className="btn my-2 flex items-center"
-          onClick={() => document.getElementById("addMovieModal").showModal()}
+          onClick={() => document.getElementById("addPromoModal").showModal()}
         >
           Add Promotion
           <svg
@@ -71,7 +75,7 @@ export function ManagePromos() {
           </svg>
         </button>
         {/* modal start */}
-        <dialog id="addMovieModal" className="modal">
+        <dialog id="addPromoModal" className="modal">
           <div className="modal-box">
             <h3 className="font-semibold text-lg">Add New Promotion</h3>
             <div className="border border-monkey-green"></div>
