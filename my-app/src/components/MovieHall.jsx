@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom"; // Example usage of React Router
+import { Link } from "react-router-dom";
 
 export function MovieHall() {
-  const rows = 5; // Example number of rows
-  const columns = 8; // Example number of columns
+  const rows = 8;
+  const columns = 12;
   const [selectedSeats, setSelectedSeats] = useState([]);
 
   const toggleSeatSelection = (seatId) => {
@@ -33,7 +33,7 @@ export function MovieHall() {
                 key={seatId}
                 onClick={() => toggleSeatSelection(seatId)}
                 className={`btn btn-square btn-sm ${
-                  isSelected ? "bg-green-500" : "bg-gray-300"
+                  isSelected ? "bg-green-500" : "bg-monkey-yellow"
                 }`}
               >
                 {seatId}
