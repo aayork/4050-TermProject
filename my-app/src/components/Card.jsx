@@ -15,7 +15,9 @@ export function Card() {
         </div>
         <p>🍅 96%</p>
         <div className="card-actions justify-end">
-          <button className="btn btn-primary">Get Tickets</button>
+          <button className="btn btn-primary">
+            <a href="/details">Get Tickets</a>
+          </button>
         </div>
       </div>
     </div>
