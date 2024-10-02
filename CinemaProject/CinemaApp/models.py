@@ -1,5 +1,9 @@
+import uuid
+from uuid import uuid4
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxLengthValidator, MinLengthValidator
 
 
 class Theatre(models.Model):
@@ -26,9 +30,11 @@ class Movie(models.Model):
     is_active = models.BooleanField(default=False)
     # showtimes = self.showtimes
 
+    ### movie trailer
+    trailer = models.URLField(blank=True)
+
     ### movie info:
     rating = models.CharField(max_length=10, blank=False)
-    mpaa_rating = models.CharField(max_length=10, blank=False)
     runtime = models.IntegerField(blank=False)
     year = models.IntegerField(blank=False)
     critics_score = models.IntegerField(blank=False)
@@ -80,14 +86,39 @@ class Seat(models.Model):
 
 
 class MovieProfile(models.Model):
-    user = models.OneToOneField(User, related_name="movie_profile", on_delete=models.CASCADE)
-    userName = models.CharField(max_length=225, blank=False)
-    address = models.CharField(max_length=225, blank=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField(User, related_name="movie_profile", on_delete=models.CASCADE, default=None, null=True)
     status = models.CharField(max_length=100, default="Member")
     # orders = self.orders
+    # payments = self.payments
+    # addresses = self.addresses
 
     def __str__(self):
-        return f"{self.userName}"
+        return f"{self.user}"
+
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, related_name="payments", on_delete=models.CASCADE)
+    cardNumber = models.CharField(
+        max_length=16,
+        validators=[MinLengthValidator(16), MaxLengthValidator(16)],
+        blank=False, null=False)
+    expirationDate = models.DateField(blank=False, null=False)
+    CVV = models.CharField(
+        max_length=4,
+        validators=[MinLengthValidator(3), MaxLengthValidator(4)],
+        blank=False, null=False
+    )
+    firstName = models.CharField(max_length=40, blank=False, null=False)
+    lastName = models.CharField(max_length=40, blank=False, null=False)
+
+
+class Address(models.Model):
+    user = models.ForeignKey(User, related_name="addresses", on_delete=models.CASCADE)
+    street = models.CharField(max_length=150, blank=False, null=False)
+    city = models.CharField(max_length=150, blank=False, null=False)
+    state = models.CharField(max_length=40, blank=False, null=False)
+    postalCode = models.CharField(max_length=15, blank=False, null=False)
 
 
 class Order(models.Model):
@@ -109,12 +140,20 @@ class Ticket(models.Model):
     def movie(self):
         return self.seat.showTime.movie
 
-    def movieprofile(self):
-        return self.order.movieProfile
-
     def price(self):
         return self.seat.price
 
     def __str__(self):
         return f"{self.id} - {self.seat}"
 # Create your models here.
+
+
+class Promotion(models.Model):
+    name = models.CharField(max_length=2250, blank=False, null=False)
+    discountRate = models.FloatField(blank=False, null=False)
+    code = models.CharField(max_length=15, blank=False, null=False)
+    startDate = models.DateField(blank=False, null=False)
+    endDate = models.DateField(blank=False, null=False)
+
+    def __str__(self):
+        return f"{self.name}"

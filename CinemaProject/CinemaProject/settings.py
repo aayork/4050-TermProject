@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-pyy3t_go-ui^1$=pf+1isymgcjpie+mar$c60ryu15u27=p@#x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['movie-monkey.c7k2ok6mc24d.us-east-1.rds.amazonaws.com', 'localhost']
 
 
 # Application definition
@@ -117,11 +117,14 @@ WSGI_APPLICATION = 'CinemaProject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'movie_monkey',
+        'USER': 'admin',
+        'PASSWORD': 'Tatum515',
+        'HOST': 'movie-monkey.c7k2ok6mc24d.us-east-1.rds.amazonaws.com',
+        'PORT': 3306
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
