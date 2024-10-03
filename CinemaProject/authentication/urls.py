@@ -9,14 +9,14 @@ from dj_rest_auth.views import (
     PasswordResetConfirmView,
     PasswordResetView,
 )
-from .views import email_confirm_redirect, password_reset_confirm_redirect
+from .views import email_confirm_redirect, password_reset_confirm_redirect, CustomRegisterView, CustomUserDetailsView
 
 
 urlpatterns = [
-    path("register/", RegisterView.as_view(), name="rest_register"),
+    path("register/", CustomRegisterView.as_view(), name="custom_register"),
     path("login/", LoginView.as_view(), name="rest_login"),
     path("logout/", LogoutView.as_view(), name="rest_logout"),
-    path("user/", UserDetailsView.as_view(), name="rest_user_details"),
+    path("user/", CustomUserDetailsView.as_view(), name="rest_user_details"),
 
 
     path("register/verify-email/", VerifyEmailView.as_view(), name="rest_verify_email"),
