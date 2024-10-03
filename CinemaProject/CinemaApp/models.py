@@ -49,6 +49,7 @@ class Movie(models.Model):
 
 
 class MovieRoom(models.Model):
+    number = models.IntegerField(blank=False, default=0)
     theatre = models.ForeignKey(Theatre, related_name='movie_rooms', on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     # showtimes = self.showtimes
@@ -98,7 +99,7 @@ class MovieProfile(models.Model):
 
 
 class Payment(models.Model):
-    user = models.ForeignKey(User, related_name="payments", on_delete=models.CASCADE)
+    user = models.ForeignKey(MovieProfile, related_name="payments", on_delete=models.CASCADE)
     cardNumber = models.CharField(
         max_length=16,
         validators=[MinLengthValidator(16), MaxLengthValidator(16)],
@@ -114,11 +115,14 @@ class Payment(models.Model):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(User, related_name="addresses", on_delete=models.CASCADE)
+    user = models.ForeignKey(MovieProfile, related_name="addresses", on_delete=models.CASCADE)
     street = models.CharField(max_length=150, blank=False, null=False)
     city = models.CharField(max_length=150, blank=False, null=False)
     state = models.CharField(max_length=40, blank=False, null=False)
     postalCode = models.CharField(max_length=15, blank=False, null=False)
+
+    def __str__(self):
+        return f"{self.street}"
 
 
 class Order(models.Model):
