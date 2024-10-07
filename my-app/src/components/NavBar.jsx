@@ -67,13 +67,13 @@ export function NavBar() {
                   >
                     Browse Movies
                   </a>
+                  */}
                   <a
                     href="/admin"
                     className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
                   >
                     Admin
                   </a>
-                  */}
                 </div>
               </div>
             </div>
