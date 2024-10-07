@@ -23,12 +23,17 @@ export function MovieHall() {
 
   return (
     <div className="flex flex-col items-center p-5">
-      <h1 className="text-2xl font-bold mb-4">Select Showtime & Seats</h1>
-
+      <h1 className="text-2xl font-bold mb-4">Movie Details</h1>
+      {/* Movie Trailer */}
+      <iframe
+        width="700"
+        height="450"
+        src="https://www.youtube.com/embed/JNwNXF9Y6kY"
+      ></iframe>
       {/* Step 1: Showtimes Selection */}
       {!selectedShowtime ? (
         <div>
-          <h2 className="text-lg font-semibold mb-4">Select a Showtime:</h2>
+          <h2 className="text-lg font-semibold mb-4">Showtimes</h2>
           <div className="flex space-x-4">
             {showtimes.map((time) => (
               <button

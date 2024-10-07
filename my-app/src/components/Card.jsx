@@ -13,7 +13,7 @@ export function Card({ title, description, score, rating, imageUrl, link }) {
         <p>🍅 {score}%</p>
         <div className="card-actions justify-end">
           <a href={link} className="btn btn-primary">
-            Get Tickets
+            Details
           </a>
         </div>
       </div>
