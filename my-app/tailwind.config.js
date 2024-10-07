@@ -8,6 +8,7 @@ export default {
         "monkey-beige": "#f1e4c3",
         "monkey-brown": "#c6a969",
         "monkey-green": "#597e52",
+        "monkey-yellow": "#ffe135",
       },
     },
   },

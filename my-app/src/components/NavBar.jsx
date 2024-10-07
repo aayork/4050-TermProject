@@ -60,6 +60,7 @@ export function NavBar() {
                   >
                     Home
                   </a>
+                  {/*
                   <a
                     href="/browse"
                     className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
@@ -72,6 +73,7 @@ export function NavBar() {
                   >
                     Admin
                   </a>
+                  */}
                 </div>
               </div>
             </div>
