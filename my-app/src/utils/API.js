@@ -20,7 +20,8 @@ export const register = async ({
     }),
   });
 
-  const message = await parseResponse(response);
+  const result = await parseResponse(response);
+  const message = Object.values(result);
 
   if (!response.ok) {
     let errorMessage = "";
@@ -46,20 +47,20 @@ export const login = async ({ username, password }) => {
   });
 
   const result = await parseResponse(response);
+  const message = Object.values(result);
 
   if (!response.ok) {
     let errorMessage = "";
-    for (let i = 0; i < result.length; i++) {
+    for (let i = 0; i < message.length; i++) {
       errorMessage += message[i] + "\n";
     }
     throw new Error(errorMessage);
   }
 
-   localStorage.setItem('auth', result);
+  localStorage.setItem("auth", message);
 };
 
 export const confirmEmail = async (key) => {
-  console.log(key);
   const response = await fetch(
     "http://localhost:8000/api/auth/account-confirm-email/",
     {
@@ -71,7 +72,8 @@ export const confirmEmail = async (key) => {
     }
   );
 
-  const message = await parseResponse(response);
+  const result = await parseResponse(response);
+  const message = Object.values(result);
 
   if (!response.ok) {
     let errorMessage = "";
@@ -80,7 +82,6 @@ export const confirmEmail = async (key) => {
     }
     throw new Error(errorMessage);
   }
-
 };
 
 export const logout = async () => {
@@ -91,7 +92,8 @@ export const logout = async () => {
     },
   });
 
-  const message = await parseResponse(response);
+  const result = await parseResponse(response);
+  const message = Object.values(result);
 
   if (!response.ok) {
     let errorMessage = "";
@@ -104,6 +106,30 @@ export const logout = async () => {
   localStorage.removeItem("auth");
 
   return message;
+};
+
+export const getUser = async () => {
+  const token = localStorage.getItem("auth");
+
+  const response = await fetch("http://localhost:8000/api/auth/user/", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Token ${token}`,
+    },
+  });
+
+  const result = await parseResponse(response);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
+  return result;
 };
 
 async function parseResponse(response) {
@@ -120,7 +146,5 @@ async function parseResponse(response) {
 
   const parsedResult = JSON.parse(result);
 
-  const values = Object.values(parsedResult);
-
-  return values;
+  return parsedResult;
 }

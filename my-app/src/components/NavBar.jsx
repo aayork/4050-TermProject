@@ -62,18 +62,18 @@ export function NavBar() {
                   </a>
                   {/*
                   <a
-                    href="/about"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
-                  >
-                    About
-                  </a>
-                  <a
                     href="/browse"
                     className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
                   >
                     Browse Movies
                   </a>
                   */}
+                  <a
+                    href="/admin"
+                    className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
+                  >
+                    Admin
+                  </a>
                 </div>
               </div>
             </div>
@@ -124,22 +124,13 @@ export function NavBar() {
                   tabIndex="-1"
                 >
                   <a
-                    href="#"
+                    href="/profile"
                     className="block px-4 py-2 text-sm text-gray-700"
                     role="menuitem"
                     tabIndex="-1"
                     id="user-menu-item-0"
                   >
                     Your Profile
-                  </a>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                    tabIndex="-1"
-                    id="user-menu-item-1"
-                  >
-                    Settings
                   </a>
                   <a
                     href="#"
