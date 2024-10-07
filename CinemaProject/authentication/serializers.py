@@ -65,7 +65,6 @@ class SeatSerializer(serializers.ModelSerializer):
         fields = ['seatID', 'price', 'showtime']
 
 
-
 class TicketSerializer(serializers.ModelSerializer):
     seats = SeatSerializer(many=True, read_only=True)
 
