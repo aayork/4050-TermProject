@@ -1,6 +1,5 @@
-import uuid
-from uuid import uuid4
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxLengthValidator, MinLengthValidator
@@ -11,6 +10,12 @@ class Theatre(models.Model):
     address = models.CharField(max_length=500)
     is_active = models.BooleanField(default=True)
     # movie rooms = self.movie_rooms
+
+    def save(self, *args, **kwargs):
+        # Check if a Theatre instance already exists
+        if Theatre.objects.exclude(id=self.id).exists():  # Exclude the current instance if it exists
+            raise ValidationError("Only one theatre instance is allowed.")
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -43,12 +48,24 @@ class Movie(models.Model):
     thumbnail = models.URLField(blank=False)
     photo = models.URLField(blank=False)
     studio = models.CharField(max_length=100, blank=False)
+    director = models.CharField(max_length=150, blank=True, null=True)
+    # actors = self.actors
 
     def __str__(self):
         return f"{self.movieName} - {self.id}"
 
 
+class Actor(models.Model):
+    movies = models.ManyToManyField(Movie, related_name='actors', blank=True)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+
 class MovieRoom(models.Model):
+
     number = models.IntegerField(blank=False, default=0)
     theatre = models.ForeignKey(Theatre, related_name='movie_rooms', on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
@@ -87,15 +104,36 @@ class Seat(models.Model):
 
 
 class MovieProfile(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.OneToOneField(User, related_name="movie_profile", on_delete=models.CASCADE, default=None, null=True)
-    status = models.CharField(max_length=100, default="Member")
+    class StatusChoices(models.TextChoices):
+        CUSTOMER = 'customer', 'Customer'
+        ADMIN = 'admin', 'Admin'
+
+    class CustomerState(models.TextChoices):
+        ACTIVE = 'active', 'Active'
+        INACTIVE = 'inactive', 'Inactive'
+        SUSPENDED = 'suspended', 'Suspended'
+
+    user = models.OneToOneField(User, related_name="movie_profile", on_delete=models.CASCADE, blank=True, null=True)
+    status = models.CharField(max_length=100, choices=StatusChoices.choices, default=StatusChoices.CUSTOMER)
+    customer_state = models.CharField(
+        max_length=50,
+        choices=CustomerState.choices,
+        null=True,  # Allows the customer_state to be null
+        blank=True,  # Allows empty values in forms
+        default=CustomerState.ACTIVE
+    )
     # orders = self.orders
     # payments = self.payments
     # addresses = self.addresses
 
+    def save(self, *args, **kwargs):
+        # Enforce that admin users have a null customer_state
+        if self.status == MovieProfile.StatusChoices.ADMIN:
+            self.customer_state = None
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.user}"
+        return f"{self.user} - {self.status}"
 
 
 class Payment(models.Model):
@@ -112,6 +150,15 @@ class Payment(models.Model):
     )
     firstName = models.CharField(max_length=40, blank=False, null=False)
     lastName = models.CharField(max_length=40, blank=False, null=False)
+
+    def save(self, *args, **kwargs):
+        # Check if the user already has 3 payment options
+        if self.user.movie_profile.payments.count() >= 3 and not self.pk:  # Exclude existing records
+            raise ValidationError("You cannot have more than 3 payment methods.")
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.firstName} - {self.lastName} - (**** **** **** {self.cardNumber[-4:]})"
 
 
 class Address(models.Model):
@@ -135,8 +182,16 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
+    class TicketType(models.TextChoices):
+        ADULT = 'adult', 'Adult'
+        SENIOR = 'senior', 'Senior'
+        CHILD = 'child', 'Child'
+
     seat = models.OneToOneField(Seat, related_name="ticket", on_delete=models.CASCADE)
     order = models.ForeignKey(Order, related_name="tickets", on_delete=models.CASCADE)
+    type = models.CharField(
+        choices=TicketType.choices, max_length=10, blank=False, null=False, default=TicketType.ADULT
+    )
 
     def showtime(self):
         return self.seat.showTime
@@ -161,3 +216,4 @@ class Promotion(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
