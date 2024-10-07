@@ -1,21 +1,20 @@
-export function Card() {
+export function Card({ title, description, score, rating, imageUrl, link }) {
   return (
     <div className="card glass w-80 m-5 p-0 shadow-xl">
       <figure>
-        <img
-          src="https://i.ebayimg.com/images/g/iO0AAOSwO6phoMW5/s-l1200.jpg"
-          alt="car!"
-        />
+        <img src={imageUrl} alt={title} />
       </figure>
       <div className="card-body">
-        <h2 className="card-title">Star Wars: The Empire Strikes Back</h2>
+        <h2 className="card-title">{title}</h2>
         <div className="inline-flex">
-          <p>Who is Luke&apos;s father?</p>
-          <div className="badge badge-accent">R</div>
+          <p>{description}</p>
+          <div className="badge badge-accent">{rating}</div>
         </div>
-        <p>🍅 96%</p>
+        <p>🍅 {score}%</p>
         <div className="card-actions justify-end">
-          <button className="btn btn-primary">Get Tickets</button>
+          <a href={link} className="btn btn-primary">
+            Details
+          </a>
         </div>
       </div>
     </div>
