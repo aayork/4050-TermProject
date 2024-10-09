@@ -4,7 +4,8 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from CinemaApp.models import MovieProfile, Payment, Address, Order, Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie
+from CinemaApp.models import (MovieProfile, Payment, Address, Order,
+                              Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie, Actor, Director)
 
 
 class CustomRegisterSerializer(RegisterSerializer):
@@ -32,13 +33,26 @@ class TheatreSerializer(serializers.ModelSerializer):
         fields = ['name', 'address', 'is_active']
 
 
+class ActorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Actor
+        fields = ['first_name', 'last_name']
+
+
+class DirectorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Director
+        fields = ['first_name', 'last_name']
+
+
 class MovieSerializer(serializers.ModelSerializer):
+    actors = ActorSerializer(many=True, read_only=True)
 
     class Meta:
         model = Movie
         fields = ['movieName', 'year', 'trailer', 'rating',
                   'runtime', 'critics_score', 'audience_score',
-                  'description', 'thumbnail', 'photo', 'studio', 'is_active']
+                  'description', 'photo', 'studio', 'is_active', 'actors']
 
 
 class MovieRoomSerializer(serializers.ModelSerializer):

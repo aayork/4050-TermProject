@@ -1,36 +1,62 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+// Function to convert row index to letters (e.g., 0 -> A, 25 -> Z, 26 -> AA)
+const getRowLabel = (index) => {
+  let label = "";
+  while (index >= 0) {
+    label = String.fromCharCode((index % 26) + 65) + label;
+    index = Math.floor(index / 26) - 1;
+  }
+  return label;
+};
 
 export function MovieHall() {
   const rows = 8;
   const columns = 12;
 
-  // State to handle selected seats
   const [selectedSeats, setSelectedSeats] = useState([]);
-
-  // State to handle showtime selection
   const [selectedShowtime, setSelectedShowtime] = useState(null);
+  const [seatTypes, setSeatTypes] = useState({});
+
+  const navigate = useNavigate();
 
   const showtimes = ["12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"];
 
   const toggleSeatSelection = (seatId) => {
     if (selectedSeats.includes(seatId)) {
       setSelectedSeats(selectedSeats.filter((seat) => seat !== seatId));
+      const newSeatTypes = { ...seatTypes };
+      delete newSeatTypes[seatId];
+      setSeatTypes(newSeatTypes);
     } else {
       setSelectedSeats([...selectedSeats, seatId]);
     }
   };
 
+  const handleSeatTypeChange = (seatId, type) => {
+    setSeatTypes({ ...seatTypes, [seatId]: type });
+  };
+
+  // Proceed to Checkout with selected seats and types
+  const proceedToCheckout = () => {
+    navigate("/checkout", {
+      state: {
+        selectedSeats,
+        seatTypes,
+        selectedShowtime,
+      },
+    });
+  };
+
   return (
     <div className="flex flex-col items-center p-5">
       <h1 className="text-2xl font-bold mb-4">Movie Details</h1>
-      {/* Movie Trailer */}
       <iframe
         width="700"
         height="450"
         src="https://www.youtube.com/embed/JNwNXF9Y6kY"
       ></iframe>
-      {/* Step 1: Showtimes Selection */}
       {!selectedShowtime ? (
         <div>
           <h2 className="text-lg font-semibold mb-4">Showtimes</h2>
@@ -48,7 +74,6 @@ export function MovieHall() {
         </div>
       ) : (
         <>
-          {/* Step 2: Seat Selection */}
           <div className="mt-5">
             <h2 className="text-lg font-semibold">
               Showtime Selected: {selectedShowtime}
@@ -64,8 +89,9 @@ export function MovieHall() {
               }}
             >
               {Array.from({ length: rows }).map((_, rowIndex) => {
+                const rowLabel = getRowLabel(rowIndex);
                 return Array.from({ length: columns }).map((_, colIndex) => {
-                  const seatId = `R${rowIndex + 1}-C${colIndex + 1}`;
+                  const seatId = `${rowLabel}${colIndex + 1}`;
                   const isSelected = selectedSeats.includes(seatId);
                   return (
                     <button
@@ -87,7 +113,20 @@ export function MovieHall() {
               {selectedSeats.length > 0 ? (
                 <ul>
                   {selectedSeats.map((seat) => (
-                    <li key={seat}>{seat}</li>
+                    <li key={seat} className="mb-3">
+                      {seat}
+                      <select
+                        value={seatTypes[seat] || "Adult"}
+                        onChange={(e) =>
+                          handleSeatTypeChange(seat, e.target.value)
+                        }
+                        className="ml-2 p-1 border rounded"
+                      >
+                        <option value="Child">Child</option>
+                        <option value="Adult">Adult</option>
+                        <option value="Senior">Senior</option>
+                      </select>
+                    </li>
                   ))}
                 </ul>
               ) : (
@@ -96,9 +135,9 @@ export function MovieHall() {
             </div>
 
             {/* Proceed to Checkout */}
-            <Link to="/checkout" className="btn mt-5">
+            <button onClick={proceedToCheckout} className="btn mt-5">
               Proceed to Checkout
-            </Link>
+            </button>
           </div>
         </>
       )}
