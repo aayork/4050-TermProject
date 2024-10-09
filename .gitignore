@@ -1,7 +1,8 @@
 *.pyc
-__pycache__/
+**/__pycache__/
 db.sqlite3
 node_modules/
+vite.config.js
 
 # Logs
 logs
