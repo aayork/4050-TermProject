@@ -25,18 +25,6 @@ export function OrderSummary() {
       ) : (
         <p>No seats selected.</p>
       )}
-
-      {/* You can add more order details or payment summary here */}
-
-      {/* Buttons */}
-      <div className="inline-flex">
-        <Link to="/" className="btn mt-5 p-2 m-2">
-          Back to Movie Selection
-        </Link>
-        <Link to="/checkout" className="btn mt-5 p-2 m-2">
-          Proceed to Payment
-        </Link>
-      </div>
     </div>
   );
 }
