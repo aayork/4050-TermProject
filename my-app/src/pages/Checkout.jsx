@@ -5,11 +5,27 @@ import { Link, useLocation } from "react-router-dom";
 
 export function Checkout() {
   const location = useLocation();
-  const { tab: initialTab } = location.state || {}; // Get the initial tab state
+  const {
+    tab: initialTab,
+    selectedSeats: initialSelectedSeats,
+    seatTypes: initialSeatTypes,
+    selectedShowtime,
+  } = location.state || {};
   const [currentTab, setCurrentTab] = useState(initialTab || "summary"); // Default to 'summary' or the passed tab
+  const [selectedSeats, setSelectedSeats] = useState(
+    initialSelectedSeats || [],
+  ); // Initial selected seats
+  const [seatTypes, setSeatTypes] = useState(initialSeatTypes || {}); // Initial seat types
 
   const handleTabChange = (tab) => {
     setCurrentTab(tab);
+  };
+
+  const deleteSeat = (seat) => {
+    setSelectedSeats((prevSeats) => prevSeats.filter((s) => s !== seat));
+    const updatedSeatTypes = { ...seatTypes };
+    delete updatedSeatTypes[seat];
+    setSeatTypes(updatedSeatTypes);
   };
 
   return (
@@ -37,7 +53,12 @@ export function Checkout() {
         </div>
         {currentTab === "summary" && (
           <div className="py-2 px-4">
-            <OrderSummary />
+            <OrderSummary
+              selectedSeats={selectedSeats}
+              seatTypes={seatTypes}
+              selectedShowtime={selectedShowtime}
+              onDeleteSeat={deleteSeat} // Pass down delete function
+            />
             <div className="flex flex-row justify-center">
               <Link to="/" className="btn mt-5 p-2 m-2">
                 Back to Movie Selection
@@ -53,7 +74,11 @@ export function Checkout() {
         )}
         {currentTab === "payment" && (
           <div className="py-2 px-4">
-            <Payment />
+            <Payment
+              selectedSeats={selectedSeats}
+              seatTypes={seatTypes}
+              selectedShowtime={selectedShowtime}
+            />
           </div>
         )}
       </div>
