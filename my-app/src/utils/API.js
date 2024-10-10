@@ -1,3 +1,5 @@
+const API_BASEURL = "http://localhost:8000/";
+// Auth API stuff
 export const register = async ({
   firstName,
   lastName,
@@ -5,7 +7,7 @@ export const register = async ({
   username,
   password,
 }) => {
-  const response = await fetch("http://localhost:8000/api/auth/register/", {
+  const response = await fetch(`${API_BASEURL}api/auth/register/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -35,7 +37,7 @@ export const register = async ({
 };
 
 export const login = async ({ username, password }) => {
-  const response = await fetch("http://localhost:8000/api/auth/login/", {
+  const response = await fetch(`${API_BASEURL}api/auth/login/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -62,7 +64,7 @@ export const login = async ({ username, password }) => {
 
 export const confirmEmail = async (key) => {
   const response = await fetch(
-    "http://localhost:8000/api/auth/account-confirm-email/",
+    `${API_BASEURL}api/auth/account-confirm-email/`,
     {
       method: "POST",
       headers: {
@@ -85,7 +87,7 @@ export const confirmEmail = async (key) => {
 };
 
 export const logout = async () => {
-  const response = await fetch("http://localhost:8000/api/auth/logout/", {
+  const response = await fetch(`${API_BASEURL}api/auth/logout/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -111,7 +113,7 @@ export const logout = async () => {
 export const getUser = async () => {
   const token = localStorage.getItem("auth");
 
-  const response = await fetch("http://localhost:8000/api/auth/user/", {
+  const response = await fetch(`${API_BASEURL}api/auth/user/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -132,6 +134,22 @@ export const getUser = async () => {
   return result;
 };
 
+// getData API stuff
+export const getMovies = async () => {
+  //
+  const response = await fetch(`${API_BASEURL}api/info/getMovies`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await parseResponse(response);
+
+  return result;
+};
+
+// parse response for api
 async function parseResponse(response) {
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
