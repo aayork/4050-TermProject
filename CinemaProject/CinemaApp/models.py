@@ -48,8 +48,8 @@ class Movie(models.Model):
     thumbnail = models.URLField(blank=False)
     photo = models.URLField(blank=False)
     studio = models.CharField(max_length=100, blank=False)
-    director = models.CharField(max_length=150, blank=True, null=True)
     # actors = self.actors
+    # director = self.director
 
     def __str__(self):
         return f"{self.movieName} - {self.id}"
@@ -64,8 +64,16 @@ class Actor(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-class MovieRoom(models.Model):
+class Director(models.Model):
+    movies = models.ManyToManyField(Movie, related_name='director', blank=True, null=True)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+
+class MovieRoom(models.Model):
     number = models.IntegerField(blank=False, default=0)
     theatre = models.ForeignKey(Theatre, related_name='movie_rooms', on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
