@@ -131,6 +131,8 @@ export const getUser = async () => {
     throw new Error(errorMessage);
   }
 
+  console.log(result);
+
   return result;
 };
 
@@ -148,6 +150,8 @@ export const getMovies = async () => {
 
   return result;
 };
+
+//need a get admin api
 
 // parse response for api
 async function parseResponse(response) {

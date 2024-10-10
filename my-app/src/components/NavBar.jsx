@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import {} from "react-router-dom";
 import { logout } from "../utils/API";
+//import { getUser } from "../utils/API";
 
 export function NavBar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -26,6 +27,10 @@ export function NavBar() {
 
   useEffect(() => {
     checkAuthToken();
+
+    // if (loggedIn) {
+    //   const user = await getUser();
+    // }
 
     window.addEventListener("storage", checkAuthToken);
 

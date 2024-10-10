@@ -24,11 +24,11 @@ export function HomePage() {
         favorite films!
       </p>
 
-      <div className="mb-4">
+      <div className="mb-4 w-full">
         <input
           type="text"
           placeholder="Search for movies..."
-          className="border p-2 w-full"
+          className="border p-2 rounded-md w-1/4 min-w-80"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
