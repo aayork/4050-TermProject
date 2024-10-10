@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { getUser } from "../utils/API";
+import { Loading } from "../components/Loading";
+
 export function UserProfile() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isEditable, setIsEditable] = useState(false);
   const [formState, setFormState] = useState({
     firstName: "",
@@ -35,6 +38,7 @@ export function UserProfile() {
       } catch (error) {
         alert(error);
       }
+      setLoading(false);
     };
 
     getUserInfo();
@@ -52,6 +56,10 @@ export function UserProfile() {
     // setFormState(initForm);
     document.getElementById("addCard").close();
   };
+
+  if (loading) {
+    return <Loading message="Loading User" />;
+  }
 
   return (
     <div>

@@ -19,12 +19,12 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/browse" element={<BrowseMovies />} />
-          <Route path="/details" element={<MovieDetails />} />
+          <Route path="/details/:id" element={<MovieDetails />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/login" element={<Login />} />
           <Route path="/login/:key" element={<Login />} />
           <Route path="/createAccount" element={<CreateAcc />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/" element={<Admin />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/summary" element={<OrderSummary />} />
         </Routes>

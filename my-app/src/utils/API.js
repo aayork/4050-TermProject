@@ -131,15 +131,26 @@ export const getUser = async () => {
     throw new Error(errorMessage);
   }
 
-  console.log(result);
 
   return result;
 };
 
 // getData API stuff
 export const getMovies = async () => {
-  //
-  const response = await fetch(`${API_BASEURL}api/info/getMovies`, {
+  const response = await fetch(`${API_BASEURL}api/info/getMovies/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await parseResponse(response);
+
+  return result;
+};
+
+export const getMovieDetails = async (id) => {
+  const response = await fetch(`${API_BASEURL}api/info/getMovieDetails/${id}/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
