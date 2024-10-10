@@ -1,19 +1,8 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
-export function OrderSummary() {
+export function OrderConfirmation() {
   const location = useLocation();
-  const {
-    selectedSeats = [],
-    seatTypes = {},
-    selectedShowtime = "",
-  } = location.state || {};
-
-  // Define pricing for each seat type
-  const seatPrices = {
-    Adult: 12,
-    Child: 9,
-    Senior: 9,
-  };
+  const { selectedSeats, selectedShowtime } = location.state;
 
   return (
     <div className="flex flex-col items-center p-5">
@@ -23,19 +12,22 @@ export function OrderSummary() {
         Showtime: {selectedShowtime}
       </h2>
 
-      <h2 className="text-lg font-semibold mb-4">Selected Seats and Types:</h2>
+      <h2 className="text-lg font-semibold mb-4">Selected Seats:</h2>
       {selectedSeats.length > 0 ? (
         <ul>
           {selectedSeats.map((seat) => (
             <li key={seat} className="mb-2">
-              Seat {seat} - {seatTypes[seat] || "Adult"} (
-              {seatPrices[seatTypes[seat] || "Adult"]})
+              Seat {seat}
             </li>
           ))}
         </ul>
       ) : (
         <p>No seats selected.</p>
       )}
+
+      <Link to="/" className="btn mt-5 p-2">
+        Back to Movie Selection
+      </Link>
     </div>
   );
 }
