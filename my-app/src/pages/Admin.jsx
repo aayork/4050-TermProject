@@ -1,25 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ManageMovies } from "./ManageSubPages/ManageMovies";
 import { ManageEmployees } from "./ManageSubPages/ManageEmployees";
 import { ManagePromos } from "./ManageSubPages/ManagePromos";
+import { getUser } from "../utils/API";
+import { Loading } from "../components/Loading";
 
 export function Admin() {
-  const [isAdmin, setAdmin] = useState(true);
+  const [isAdmin, setAdmin] = useState(false);
   const [selectedTab, setSelectedTab] = useState("movies");
-
-  const toggleAdmin = () => {
-    setAdmin(!isAdmin);
-  };
+  const [loading, setLoading] = useState(true);
 
   const handleTabChange = (tab) => {
     setSelectedTab(tab);
   };
 
+  useEffect(() => {
+    const checkAuthAndFetchUser = async () => {
+      const authToken = localStorage.getItem("auth");
+      if (authToken) {
+        try {
+          const user = await getUser();
+          console.log(user);
+          setAdmin(user.movie_profile.status === "admin");
+        } catch (error) {
+          console.error("Error fetching user:", error);
+          setAdmin(false);
+        }
+      } else {
+        setAdmin(false);
+      }
+      setLoading(false);
+    };
+
+    checkAuthAndFetchUser();
+
+    window.addEventListener("storage", checkAuthAndFetchUser);
+
+    return () => {
+      window.removeEventListener("storage", checkAuthAndFetchUser);
+    };
+  }, []);
+
+  if (loading) {
+    return <Loading message="Checking Permissions" />;
+  }
+
   return (
     <div>
-      <div>
-        <button onClick={toggleAdmin}>Click to turn admin on/off</button>
-      </div>
       {isAdmin ? (
         <div className="w-full">
           <div role="tablist" className="tabs tabs-bordered w-full flex">

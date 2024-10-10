@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import {} from "react-router-dom";
 import { logout } from "../utils/API";
+import { getUser } from "../utils/API";
 
 export function NavBar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const checkAuthToken = () => {
     const authToken = localStorage.getItem("auth");
@@ -26,13 +28,36 @@ export function NavBar() {
 
   useEffect(() => {
     checkAuthToken();
-
     window.addEventListener("storage", checkAuthToken);
+
+    const getUserStatus = async () => {
+      try {
+        const user = await getUser();
+        return user.movie_profile.status;
+      } catch (error) {
+        alert(error);
+      }
+    };
+
+    const fetchUserData = async () => {
+      if (loggedIn) {
+        const status = await getUserStatus();
+        if (status === "admin") {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+
+    fetchUserData();
 
     return () => {
       window.removeEventListener("storage", checkAuthToken);
     };
-  }, []);
+  }, [loggedIn]);
 
   const toggleDropDown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -46,9 +71,9 @@ export function NavBar() {
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
               <div className="flex flex-shrink-0 items-center">
                 <img
-                  className="h-8 w-auto"
+                  className="h-8 w-auto text-white text-xs"
                   src="src/assets/banana.png"
-                  alt="Your Company"
+                  alt="Movie Monkey"
                 />
               </div>
               <div className="hidden sm:ml-6 sm:block">
@@ -68,12 +93,14 @@ export function NavBar() {
                     Browse Movies
                   </a>
                   */}
-                  <a
-                    href="/admin"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
-                  >
-                    Admin
-                  </a>
+                  {isAdmin && (
+                    <a
+                      href="/admin"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
+                    >
+                      Admin
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

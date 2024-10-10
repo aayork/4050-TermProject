@@ -1,9 +1,9 @@
-import { Card } from "../components/Card";
+import { MovieCard } from "../components/MovieCard";
 
 export function BrowseMovies() {
   return (
     <div className="flex flex-wrap justify-center gap-1 p-4">
-      <Card
+      <MovieCard
         title="Star Wars: The Empire Strikes Back"
         description="Who is Luke's father?"
         score={96}
@@ -12,7 +12,7 @@ export function BrowseMovies() {
         link="/details"
       />
 
-      <Card
+      <MovieCard
         title="The Dark Knight"
         description="Can Gotham be saved?"
         score={94}

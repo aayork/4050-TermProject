@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Function to convert row index to letters (e.g., 0 -> A, 25 -> Z, 26 -> AA)
 const getRowLabel = (index) => {
@@ -11,7 +11,7 @@ const getRowLabel = (index) => {
   return label;
 };
 
-export function MovieHall() {
+export function MovieHall({ movie }) {
   const rows = 8;
   const columns = 12;
 
@@ -21,7 +21,7 @@ export function MovieHall() {
 
   const navigate = useNavigate();
 
-  const showtimes = ["12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"];
+  const showTimes = ["12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"];
 
   const toggleSeatSelection = (seatId) => {
     if (selectedSeats.includes(seatId)) {
@@ -52,16 +52,12 @@ export function MovieHall() {
   return (
     <div className="flex flex-col items-center p-5">
       <h1 className="text-2xl font-bold mb-4">Movie Details</h1>
-      <iframe
-        width="700"
-        height="450"
-        src="https://www.youtube.com/embed/JNwNXF9Y6kY"
-      ></iframe>
+      <iframe width="700" height="450" src={movie.trailer}></iframe>
       {!selectedShowtime ? (
         <div>
-          <h2 className="text-lg font-semibold mb-4">Showtimes</h2>
+          <h2 className="text-lg font-semibold mb-4">Show Times</h2>
           <div className="flex space-x-4">
-            {showtimes.map((time) => (
+            {showTimes.map((time) => (
               <button
                 key={time}
                 onClick={() => setSelectedShowtime(time)}
