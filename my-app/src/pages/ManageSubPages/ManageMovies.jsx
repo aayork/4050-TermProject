@@ -1,7 +1,12 @@
 import { ManageMovieCard } from "../../components/ManageMovieCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getMovies } from "../../utils/API";
+import { Loading } from "../../components/Loading";
 
 export function ManageMovies() {
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const initForm = {
     title: "",
     rating: "",
@@ -42,20 +47,20 @@ export function ManageMovies() {
   };
 
   //get inactive movies
+  useEffect(() => {
+    const fetchMovies = async () => {
+      const movies = await getMovies();
+      console.log(movies);
+      setMovies(movies);
+      setLoading(false);
+    };
 
-  const inception = {
-    title: "Inception",
-    theater: "1",
-    id: "456",
-  };
+    fetchMovies();
+  }, []);
 
-  const interstellar = {
-    title: "Interstellar",
-    theater: "3",
-    id: "46346",
-  };
-
-  const movies = [inception, interstellar];
+  if (loading) {
+    return <Loading message="Loading Movies" />;
+  }
 
   return (
     <div>
@@ -204,21 +209,25 @@ export function ManageMovies() {
         <div className="">
           <h1 className="font-semibold"> Currently Showing:</h1>
           <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
-            {movies.map((movie) => (
-              <div className="grid-item" key={movie.id}>
-                <ManageMovieCard movie={movie} />
-              </div>
-            ))}
+            {movies
+              .filter((movie) => movie.is_active)
+              .map((movie) => (
+                <div className="grid-item" key={movie.id}>
+                  <ManageMovieCard movie={movie} />
+                </div>
+              ))}
           </div>
         </div>
         <div className="">
           <h1 className="font-semibold"> Inactive:</h1>
           <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
-            {movies.map((movie) => (
-              <div className="grid-item" key={movie.id}>
-                <ManageMovieCard movie={movie} />
-              </div>
-            ))}
+            {movies
+              .filter((movie) => !movie.is_active)
+              .map((movie) => (
+                <div className="grid-item" key={movie.id}>
+                  <ManageMovieCard movie={movie} />
+                </div>
+              ))}
           </div>
         </div>
       </div>
