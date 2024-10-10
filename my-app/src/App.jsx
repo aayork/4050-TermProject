@@ -9,6 +9,7 @@ import { Login } from "./pages/Login";
 import { CreateAcc } from "./pages/CreateAcc";
 import { Admin } from "./pages/Admin";
 import { UserProfile } from "./pages/UserProfile";
+import { OrderSummary } from "./pages/CheckoutSubPages/OrderSummary";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/createAccount" element={<CreateAcc />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/summary" element={<OrderSummary />} />
         </Routes>
       </Router>
     </>
