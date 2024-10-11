@@ -88,6 +88,7 @@ class ShowTime(models.Model):
     movie = models.ForeignKey(Movie, related_name="showtimes", on_delete=models.CASCADE)
     startTime = models.DateTimeField(blank=False, null=False)
     endTime = models.DateTimeField(blank=False, null=False)
+    date = models.DateField(blank=True, null=True, default=None)
     # seats = self.seats
 
     def __str__(self):
@@ -180,7 +181,20 @@ class Address(models.Model):
         return f"{self.street}"
 
 
+class Promotion(models.Model):
+    name = models.CharField(max_length=2250, blank=False, null=False)
+    discountRate = models.FloatField(blank=False, null=False)
+    code = models.CharField(max_length=15, blank=False, null=False)
+    startDate = models.DateField(blank=False, null=False)
+    endDate = models.DateField(blank=False, null=False)
+    # orders = self.orders
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class Order(models.Model):
+    promotion = models.ForeignKey(Promotion, related_name="orders", on_delete=models.CASCADE, null=True, blank=True, default=None)
     movieProfile = models.ForeignKey(MovieProfile, related_name="orders", on_delete=models.CASCADE)
     purchaseDate = models.DateField(blank=False, null=False)
     # tickets = self.tickets
@@ -213,15 +227,4 @@ class Ticket(models.Model):
     def __str__(self):
         return f"{self.id} - {self.seat}"
 # Create your models here.
-
-
-class Promotion(models.Model):
-    name = models.CharField(max_length=2250, blank=False, null=False)
-    discountRate = models.FloatField(blank=False, null=False)
-    code = models.CharField(max_length=15, blank=False, null=False)
-    startDate = models.DateField(blank=False, null=False)
-    endDate = models.DateField(blank=False, null=False)
-
-    def __str__(self):
-        return f"{self.name}"
 
