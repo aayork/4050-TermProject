@@ -17,7 +17,7 @@ export function MovieCard({ movie }) {
   };
 
   return (
-    <div className="card card-compact bg-neutral text-gray-50 w-96 p-0 shadow-xl">
+    <div className="card card-compact bg-neutral text-gray-50 w-80 p-0 shadow-xl">
       <figure>
         <img src={movie.photo} className="w-full" alt={movie.movieName} />
       </figure>
@@ -32,9 +32,9 @@ export function MovieCard({ movie }) {
           <button onClick={toggleModal} className="btn btn-primary">
             Trailer
           </button>
-          <button href="{`/details/${movie.id}`}" className="btn btn-primary">
+          <a href={`/details/${movie.id}`} className="btn btn-primary">
             Book Now!
-          </button>
+          </a>
         </div>
       </div>
 
