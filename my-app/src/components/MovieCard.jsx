@@ -17,32 +17,25 @@ export function MovieCard({ movie }) {
   };
 
   return (
-    <div className="card bg-neutral text-neutral-content lg:card-side shadow-xl">
+    <div className="card card-compact bg-neutral text-gray-50 w-96 p-0 shadow-xl">
       <figure>
-        <img
-          src={movie.photo}
-          className="rounded-t-2xl"
-          style={{ width: "160px", height: "240px" }}
-          alt={movie.movieName}
-        />
+        <img src={movie.photo} className="w-full" alt={movie.movieName} />
       </figure>
       <div className="card-body">
         <h2 className="card-title">{movie.movieName}</h2>
+        <div className="">
+          <div className="badge badge-accent size-fit my-1">{movie.rating}</div>
+        </div>
         <p>{truncateDescription(movie.description, 100)}</p>
-        <div className="badge badge-accent size-fit my-1">{movie.rating}</div>
-
-        <div className="card-actions justify-end">
-          <a
-            href={`/details/${movie.id}`}
-            className="btn btn-primary text-white absolute right-4 bottom-4"
-          >
-            Book Now
-          </a>
+        <div className="card-actions justify-between">
           <button
-            onClick={toggleModal}
-            className="btn btn-primary text-white absolute left-4 bottom-4"
+            onClick={() => alert("Another action here!")}
+            className="btn btn-primary"
           >
             Trailer
+          </button>
+          <button href="{`/details/${movie.id}`}" className="btn btn-primary">
+            Book Now!
           </button>
         </div>
       </div>
