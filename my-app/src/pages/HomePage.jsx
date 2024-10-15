@@ -80,7 +80,7 @@ export function HomePage() {
             (movie) =>
               movie.movieName
                 .toLowerCase()
-                .includes(searchTerm.toLowerCase()) && movie.is_active
+                .includes(searchTerm.toLowerCase()) && movie.is_active,
           )
           .map((movie) => (
             <MovieCard key={movie.movieName} movie={movie} />
@@ -98,7 +98,7 @@ export function HomePage() {
             (movie) =>
               movie.movieName
                 .toLowerCase()
-                .includes(searchTerm.toLowerCase()) && !movie.is_active
+                .includes(searchTerm.toLowerCase()) && !movie.is_active,
           )
           .map((movie) => (
             <MovieCard key={movie.movieName} movie={movie} />

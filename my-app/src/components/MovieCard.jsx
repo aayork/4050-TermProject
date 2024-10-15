@@ -25,14 +25,11 @@ export function MovieCard({ movie }) {
         <h2 className="card-title">{movie.movieName}</h2>
         <div className="flex justify-between items-center">
           <div className="badge badge-accent size-fit my-1">{movie.rating}</div>
-          <p>🍅 {movie.critic_score}%</p>
+          <p className="mx-1">🍅 {movie.critics_score}%</p>
         </div>
         <p>{truncateDescription(movie.description, 100)}</p>
         <div className="card-actions justify-between">
-          <button
-            onClick={() => alert("Another action here!")}
-            className="btn btn-primary"
-          >
+          <button onClick={toggleModal} className="btn btn-primary">
             Trailer
           </button>
           <button href="{`/details/${movie.id}`}" className="btn btn-primary">
@@ -73,7 +70,7 @@ MovieCard.propTypes = {
     rating: PropTypes.string.isRequired,
     photo: PropTypes.string.isRequired,
     trailer: PropTypes.string.isRequired,
-    critic_score: PropTypes.number.isRequired,
+    critics_score: PropTypes.number.isRequired,
     id: PropTypes.string.isRequired,
   }).isRequired,
 };
