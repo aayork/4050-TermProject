@@ -23,7 +23,7 @@ export function MovieCard({ movie }) {
       </figure>
       <div className="card-body">
         <h2 className="card-title">{movie.movieName}</h2>
-        <div className="flex justify-between items-center">
+        <div className="flex-row justify-between items-center">
           <div className="badge badge-accent size-fit my-1">{movie.rating}</div>
           <p className="mx-1">🍅 {movie.critics_score}%</p>
         </div>

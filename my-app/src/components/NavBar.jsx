@@ -65,8 +65,8 @@ export function NavBar() {
 
   return (
     <div>
-      <nav className="bg-green-800 m-2 rounded-md">
-        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+      <nav className="bg-neutral mx-2 rounded-lg relative top-2 shadow-[inset_24px_24px_35px_0_rgb(1,2,9),inset_-24px_-24px_35px_0_rgb(3,10,37)]">
+        <div className="mx-auto px-2">
           <div className="relative flex h-16 items-center justify-between">
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
               <div className="flex flex-shrink-0 items-center">
@@ -77,26 +77,18 @@ export function NavBar() {
                 />
               </div>
               <div className="hidden sm:ml-6 sm:block">
-                <div className="flex space-x-4">
+                <div className="flex space-x-2">
                   <a
                     href="/"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
+                    className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-monkey-yellow hover:text-black"
                     aria-current="page"
                   >
                     Home
                   </a>
-                  {/*
-                  <a
-                    href="/browse"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
-                  >
-                    Browse Movies
-                  </a>
-                  */}
                   {isAdmin && (
                     <a
                       href="/admin"
-                      className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-monkey-yellow hover:text-black"
                     >
                       Admin
                     </a>
@@ -126,15 +118,15 @@ export function NavBar() {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex space-x-4">
+                  <div className="flex space-x-2">
                     <a
-                      className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-monkey-yellow hover:text-black"
                       href="/login"
                     >
                       Login
                     </a>
                     <a
-                      className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-gray-700 hover:text-white"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-monkey-yellow hover:text-black"
                       href="/createAccount"
                     >
                       Create Account

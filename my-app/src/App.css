@@ -1,6 +1,12 @@
 #root {
 }
 
+body {
+    font-family: "DM Mono", monospace;
+    font-weight: 300;
+    font-style: normal;
+}
+
 .logo {
     height: 6em;
     padding: 1.5em;
