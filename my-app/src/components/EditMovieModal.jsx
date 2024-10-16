@@ -1,48 +1,60 @@
-export function AddEditMovieModal({ movie }) {
+import { useState, useEffect } from "react";
+
+export function AddEditMovieModal({ isOpen, onClose, onSave, movie }) {
   const initForm = {
-    title: "",
+    id: "",
+    movieName: "",
     rating: "",
-    runTime: "",
+    runtime: "",
     year: "",
     studio: "",
-    critScore: "",
-    audiScore: "",
-    thumbURL: "",
-    posterURL: "",
+    critic_score: "",
+    audience_score: "",
+    trailer: "",
+    photo: "",
     description: "",
+    is_active: false,
+  };
+  const [movieDetails, setMovieDetails] = useState(initForm);
+
+  useEffect(() => {
+    if (movie) {
+      // If editing, populate the form with the movie's current data
+      setMovieDetails(movie);
+    } else {
+      // If adding, clear the form
+      setMovieDetails(initForm);
+    }
+  }, [movie]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setMovieDetails((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
+  const handleSubmit = () => {
+    onSave(movieDetails);
+    onClose();
   };
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
-    console.log(formState);
-    setFormState(initForm);
-    document.getElementById("addMovieModal").close();
-  };
+  if (!isOpen) return null;
 
   return (
     <div className="modal-box">
-      <h1 className="font-semibold text-lg"> Edit Movie</h1>
+      <h1 className="font-semibold text-lg">
+        {movie ? "Update Movie" : "Add Movie"}
+      </h1>
       <div className="border border-monkey-green"></div>
-      <form method="dialog" onSubmit={handleFormSubmit}>
+      <form method="dialog" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 py-2">
           <label className="input input-bordered flex  input-primary items-center gap-2">
             Title :
             <input
               type="text"
               className="grow"
-              placeholder="Ex: Star Wars"
-              defaultValue={movie.movieName}
               onChange={handleChange}
-              name="title"
+              name="movieName"
+              value={movieDetails.movieName}
             />
           </label>
           <label className="input input-bordered  input-primary flex items-center gap-2">
@@ -52,6 +64,7 @@ export function AddEditMovieModal({ movie }) {
               className="grow"
               onChange={handleChange}
               name="rating"
+              value={movieDetails.rating}
             />
           </label>
           <label className="input input-bordered input-primary flex items-center gap-2">
@@ -60,7 +73,8 @@ export function AddEditMovieModal({ movie }) {
               type="number"
               className="grow"
               onChange={handleChange}
-              name="runTime"
+              name="runtime"
+              value={movieDetails.runtime}
             />
           </label>
           <label className="input input-bordered input-primary flex items-center gap-2">
@@ -70,6 +84,7 @@ export function AddEditMovieModal({ movie }) {
               className="grow"
               onChange={handleChange}
               name="year"
+              value={movieDetails.year}
             />
           </label>
           <label className="input input-bordered input-primary flex items-center gap-2">
@@ -79,6 +94,7 @@ export function AddEditMovieModal({ movie }) {
               className="grow"
               onChange={handleChange}
               name="studio"
+              value={movieDetails.studio}
             />
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -89,7 +105,8 @@ export function AddEditMovieModal({ movie }) {
                   type="number"
                   className="grow w-1/3"
                   onChange={handleChange}
-                  name="critScore"
+                  name="critic_score"
+                  value={movieDetails.critic_score}
                 />
               </label>
             </div>
@@ -100,18 +117,20 @@ export function AddEditMovieModal({ movie }) {
                   type="number"
                   className="grow w-1/3"
                   onChange={handleChange}
-                  name="audiScore"
+                  name="audience_score"
+                  value={movieDetails.audience_score}
                 />
               </label>
             </div>
           </div>
           <label className="input input-bordered input-primary flex items-center gap-2">
-            Thumbnail URL :
+            Trailer Embed URL :
             <input
               type="url"
               className="grow"
               onChange={handleChange}
-              name="thumbURL"
+              name="trailer"
+              value={movieDetails.trailer}
             />
           </label>
           <label className="input input-bordered input-primary flex items-center gap-2">
@@ -120,7 +139,8 @@ export function AddEditMovieModal({ movie }) {
               type="url"
               className="grow"
               onChange={handleChange}
-              name="posterURL"
+              name="photo"
+              value={movieDetails.photo}
             />
           </label>
           <textarea
@@ -128,22 +148,42 @@ export function AddEditMovieModal({ movie }) {
             placeholder="Description"
             onChange={handleChange}
             name="description"
+            value={movieDetails.description}
           ></textarea>
         </div>
-        <div className="modal-action">
-          {/* <button
-            className="btn btn-primary btn-sm mx-2 text-monkey-white"
-            onClick={cancel}
-          >
-            Cancel
-          </button>
-          <button
-            className="btn btn-primary btn-sm text-monkey-white"
-            type="submit"
-            onSubmit={handleFormSubmit}
-          >
-            Create
-          </button> */}
+
+        <div className="flex justify-between items-center mt-2">
+          <div className="w-1/3">
+            <label className="label cursor-pointer">
+              <span className="mx-2">Is Active</span>
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                name="is_active"
+                checked={movieDetails.is_active}
+                onChange={(e) =>
+                  setMovieDetails((prevData) => ({
+                    ...prevData,
+                    is_active: e.target.checked,
+                  }))
+                }
+              />
+            </label>
+          </div>
+          <div className="modal-action mt-0">
+            <button
+              className="btn btn-secondary btn-sm mx-2 text-monkey-white text-white"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              className="btn btn-primary btn-sm text-white"
+              onClick={handleSubmit}
+            >
+              {movie ? "Update" : "Add"}
+            </button>
+          </div>
         </div>
       </form>
     </div>

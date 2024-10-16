@@ -20,7 +20,6 @@ export function Admin() {
       if (authToken) {
         try {
           const user = await getUser();
-          console.log(user);
           setAdmin(user.movie_profile.status === "admin");
         } catch (error) {
           console.error("Error fetching user:", error);

@@ -1,6 +1,4 @@
-import { AddEditMovieModal } from "./EditMovieModal";
-
-export function ManageMovieCard({ movie }) {
+export function ManageMovieCard({ movie, onEdit }) {
   //get movie information
 
   return (
@@ -14,15 +12,12 @@ export function ManageMovieCard({ movie }) {
         </h2>
         <h3></h3>
         <button
-          onClick={() => document.getElementById("editMovieModal").showModal()}
-          className="btn btn-xs btn-primary w-full mt-2"
+          onClick={onEdit}
+          className="btn btn-xs btn-primary w-full mt-2 text-white"
         >
           Edit Movie
         </button>
       </div>
-      <dialog id="editMovieModal" className="modal">
-        <AddEditMovieModal movie={movie} />
-      </dialog>
     </div>
   );
 }
