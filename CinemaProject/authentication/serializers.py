@@ -5,7 +5,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from CinemaApp.models import (MovieProfile, Payment, Address, Order,
-                              Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie, Actor, Director)
+                              Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie, Actor, Director, Promotion)
 
 
 class CustomRegisterSerializer(RegisterSerializer):
@@ -94,6 +94,15 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
         model = Payment
         fields = ['purchaseDate', 'tickets']
 
+class PromotionSerializer(serializers.ModelSerializer):
+    # for the foreign keys connected to Promotion, we need to also
+    # have a way for this serializer to access them
+
+    # needs the attirbutes of promotion so it can be converted
+    class Meta:
+        model = Promotion
+        fields = ['name', 'discountRate', 'code', 'startDate', 'endDate']
+
 ###############################################################
 
 
@@ -110,6 +119,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    promotion = PromotionSerializer(many=False, read_only=True)
 
     class Meta:
         model = Order
@@ -133,3 +143,4 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'movie_profile']
 
+# need a way to convert promotion python objects into JSON

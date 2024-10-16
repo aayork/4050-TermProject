@@ -1,9 +1,11 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import MovieListView, MovieDetailView
+from .views import MovieListView, MovieDetailView, PromotionDetailView, GetAllProfiles
 
 urlpatterns = [
     path('getMovies/', MovieListView.as_view(), name='movie-list'),
     path('getMovieDetails/<int:pk>/', MovieDetailView.as_view(), name='movie-detail'),
+    path('getPromotions/', PromotionDetailView.as_view(), name='promotion-details'),
+    path('getAllUsers/', GetAllProfiles.as_view(), name="profile-details")
 ]
 
