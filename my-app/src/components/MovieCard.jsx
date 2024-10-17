@@ -17,7 +17,7 @@ export function MovieCard({ movie }) {
   };
 
   return (
-    <div className="card card-compact bg-neutral text-gray-50 p-0 shadow-lg border border-white/20 hover:border-white hover:shadow-[0_0_15px_rgba(255,255,255,0.5)] transition-all duration-300 ease-in-out">
+    <div className="card card-compact bg-neutral text-black p-0 shadow-lg border border-white/20 hover:border-white hover:shadow-[0_0_15px_rgba(255,255,255,0.5)] transition-all duration-300 ease-in-out">
       <figure>
         <img src={movie.photo} className="w-full" alt={movie.movieName} />
       </figure>

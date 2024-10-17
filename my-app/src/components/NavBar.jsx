@@ -65,13 +65,13 @@ export function NavBar() {
 
   return (
     <div>
-      <nav className="bg-neutral mx-2 rounded-lg relative top-2 shadow-[inset_24px_24px_35px_0_rgb(1,2,9),inset_-24px_-24px_35px_0_rgb(3,10,37)]">
+      <nav className="bg-white mx-2 rounded-lg relative top-2 shadow-[30px_30px_60px_0_rgb(199,199,199),-30px_-30px_60px_0_rgb(249,249,249)]">
         <div className="mx-auto px-2">
           <div className="relative flex h-16 items-center justify-between">
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
               <div className="flex flex-shrink-0 items-center">
                 <img
-                  className="h-8 w-auto text-white text-xs"
+                  className="h-8 w-auto text-black text-xs"
                   src="src/assets/banana.png"
                   alt="Movie Monkey"
                 />
@@ -80,7 +80,7 @@ export function NavBar() {
                 <div className="flex space-x-2">
                   <a
                     href="/"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-monkey-yellow hover:text-black"
+                    className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-monkey-yellow hover:text-black"
                     aria-current="page"
                   >
                     Home
@@ -88,7 +88,7 @@ export function NavBar() {
                   {isAdmin && (
                     <a
                       href="/admin"
-                      className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-monkey-yellow hover:text-black"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-monkey-yellow hover:text-black"
                     >
                       Admin
                     </a>
@@ -120,13 +120,13 @@ export function NavBar() {
                 ) : (
                   <div className="flex space-x-2">
                     <a
-                      className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-monkey-yellow hover:text-black"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-monkey-yellow hover:text-black"
                       href="/login"
                     >
                       Login
                     </a>
                     <a
-                      className="rounded-md px-3 py-2 text-sm font-medium text-monkey-white hover:bg-monkey-yellow hover:text-black"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-monkey-yellow hover:text-black"
                       href="/createAccount"
                     >
                       Create Account

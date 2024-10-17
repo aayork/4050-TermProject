@@ -12,9 +12,18 @@ import { OrderSummary } from "./pages/CheckoutSubPages/OrderSummary";
 
 function App() {
   return (
-    <div className="relative h-full w-full bg-slate-950">
-      {/* Background with linear gradients */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]" />
+    <div className="absolute top-0 -z-10 min-h-screen w-full bg-white">
+      {/* Main centered dot */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="h-[500px] w-[500px] rounded-full bg-[rgba(0,100,0,0.7)] opacity-70 blur-[80px]" />
+      </div>
+
+      {/* Random green dots */}
+      <div className="absolute top-10 left-20 h-[200px] w-[200px] rounded-full bg-[rgba(0,100,0,0.7)] opacity-50 blur-[50px]" />
+      <div className="absolute bottom-20 right-10 h-[150px] w-[150px] rounded-full bg-[rgba(0,100,0,0.7)] opacity-50 blur-[40px]" />
+      <div className="absolute top-1/2 left-1/4 h-[100px] w-[100px] rounded-full bg-[rgba(0,100,0,0.7)] opacity-50 blur-[30px]" />
+      <div className="absolute bottom-1/3 right-1/3 h-[120px] w-[120px] rounded-full bg-[rgba(0,100,0,0.7)] opacity-50 blur-[35px]" />
+
       <div className="relative z-10">
         <NavBar />
         <Router>

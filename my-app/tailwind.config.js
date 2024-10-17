@@ -4,10 +4,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        "monkey-white": "#FFFBE6",
+        "monkey-white": "#FFFFFF",
         "monkey-beige": "#C0EBA6",
         "monkey-brown": "#c6a969",
-        "monkey-green": "#347928",
+        "monkey-green": "#166534",
         "monkey-yellow": "#FCCD2A",
       },
     },
@@ -22,7 +22,7 @@ export default {
 
           accent: "#FCCD2A",
 
-          neutral: "#020617",
+          neutral: "#FFFFFF",
 
           "base-100": "#ffffec",
 

@@ -20,7 +20,7 @@ export function HomePage() {
   }, []);
 
   return (
-    <div className="relative z-10 p-4 text-white">
+    <div className="relative z-10 p-4 text-black">
       {" "}
       {/* Ensure content is above the background */}
       {loading ? (
@@ -40,11 +40,11 @@ export function HomePage() {
             />
           </div>
           <div>
-            <h3 className="font-semibold text-xl">Currently Running</h3>
+            <h3 className="font-semibold text-xl">Now Showing</h3>
           </div>
           <Loading message="Loading Movies" />
           <div>
-            <h3 className="font-semibold text-xl">Coming Soon</h3>
+            <h3 className="font-semibold text-xl">Coming Soon...</h3>
           </div>
           <Loading message="Loading Movies" />
         </>
