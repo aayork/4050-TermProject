@@ -4,8 +4,11 @@ from django.http import JsonResponse
 from rest_framework import generics, status
 from .models import Movie
 from rest_framework.response import Response
+from .models import Promotion
+from .models import MovieProfile
 from authentication.serializers import MovieSerializer
-
+from authentication.serializers import PromotionSerializer
+from authentication.serializers import MovieProfileSerializer
 
 class MovieListView(generics.ListAPIView):
     queryset = Movie.objects.all()
@@ -41,3 +44,16 @@ class MovieDeleteView(generics.DestroyAPIView):
             'message': f'Movie "{movie.movieName}" was successfully deleted.'
         }, status=status.HTTP_200_OK)
 
+# So basically here, we are creating a view that contains all the promotion
+# objects and the serializer that can turn those python object -> JSON objects
+# I need to understand what each parameter means
+class PromotionDetailView(generics.ListAPIView):
+    queryset = Promotion.objects.all()
+    serializer_class = PromotionSerializer
+
+
+class GetAllProfiles(generics.ListAPIView):
+    # retrieving the movieprofile objects that have a status of admin using the 
+    # filter() method
+    queryset = MovieProfile.objects.all()
+    serializer_class = MovieProfileSerializer

@@ -43,6 +43,10 @@ TODO: Guide users through getting your code up and running on their own system. 
   ## Django Framework
     1. Install Django
       pip install Django
+    2. Setup Virtual Environment
+      pip install virtualenv
+      ### Windows
+      source *filepath_to_venv_activate_file*
   ## Node Packages
     1. Tailwind requires
       npm install autoprefixer --save-dev
