@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ManageMovies } from "./ManageSubPages/ManageMovies";
-import { ManageEmployees } from "./ManageSubPages/ManageEmployees";
+import { ManageUsers } from "./ManageSubPages/ManageUsers";
 import { ManagePromos } from "./ManageSubPages/ManagePromos";
 import { getUser } from "../utils/API";
 import { Loading } from "../components/Loading";
@@ -63,9 +63,9 @@ export function Admin() {
               name="my_tabs"
               role="tab"
               className="tab flex-1"
-              aria-label="Manage Employees"
-              checked={selectedTab === "employees"}
-              onChange={() => handleTabChange("employees")}
+              aria-label="Manage Users"
+              checked={selectedTab === "users"}
+              onChange={() => handleTabChange("users")}
             />
             <input
               type="radio"
@@ -83,9 +83,9 @@ export function Admin() {
               <ManageMovies />
             </div>
           )}
-          {selectedTab === "employees" && (
+          {selectedTab === "users" && (
             <div className="py-2 px-4">
-              <ManageEmployees />
+              <ManageUsers />
             </div>
           )}
           {selectedTab === "promos" && (

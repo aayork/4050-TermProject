@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export function AddEditMovieModal({ isOpen, onClose, onSave, movie }) {
+export function EditMovieModal({ onClose, onSave, movie }) {
   const initForm = {
     id: "",
     movieName: "",
@@ -8,7 +8,7 @@ export function AddEditMovieModal({ isOpen, onClose, onSave, movie }) {
     runtime: "",
     year: "",
     studio: "",
-    critic_score: "",
+    critics_score: "",
     audience_score: "",
     trailer: "",
     photo: "",
@@ -36,8 +36,6 @@ export function AddEditMovieModal({ isOpen, onClose, onSave, movie }) {
     onSave(movieDetails);
     onClose();
   };
-
-  if (!isOpen) return null;
 
   return (
     <div className="modal-box">
@@ -106,7 +104,7 @@ export function AddEditMovieModal({ isOpen, onClose, onSave, movie }) {
                   className="grow w-1/3"
                   onChange={handleChange}
                   name="critic_score"
-                  value={movieDetails.critic_score}
+                  value={movieDetails.critics_score}
                 />
               </label>
             </div>

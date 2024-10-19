@@ -110,6 +110,82 @@ export const logout = async () => {
   return message;
 };
 
+// movie API stuff
+export const getMovies = async () => {
+  const response = await fetch(`${API_BASEURL}api/info/getMovies/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await parseResponse(response);
+
+  return result;
+};
+
+export const getMovieDetails = async (id) => {
+  const response = await fetch(
+    `${API_BASEURL}api/info/getMovieDetails/${id}/`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const result = await parseResponse(response);
+
+  return result;
+};
+
+export const addMovie = async (movie) => {
+  const response = await fetch(`${API_BASEURL}api/info/addMovie/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: {
+      movie: JSON.stringify(movie),
+    },
+  });
+
+  const result = await parseResponse(response);
+  return result;
+};
+
+export const deleteMovie = async (id) => {
+  const response = await fetch(`${API_BASEURL}api/info/deleteMovie/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await parseResponse(response);
+  return result;
+};
+
+export const updateMovie = async (movie) => {
+  const response = await fetch(
+    `${API_BASEURL}api/info/updateMovie/${movie.id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: {
+        movie: JSON.stringify(movie),
+      },
+    }
+  );
+
+  const result = await parseResponse(response);
+  return result;
+};
+
+// user API
 export const getUser = async () => {
   const token = localStorage.getItem("auth");
 
@@ -131,13 +207,11 @@ export const getUser = async () => {
     throw new Error(errorMessage);
   }
 
-
   return result;
 };
 
-// getData API stuff
-export const getMovies = async () => {
-  const response = await fetch(`${API_BASEURL}api/info/getMovies/`, {
+export const getUsers = async () => {
+  const response = await fetch(`${API_BASEURL}api/info/getUsers/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -145,24 +219,39 @@ export const getMovies = async () => {
   });
 
   const result = await parseResponse(response);
-
   return result;
 };
 
-export const getMovieDetails = async (id) => {
-  const response = await fetch(`${API_BASEURL}api/info/getMovieDetails/${id}/`, {
-    method: "GET",
+export const deleteUser = async (id) => {
+  const response = await fetch(`${API_BASEURL}api/info/deleteUser/${id}`, {
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
   });
 
   const result = await parseResponse(response);
+  return result;
+};
 
+export const updateUser = async (user) => {
+  const response = await fetch(`${API_BASEURL}api/info/updateUser/${user.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: {
+      user: JSON.stringify(user),
+    },
+  });
+
+  const result = await parseResponse(response);
   return result;
 };
 
 //need a get admin api
+
+//promo apis
 
 // parse response for api
 async function parseResponse(response) {

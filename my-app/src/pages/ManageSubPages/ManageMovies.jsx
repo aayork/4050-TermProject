@@ -2,23 +2,20 @@ import { ManageMovieCard } from "../../components/ManageMovieCard";
 import { useState, useEffect } from "react";
 import { getMovies } from "../../utils/API";
 import { Loading } from "../../components/Loading";
-import { AddEditMovieModal } from "../../components/EditMovieModal";
+import { EditMovieModal } from "../../components/EditMovieModal";
 
 export function ManageMovies() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
   const openAddMovieModal = () => {
     setSelectedMovie(null);
-    setIsModalOpen(true);
     document.getElementById("movieModal").showModal();
   };
 
   const openEditMovieModal = (movie) => {
     setSelectedMovie(movie);
-    setIsModalOpen(true);
     document.getElementById("movieModal").showModal();
   };
 
@@ -32,7 +29,7 @@ export function ManageMovies() {
     }
   };
 
-  //get inactive movies
+  //get movies
   useEffect(() => {
     const fetchMovies = async () => {
       const movies = await getMovies();
@@ -71,8 +68,7 @@ export function ManageMovies() {
           </svg>
         </button>
         <dialog id="movieModal" className="modal">
-          <AddEditMovieModal
-            isOpen={isModalOpen}
+          <EditMovieModal
             onClose={() => document.getElementById("movieModal").close()}
             onSave={handleSaveMovie}
             movie={selectedMovie}
