@@ -11,11 +11,13 @@ from CinemaApp.models import (MovieProfile, Payment, Address, Order,
 class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
+    status = serializers.ChoiceField(choices=[('admin', 'ADMIN'), ('customer', 'CUSTOMER')])
 
     def get_cleaned_data(self):
         data = super().get_cleaned_data()
         data['first_name'] = self.validated_data.get('first_name', '')
         data['last_name'] = self.validated_data.get('last_name', '')
+        data['status'] = self.validated_data.get('status', 'customer')
         return data
 
     def save(self, request):
@@ -23,6 +25,16 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.first_name = self.validated_data.get('first_name')
         user.last_name = self.validated_data.get('last_name')
         user.save()
+
+        # Create MovieProfile with the status passed
+        status = self.validated_data.get('status', 'customer')
+        movie_profile, created = MovieProfile.objects.get_or_create(user=user, defaults={'status': status})
+
+        if created:
+            print(f"MovieProfile created for {user} with status {status}")
+        else:
+            print(f"MovieProfile already exists for {user}")
+
         return user
 
 
@@ -33,11 +45,20 @@ class TheatreSerializer(serializers.ModelSerializer):
         fields = ['name', 'address', 'is_active']
 
 
+class MovieRoomSerializer(serializers.ModelSerializer):
+    theatre = TheatreSerializer(read_only=True)
+
+    class Meta:
+        model = MovieRoom
+        fields = ['number', 'theatre']
+
+
 class ShowTimeSerializer(serializers.ModelSerializer):
+    movie_room = MovieRoomSerializer(many=False, read_only=True)
 
     class Meta:
         model = ShowTime
-        fields = ['id', 'date', 'start_time', 'end_time']
+        fields = ['movie', 'start_time', 'end_time', 'movie_room']
 
 
 class ActorSerializer(serializers.ModelSerializer):
@@ -163,22 +184,6 @@ class MovieSerializer(serializers.ModelSerializer):
         return instance
 
 
-class MovieRoomSerializer(serializers.ModelSerializer):
-    theatre = TheatreSerializer(read_only=True)
-
-    class Meta:
-        model = MovieRoom
-        fields = ['number', 'theatre']
-
-
-class ShowTimeSerializer(serializers.ModelSerializer):
-    movie_room = MovieRoomSerializer(many=False, read_only=True)
-
-    class Meta:
-        model = ShowTime
-        fields = ['movie', 'start_time', 'end_time', 'movie_room']
-
-
 class SeatSerializer(serializers.ModelSerializer):
     showtime = ShowTimeSerializer(many=False, read_only=True)
 
@@ -201,6 +206,7 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = ['purchaseDate', 'tickets']
+
 
 class PromotionSerializer(serializers.ModelSerializer):
     # for the foreign keys connected to Promotion, we need to also
@@ -250,5 +256,22 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'movie_profile']
+
+    def update(self, instance, validated_data):
+        # Update User fields
+        instance.username = validated_data.get('username', instance.username)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.save()
+
+        # Update UserProfile fields
+        status = validated_data.get('status', None)
+        if status:
+            movie_profile = instance.movie_profile  # Access the related MovieProfile
+            movie_profile.status = status
+            movie_profile.save()
+
+        return instance
 
 # need a way to convert promotion python objects into JSON
