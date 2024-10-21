@@ -217,7 +217,7 @@ class PromotionSerializer(serializers.ModelSerializer):
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = ['cardNumber', 'expirationDate', 'CVV', 'firstName', 'lastName']
+        fields = ['user', 'cardNumber', 'expirationDate', 'CVV', 'firstName', 'lastName']
 
 
 class AddressSerializer(serializers.ModelSerializer):
