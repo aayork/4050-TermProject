@@ -52,6 +52,7 @@ class MovieDeleteView(generics.DestroyAPIView):
             'message': f'Movie "{movie.movieName}" was successfully deleted.'
         }, status=status.HTTP_200_OK)
 
+
 # So basically here, we are creating a view that contains all the promotion
 # objects and the serializer that can turn those python object -> JSON objects
 # I need to understand what each parameter means
@@ -65,6 +66,7 @@ class GetAllProfiles(generics.ListAPIView):
     # filter() method
     queryset = MovieProfile.objects.all()
     serializer_class = MovieProfileSerializer
+
 
 class PaymentDelete(generics.DestroyAPIView):
     queryset = Payment.objects.all()
