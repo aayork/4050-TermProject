@@ -162,7 +162,7 @@ class Payment(models.Model):
 
     def save(self, *args, **kwargs):
         # Check if the user already has 3 payment options
-        if self.user.movie_profile.payments.count() >= 3 and not self.pk:  # Exclude existing records
+        if self.user.payments.count() >= 3 and not self.pk:  # Exclude existing records
             raise ValidationError("You cannot have more than 3 payment methods.")
         super().save(*args, **kwargs)
 
