@@ -33,7 +33,6 @@ class Movie(models.Model):
     genres = models.ManyToManyField(Genre, related_name='movies', blank=True)
     movieName = models.CharField(max_length=225, blank=False)
     is_active = models.BooleanField(default=False)
-    # showtimes = self.showtimes
 
     ### movie trailer
     trailer = models.URLField(blank=True)
@@ -50,6 +49,7 @@ class Movie(models.Model):
     studio = models.CharField(max_length=100, blank=False)
     # actors = self.actors
     # director = self.director
+    # showtimes = self.showtimes
 
     def __str__(self):
         return f"{self.movieName} - {self.id}"
@@ -65,7 +65,7 @@ class Actor(models.Model):
 
 
 class Director(models.Model):
-    movies = models.ManyToManyField(Movie, related_name='director', blank=True, null=True)
+    movies = models.ManyToManyField(Movie, related_name='director')
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
 
@@ -162,7 +162,7 @@ class Payment(models.Model):
 
     def save(self, *args, **kwargs):
         # Check if the user already has 3 payment options
-        if self.user.movie_profile.payments.count() >= 3 and not self.pk:  # Exclude existing records
+        if self.user.payments.count() >= 3 and not self.pk:  # Exclude existing records
             raise ValidationError("You cannot have more than 3 payment methods.")
         super().save(*args, **kwargs)
 
