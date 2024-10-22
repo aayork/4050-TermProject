@@ -1,18 +1,21 @@
 from dj_rest_auth import serializers
 from django.shortcuts import render
-from django.http import JsonResponse
-from rest_framework import generics, status
-from .models import Movie
+from django.http import JsonResponse, Http404
+from rest_framework import generics, status, permissions
+from .models import Movie, Address
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from .models import Promotion
 from .models import MovieProfile
 from .models import Payment
-from authentication.serializers import MovieSerializer
-from authentication.serializers import PromotionSerializer
-from authentication.serializers import MovieProfileSerializer
-from authentication.serializers import PaymentSerializer
+from authentication.serializers import (MovieSerializer, PromotionSerializer,
+                                        MovieProfileSerializer, PaymentSerializer, AddressSerializer)
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import NotFound
+
 
 class MovieListView(generics.ListAPIView):
     queryset = Movie.objects.all()
@@ -34,10 +37,6 @@ class MovieUpdateView(generics.UpdateAPIView):
     serializer_class = MovieSerializer
     lookup_field = 'id'
 
-
-class PaymentView(generics.ListAPIView):
-    queryset = Payment.objects.all()
-    serializer_class = PaymentSerializer
 
 class MovieDeleteView(generics.DestroyAPIView):
     queryset = Movie.objects.all()
@@ -68,33 +67,87 @@ class GetAllProfiles(generics.ListAPIView):
     serializer_class = MovieProfileSerializer
 
 
-class PaymentDelete(generics.DestroyAPIView):
-    queryset = Payment.objects.all()
-    lookup_field = 'id'
+class UserPaymentView(generics.ListAPIView):
     serializer_class = PaymentSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs.get('user_id')
+        try:
+            user = User.objects.get(id=user_id)
+            movie_profile = MovieProfile.objects.get(user=user)
+        except User.DoesNotExist:
+            raise NotFound("User with this ID does not exist")
+        except MovieProfile.DoesNotExist:
+            raise NotFound("MovieProfile for this user does not exist")
+
+        return Payment.objects.filter(user=movie_profile)
+
+
+class DeletePaymentView(generics.DestroyAPIView):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+    lookup_field = 'id'
 
     # return an exception message if the payment in question can't be found
-
-    def paymentDelete(self, request, *args, **kwargs):
-        
-        payment = self.get_object()
-
-        if not payment.id == "valid_id":
-            # if the self.get_found() cannot find an appropriate card then a NotFound error is raised which creates a 404 error
-            return Response({'message': f'Payment "{payment.cardNumber}" was not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        self.perform_destroy(payment)
-        
-        # Returns a HTTP Response Object upon deletion
-        return Response({
-            'message': f'Payment "{payment.cardNumber}" under "{payment.firstName}" "{payment.lastName}" was successfully deleted.'
-        }, status=status.HTTP_200_OK)
+    def perform_destroy(self, instance):
+        instance.delete()
         
     
-class PaymentAdd(generics.CreateAPIView):
+class AddPaymentView(generics.CreateAPIView):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
 
-        # I need to determine a way to retrieve the attributes that the user passed in on the frontend through JSON
-        # then I ned to initialize a Payments objects with those attributes and then 
-        # I need to add that object to my database
+    def create(self, request, *args, **kwargs):
+        user_id = request.data.get('user')
+        user = get_object_or_404(User, pk=user_id)  # Adjust based on your User model
+        payment_data = request.data.copy()
+        payment_data['user'] = user.movie_profile.id  # Set the user field
+
+        serializer = self.get_serializer(data=payment_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class UserAddressView(generics.ListAPIView):
+    serializer_class = AddressSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs.get('user_id')
+        try:
+            user = User.objects.get(id=user_id)
+            movie_profile = MovieProfile.objects.get(user=user)
+        except User.DoesNotExist:
+            raise NotFound("User with this ID does not exist")
+        except MovieProfile.DoesNotExist:
+            raise NotFound("MovieProfile for this user does not exist")
+
+        return Address.objects.filter(user=movie_profile)
+
+
+class AddAddressView(generics.CreateAPIView):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+
+    def create(self, request, *args, **kwargs):
+        user_id = request.data.get('user')
+        user = get_object_or_404(User, pk=user_id)  # Adjust based on your User model
+        payment_data = request.data.copy()
+        payment_data['user'] = user.movie_profile.id  # Set the user field
+
+        serializer = self.get_serializer(data=payment_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class DeleteAddressView(generics.DestroyAPIView):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+    lookup_field = 'id'
+
+    # return an exception message if the payment in question can't be found
+    def perform_destroy(self, instance):
+        instance.delete()

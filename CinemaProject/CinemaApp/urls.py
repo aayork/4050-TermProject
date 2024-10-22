@@ -1,7 +1,8 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views import MovieListView, MovieDetailView, PromotionDetailView, GetAllProfiles, MovieCreateView, MovieUpdateView, MovieDeleteView
-from .views import PaymentDelete, PaymentAdd, PaymentView
+from .views import (DeletePaymentView, UserPaymentView, AddPaymentView,
+                    AddAddressView, DeleteAddressView, UserAddressView)
 
 urlpatterns = [
     path('getMovies/', MovieListView.as_view(), name='movie-list'),
@@ -10,8 +11,14 @@ urlpatterns = [
     path('createMovie/', MovieCreateView.as_view(), name='movie-create'),
     path('updateMovie/<int:id>/', MovieUpdateView.as_view(), name='movie-update'),
     path('deleteMovie/<int:id>/', MovieDeleteView.as_view(), name='movie-delete'),
-    path('deletePayment/<int:id>/', PaymentDelete.as_view(), name='payment-delete'),
-    path('createPayment/', PaymentAdd.as_view(), name='payment-add'),
-    path('getPayments/', PaymentView.as_view(), name='payment-view')
+
+
+    path('user/payment/delete/<int:id>/', DeletePaymentView.as_view(), name='payment-delete'),
+    path('user/payment/<int:user_id>/', UserPaymentView.as_view(), name='payment-view'),
+    path('user/payment/add/', AddPaymentView.as_view(), name='payment-add'),
+
+    path('user/address/add/', AddAddressView.as_view(), name='address-add'),
+    path('user/address/delete/<int:id>/', DeleteAddressView.as_view(), name='address-delete'),
+    path('user/address/<int:user_id>/', UserAddressView.as_view(), name='address-view'),
 ]
 

@@ -178,7 +178,7 @@ class Address(models.Model):
     postalCode = models.CharField(max_length=15, blank=False, null=False)
 
     def __str__(self):
-        return f"{self.street}"
+        return f"{self.user} - {self.street}"
 
 
 class Promotion(models.Model):
