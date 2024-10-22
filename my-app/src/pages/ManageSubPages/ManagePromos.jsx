@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { PromoCard } from "../../components/PromoCard";
+import { EditPromoModal } from "../../components/EditPromoModal";
+import { Loading } from "../../components/Loading";
 
 export function ManagePromos() {
+  const [promos, setPromos] = useState([]);
   const initForm = {
     name: "",
     code: "",
@@ -49,7 +52,11 @@ export function ManagePromos() {
     endDate: "10/31/2024",
   };
 
-  const promos = [halfOff, quarterOff];
+  setPromos(halfOff, quarterOff);
+
+  if (loading) {
+    return <Loading message="Loading Promos" />;
+  }
 
   return (
     <div>
@@ -76,7 +83,11 @@ export function ManagePromos() {
         </button>
         {/* modal start */}
         <dialog id="addPromoModal" className="modal">
-          
+          <EditPromoModal
+            onClose={() => document.getElementById("promoModal").close()}
+            onSave={handleSave}
+            promo={selectedPromo}
+          />
         </dialog>
         {/* modal end */}
       </div>
