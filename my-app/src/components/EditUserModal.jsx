@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 export function EditUserModal({ onClose, onSave, user }) {
-  const initForm = {
-    id: "",
-    first_name: "",
-    last_name: "",
-    username: "",
-    email: "",
-    password: "",
-    status: "Role",
-  };
+  const initForm = useMemo(
+    () => ({
+      id: "",
+      first_name: "",
+      last_name: "",
+      username: "",
+      email: "",
+      password: "",
+      status: "",
+    }),
+    []
+  );
   const [userDetails, setUserDetails] = useState(initForm);
 
   useEffect(() => {
@@ -20,7 +23,7 @@ export function EditUserModal({ onClose, onSave, user }) {
       //if adding clear form
       setUserDetails(initForm);
     }
-  }, [user]);
+  }, [user, initForm]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

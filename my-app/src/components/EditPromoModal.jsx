@@ -1,20 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 
-export function EditPromoModal({ promo }) {
-  const initForm = {
-    name: "",
-    code: "",
-    discount: "",
-    start_date: "",
-    end_date: "",
-  };
+export function EditPromoModal({ onClose, onSave, promo }) {
+  const initForm = useMemo(
+    () => ({
+      name: "",
+      code: "",
+      discount: "",
+      start_date: "",
+      end_date: "",
+    }),
+    []
+  );
   const [promoDetails, setPromoDetails] = useState(initForm);
+
+  useEffect(() => {
+    if (promo) {
+      setPromoDetails(promo);
+    } else {
+      setPromoDetails(initForm);
+    }
+  }, [promo, initForm]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPromoDetails((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = () => {
+    onSave(promoDetails);
+    onClose();
+  };
 
   return (
     <div className="modal-box">
       <h3 className="font-semibold text-lg">Add New Promotion</h3>
       <div className="border border-monkey-green"></div>
-      <form method="dialog" onSubmit={handleFormSubmit}>
+      <form method="dialog" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 py-2">
           <label className="input input-bordered flex  input-primary items-center gap-2">
             Name :
@@ -22,7 +43,7 @@ export function EditPromoModal({ promo }) {
               type="text"
               className="grow"
               onChange={handleChange}
-              value={promo.name}
+              value={promoDetails.name}
               name="name"
             />
           </label>
@@ -32,7 +53,7 @@ export function EditPromoModal({ promo }) {
               type="text"
               className="grow"
               onChange={handleChange}
-              value={promo.code}
+              value={promoDetails.code}
               name="code"
             />
           </label>
@@ -44,7 +65,7 @@ export function EditPromoModal({ promo }) {
               min="0"
               name="discount"
               className="grow"
-              value={promo.discount}
+              value={promoDetails.discount}
               onChange={handleChange}
             />
           </label>
@@ -53,7 +74,7 @@ export function EditPromoModal({ promo }) {
             <input
               type="date"
               className="grow"
-              value={promo.start_date}
+              value={promoDetails.start_date}
               name="startDate"
               onChange={handleChange}
             />
@@ -64,24 +85,23 @@ export function EditPromoModal({ promo }) {
               type="date"
               className="grow"
               name="endDate"
-              value={promo.end_date}
+              value={promoDetails.end_date}
               onChange={handleChange}
             />
           </label>
         </div>
-        <div className="modal-action">
+        <div className="modal-action mt-0">
           <button
-            className="btn btn-primary btn-sm mx-2 text-monkey-white"
-            onClick={cancel}
+            className="btn btn-secondary btn-sm mx-2 text-monkey-white text-white"
+            onClick={onClose}
           >
             Cancel
           </button>
           <button
-            className="btn btn-primary btn-sm text-monkey-white"
-            type="submit"
-            onSubmit={handleFormSubmit}
+            className="btn btn-primary btn-sm text-white"
+            onClick={handleSubmit}
           >
-            Create
+            {promo ? "Update" : "Add"}
           </button>
         </div>
       </form>

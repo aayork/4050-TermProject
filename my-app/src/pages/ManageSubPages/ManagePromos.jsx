@@ -1,40 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PromoCard } from "../../components/PromoCard";
 import { EditPromoModal } from "../../components/EditPromoModal";
 import { Loading } from "../../components/Loading";
+import { getPromos } from "../../utils/API";
 
 export function ManagePromos() {
   const [promos, setPromos] = useState([]);
-  const initForm = {
-    name: "",
-    code: "",
-    discount: "",
-    startDate: "",
-    endDate: "",
-  };
-  const [formState, setFormState] = useState(initForm);
+  const [loading, setLoading] = useState(true);
+  const [selectedPromo, setSelectedPromo] = useState(null);
 
-  const cancel = async (event) => {
-    event.preventDefault();
-    setFormState(initForm);
-    document.getElementById("addPromoModal").close();
+  const openAddPromoModal = () => {
+    setSelectedPromo(null);
+    document.getElementById("PromoModal").showModal();
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
+  const openEditPromoModal = (Promo) => {
+    setSelectedPromo(Promo);
+    document.getElementById("PromoModal").showModal();
   };
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
-    console.log(formState);
-    setFormState(initForm);
-    document.getElementById("addPromoModal").close();
+  const handleSavePromo = (promoData) => {
+    if (selectedPromo) {
+      // Update the movie in the list (edit)
+      console.log("Edit movie:", promoData);
+    } else {
+      // Add a new movie to the list
+      console.log("Add new movie:", promoData);
+    }
   };
+
+  useEffect(() => {
+    const fetchPromos = async () => {
+      const promos = await getPromos();
+      setPromos(promos);
+      setLoading(false);
+    };
+
+    fetchPromos();
+  }, []);
 
   const halfOff = {
     name: "Half Off",
@@ -63,7 +66,7 @@ export function ManagePromos() {
       <div>
         <button
           className="btn my-2 flex items-center"
-          onClick={() => document.getElementById("addPromoModal").showModal()}
+          onClick={openAddPromoModal}
         >
           Add Promotion
           <svg
@@ -81,15 +84,14 @@ export function ManagePromos() {
             />
           </svg>
         </button>
-        {/* modal start */}
-        <dialog id="addPromoModal" className="modal">
+
+        <dialog id="promoModal" className="modal">
           <EditPromoModal
             onClose={() => document.getElementById("promoModal").close()}
-            onSave={handleSave}
+            onSave={handleSavePromo}
             promo={selectedPromo}
           />
         </dialog>
-        {/* modal end */}
       </div>
       <div className="flex flex-col">
         <div className="">
@@ -97,7 +99,7 @@ export function ManagePromos() {
           <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos.map((promo) => (
               <div className="grid-item min-w-fit" key={promo.name}>
-                <PromoCard promo={promo} />
+                <PromoCard promo={promo} onEdit={() => openEditPromoModal} />
               </div>
             ))}
           </div>
@@ -107,7 +109,7 @@ export function ManagePromos() {
           <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos.map((promo) => (
               <div className="grid-item min-w-fit" key={promo.name}>
-                <PromoCard promo={promo} />
+                <PromoCard promo={promo} onEdit={() => openEditPromoModal} />
               </div>
             ))}
           </div>
@@ -117,7 +119,7 @@ export function ManagePromos() {
           <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos.map((promo) => (
               <div className="grid-item min-w-fit" key={promo.name}>
-                <PromoCard promo={promo} />
+                <PromoCard promo={promo} onEdit={() => openEditPromoModal} />
               </div>
             ))}
           </div>

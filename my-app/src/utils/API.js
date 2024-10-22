@@ -140,8 +140,8 @@ export const getMovieDetails = async (id) => {
   return result;
 };
 
-export const addMovie = async (movie) => {
-  const response = await fetch(`${API_BASEURL}api/info/addMovie/`, {
+export const createMovie = async (movie) => {
+  const response = await fetch(`${API_BASEURL}api/info/createMovie/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -211,7 +211,7 @@ export const getUser = async () => {
 };
 
 export const getUsers = async () => {
-  const response = await fetch(`${API_BASEURL}api/info/getUsers/`, {
+  const response = await fetch(`${API_BASEURL}api/info/getAllUsers/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -252,6 +252,92 @@ export const updateUser = async (user) => {
 //need a get admin api
 
 //promo apis
+export const getPromos = async () => {
+  const response = await fetch(`${API_BASEURL}api/info/getPromotions/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await parseResponse(response);
+
+  return result;
+};
+
+export const createPromotion = async (promo) => {
+  const response = await fetch(`${API_BASEURL}api/info/createPromotion/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(promo),
+  });
+
+  const result = await parseResponse(response);
+
+  return result;
+};
+
+export const updatePromotion = async (promo) => {
+  const response = await fetch(
+    `${API_BASEURL}api/info/updatePromotion/${promo.id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(promo),
+    }
+  );
+
+  const result = await parseResponse(response);
+
+  return result;
+};
+
+//delete promotion maybe?
+
+//Payment Card API's
+export const getPayments = async (userId) => {
+  const response = await fetch(`${API_BASEURL}api/info/getPayments/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(userId),
+  });
+
+  const result = await parseResponse(response);
+
+  return result;
+};
+
+export const createPayment = async (card) => {
+  const response = await fetch(`${API_BASEURL}api/info/createPayment/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(card),
+  });
+
+  const result = await parseResponse(response);
+
+  return result;
+};
+
+export const deletePayment = async (id) => {
+  const response = await fetch(`${API_BASEURL}api/info/deletePayment/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await parseResponse(response);
+  return result;
+};
 
 // parse response for api
 async function parseResponse(response) {

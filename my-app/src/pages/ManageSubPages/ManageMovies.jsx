@@ -1,6 +1,6 @@
 import { ManageMovieCard } from "../../components/ManageMovieCard";
 import { useState, useEffect } from "react";
-import { getMovies } from "../../utils/API";
+import { getMovies, updateMovie, createMovie } from "../../utils/API";
 import { Loading } from "../../components/Loading";
 import { EditMovieModal } from "../../components/EditMovieModal";
 
@@ -19,13 +19,23 @@ export function ManageMovies() {
     document.getElementById("movieModal").showModal();
   };
 
-  const handleSaveMovie = (movieData) => {
+  const handleSaveMovie = async (movieData) => {
     if (selectedMovie) {
-      // Update the movie in the list (edit)
       console.log("Edit movie:", movieData);
+      try {
+        const result = await updateMovie(movieData);
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
     } else {
-      // Add a new movie to the list
       console.log("Add new movie:", movieData);
+      try {
+        const result = await createMovie(movieData);
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 

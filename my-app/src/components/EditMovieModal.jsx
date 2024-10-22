@@ -1,31 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 export function EditMovieModal({ onClose, onSave, movie }) {
-  const initForm = {
-    id: "",
-    movieName: "",
-    rating: "",
-    runtime: "",
-    year: "",
-    studio: "",
-    critics_score: "",
-    audience_score: "",
-    trailer: "",
-    photo: "",
-    description: "",
-    is_active: false,
-  };
+  const initForm = useMemo(
+    () => ({
+      id: "",
+      movieName: "",
+      rating: "",
+      runtime: "",
+      year: "",
+      studio: "",
+      critics_score: "",
+      audience_score: "",
+      trailer: "",
+      photo: "",
+      description: "",
+      is_active: false,
+    }),
+    []
+  );
   const [movieDetails, setMovieDetails] = useState(initForm);
 
   useEffect(() => {
     if (movie) {
-      // If editing, populate the form with the movie's current data
       setMovieDetails(movie);
     } else {
-      // If adding, clear the form
       setMovieDetails(initForm);
     }
-  }, [movie]);
+  }, [movie, initForm]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
