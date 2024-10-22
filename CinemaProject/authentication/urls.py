@@ -9,7 +9,9 @@ from dj_rest_auth.views import (
     PasswordResetConfirmView,
     PasswordResetView,
 )
-from .views import email_confirm_redirect, password_reset_confirm_redirect, CustomRegisterView, CustomUserDetailsView
+from .views import (email_confirm_redirect, password_reset_confirm_redirect,
+                    CustomRegisterView, CustomUserDetailsView, GetAllUsers,
+                    UserUpdateView, UserDeleteView)
 
 
 urlpatterns = [
@@ -17,6 +19,9 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="rest_login"),
     path("logout/", LogoutView.as_view(), name="rest_logout"),
     path("user/", CustomUserDetailsView.as_view(), name="rest_user_details"),
+    path('getAllUsers/', GetAllUsers.as_view(), name="user-details"),
+    path('updateUser/<int:id>/', UserUpdateView.as_view(), name="user-update"),
+    path('deleteUser/<int:id>/', UserDeleteView.as_view(), name="user-delete"),
 
 
     path("register/verify-email/", VerifyEmailView.as_view(), name="rest_verify_email"),
