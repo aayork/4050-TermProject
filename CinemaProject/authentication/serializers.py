@@ -223,13 +223,13 @@ class PromotionSerializer(serializers.ModelSerializer):
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = ['user', 'cardNumber', 'expirationDate', 'CVV', 'firstName', 'lastName']
+        fields = ['id', 'user', 'cardNumber', 'expirationDate', 'CVV', 'firstName', 'lastName']
 
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ['street', 'city', 'state', 'postalCode']
+        fields = ['id', 'user', 'street', 'city', 'state', 'postalCode']
 
 
 class OrderSerializer(serializers.ModelSerializer):
