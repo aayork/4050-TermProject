@@ -10,6 +10,7 @@ export function CreateAcc() {
     username: "",
     password: "",
     confirmPassword: "",
+    status: "customer",
   });
 
   //updated fields on change
@@ -36,6 +37,7 @@ export function CreateAcc() {
           email: formState.email,
           username: formState.username,
           password: formState.password,
+          status: formState.status,
         });
 
         console.log(result);
