@@ -299,13 +299,12 @@ export const updatePromotion = async (promo) => {
 //delete promotion maybe?
 
 //Payment Card API's
-export const getPayments = async (userId) => {
-  const response = await fetch(`${API_BASEURL}api/info/getPayments/`, {
+export const getPayment = async (id) => {
+  const response = await fetch(`${API_BASEURL}api/info/getPayment/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(userId),
   });
 
   const result = await parseResponse(response);

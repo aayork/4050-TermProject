@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { PromoCard } from "../../components/PromoCard";
 import { EditPromoModal } from "../../components/EditPromoModal";
 import { Loading } from "../../components/Loading";
-import { getPromos } from "../../utils/API";
+//import { getPromos } from "../../utils/API";
 
 export function ManagePromos() {
   const [promos, setPromos] = useState([]);
@@ -11,28 +11,28 @@ export function ManagePromos() {
 
   const openAddPromoModal = () => {
     setSelectedPromo(null);
-    document.getElementById("PromoModal").showModal();
+    document.getElementById("promoModal").showModal();
   };
 
-  const openEditPromoModal = (Promo) => {
-    setSelectedPromo(Promo);
-    document.getElementById("PromoModal").showModal();
+  const openEditPromoModal = (promo) => {
+    setSelectedPromo(promo);
+    document.getElementById("promoModal").showModal();
   };
 
   const handleSavePromo = (promoData) => {
     if (selectedPromo) {
       // Update the movie in the list (edit)
-      console.log("Edit movie:", promoData);
+      console.log("Edit promo:", promoData);
     } else {
       // Add a new movie to the list
-      console.log("Add new movie:", promoData);
+      console.log("Add new promo:", promoData);
     }
   };
 
   useEffect(() => {
     const fetchPromos = async () => {
-      const promos = await getPromos();
-      setPromos(promos);
+      //const promos = await getPromos();
+      setPromos(promoDemo);
       setLoading(false);
     };
 
@@ -43,19 +43,19 @@ export function ManagePromos() {
     name: "Half Off",
     code: "50OFF",
     discount: "50",
-    startDate: "9/29/2024",
-    endDate: "10/31/2024",
+    start_date: "9/29/2024",
+    end_date: "10/31/2024",
   };
 
   const quarterOff = {
     name: "Fall Discount",
     code: "FALL24",
     discount: "24",
-    startDate: "9/29/2024",
-    endDate: "10/31/2024",
+    start_date: "9/29/2024",
+    end_date: "10/31/2024",
   };
 
-  setPromos(halfOff, quarterOff);
+  const promoDemo = [halfOff, quarterOff];
 
   if (loading) {
     return <Loading message="Loading Promos" />;
@@ -99,7 +99,10 @@ export function ManagePromos() {
           <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos.map((promo) => (
               <div className="grid-item min-w-fit" key={promo.name}>
-                <PromoCard promo={promo} onEdit={() => openEditPromoModal} />
+                <PromoCard
+                  promo={promo}
+                  onEdit={() => openEditPromoModal(promo)}
+                />
               </div>
             ))}
           </div>
@@ -109,7 +112,10 @@ export function ManagePromos() {
           <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos.map((promo) => (
               <div className="grid-item min-w-fit" key={promo.name}>
-                <PromoCard promo={promo} onEdit={() => openEditPromoModal} />
+                <PromoCard
+                  promo={promo}
+                  onEdit={() => openEditPromoModal(promo)}
+                />
               </div>
             ))}
           </div>
@@ -119,7 +125,10 @@ export function ManagePromos() {
           <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos.map((promo) => (
               <div className="grid-item min-w-fit" key={promo.name}>
-                <PromoCard promo={promo} onEdit={() => openEditPromoModal} />
+                <PromoCard
+                  promo={promo}
+                  onEdit={() => openEditPromoModal(promo)}
+                />
               </div>
             ))}
           </div>

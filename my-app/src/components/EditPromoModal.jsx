@@ -15,7 +15,11 @@ export function EditPromoModal({ onClose, onSave, promo }) {
 
   useEffect(() => {
     if (promo) {
-      setPromoDetails(promo);
+      setPromoDetails({
+        ...promo,
+        start_date: new Date(promo.start_date),
+        end_date: new Date(promo.end_date),
+      });
     } else {
       setPromoDetails(initForm);
     }
@@ -33,7 +37,9 @@ export function EditPromoModal({ onClose, onSave, promo }) {
 
   return (
     <div className="modal-box">
-      <h3 className="font-semibold text-lg">Add New Promotion</h3>
+      <h1 className="font-semibold text-lg">
+        {promo ? "Update Promo" : "Add Promo"}
+      </h1>
       <div className="border border-monkey-green"></div>
       <form method="dialog" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 py-2">
@@ -75,7 +81,7 @@ export function EditPromoModal({ onClose, onSave, promo }) {
               type="date"
               className="grow"
               value={promoDetails.start_date}
-              name="startDate"
+              name="start_date"
               onChange={handleChange}
             />
           </label>
@@ -84,7 +90,7 @@ export function EditPromoModal({ onClose, onSave, promo }) {
             <input
               type="date"
               className="grow"
-              name="endDate"
+              name="end_date"
               value={promoDetails.end_date}
               onChange={handleChange}
             />

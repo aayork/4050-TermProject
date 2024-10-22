@@ -11,12 +11,12 @@ export function ManageUsers() {
 
   const openAddUserModal = () => {
     setSelectedUser(null);
-    document.getElementById("empModal").showModal();
+    document.getElementById("userModal").showModal();
   };
 
   const openEditUserModal = (user) => {
     setSelectedUser(user);
-    document.getElementById("empModal").showModal();
+    document.getElementById("userModal").showModal();
   };
 
   const handleSaveUser = (userData) => {
@@ -89,9 +89,9 @@ export function ManageUsers() {
             />
           </svg>
         </button>
-        <dialog id="empModal" className="modal">
+        <dialog id="userModal" className="modal">
           <EditUserModal
-            onClose={() => document.getElementById(empModal).close()}
+            onClose={() => document.getElementById("userModal").close()}
             onSave={handleSaveUser}
             user={selectedUser}
           />
