@@ -39,14 +39,14 @@ export function HomePage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div>
+          <div className="m-4">
             <h3 className="font-semibold text-xl">Now Showing</h3>
           </div>
-          <Loading message="Loading Movies" />
-          <div>
-            <h3 className="font-semibold text-xl">Coming Soon...</h3>
+          <Loading message="Loading..." />
+          <div className="m-4">
+            <h3 className="font-semibold text-xl">Coming Soon</h3>
           </div>
-          <Loading message="Loading Movies" />
+          <Loading message="Loading..." />
         </>
       ) : (
         <>
