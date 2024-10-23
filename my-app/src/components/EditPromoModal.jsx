@@ -1,13 +1,21 @@
 import { useState, useEffect, useMemo } from "react";
 
 export function EditPromoModal({ onClose, onSave, promo }) {
+  // Helper function to format dates as YYYY-MM-DD
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
   const initForm = useMemo(
     () => ({
       name: "",
       code: "",
       discount: "",
-      start_date: "",
-      end_date: "",
+      startDate: formatDate(Date.now()),
+      endDate: formatDate(Date.now()),
     }),
     []
   );
@@ -17,8 +25,8 @@ export function EditPromoModal({ onClose, onSave, promo }) {
     if (promo) {
       setPromoDetails({
         ...promo,
-        start_date: new Date(promo.start_date),
-        end_date: new Date(promo.end_date),
+        startDate: formatDate(promo.startDate),
+        endDate: formatDate(promo.endDate),
       });
     } else {
       setPromoDetails(initForm);
@@ -32,6 +40,11 @@ export function EditPromoModal({ onClose, onSave, promo }) {
 
   const handleSubmit = () => {
     onSave(promoDetails);
+    onClose();
+  };
+
+  const close = (event) => {
+    event.preventDefault();
     onClose();
   };
 
@@ -80,8 +93,8 @@ export function EditPromoModal({ onClose, onSave, promo }) {
             <input
               type="date"
               className="grow"
-              value={promoDetails.start_date}
-              name="start_date"
+              value={promoDetails.startDate}
+              name="startDate"
               onChange={handleChange}
             />
           </label>
@@ -90,8 +103,8 @@ export function EditPromoModal({ onClose, onSave, promo }) {
             <input
               type="date"
               className="grow"
-              name="end_date"
-              value={promoDetails.end_date}
+              name="endDate"
+              value={promoDetails.endDate}
               onChange={handleChange}
             />
           </label>
@@ -99,7 +112,7 @@ export function EditPromoModal({ onClose, onSave, promo }) {
         <div className="modal-action mt-0">
           <button
             className="btn btn-secondary btn-sm mx-2 text-monkey-white text-white"
-            onClick={onClose}
+            onClick={close}
           >
             Cancel
           </button>

@@ -43,16 +43,16 @@ export function ManagePromos() {
     name: "Half Off",
     code: "50OFF",
     discount: "50",
-    start_date: "9/29/2024",
-    end_date: "10/31/2024",
+    startDate: new Date("9/29/2024"),
+    endDate: new Date("10/31/2024"),
   };
 
   const quarterOff = {
     name: "Fall Discount",
     code: "FALL24",
     discount: "24",
-    start_date: "9/29/2024",
-    end_date: "10/31/2024",
+    startDate: new Date("9/29/2024"),
+    endDate: new Date("10/31/2024"),
   };
 
   const promoDemo = [halfOff, quarterOff];

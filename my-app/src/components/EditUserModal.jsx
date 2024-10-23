@@ -35,6 +35,11 @@ export function EditUserModal({ onClose, onSave, user }) {
     onClose();
   };
 
+  const close = (event) => {
+    event.preventDefault();
+    onClose();
+  };
+
   return (
     <div className="modal-box">
       <h3 className="font-semibold text-lg">Add New User </h3>
@@ -109,7 +114,7 @@ export function EditUserModal({ onClose, onSave, user }) {
         <div className="modal-action mt-0">
           <button
             className="btn btn-secondary btn-sm mx-2 text-monkey-white text-white"
-            onClick={onClose}
+            onClick={close}
           >
             Cancel
           </button>
