@@ -20,7 +20,7 @@ export function HomePage() {
   }, []);
 
   return (
-    <div className="relative z-10 p-4 text-black">
+    <div className="relative z-10 p-4">
       {" "}
       {/* Ensure content is above the background */}
       {loading ? (
@@ -67,7 +67,7 @@ export function HomePage() {
           <div>
             <h3 className="font-semibold text-xl">Now Showing</h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-auto-fit gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-auto-fit gap-4">
             {movies
               .filter(
                 (movie) =>
@@ -82,7 +82,7 @@ export function HomePage() {
           <div>
             <h3 className="font-semibold text-xl">Coming Soon...</h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-auto-fit gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-auto-fit gap-4">
             {movies
               .filter(
                 (movie) =>

@@ -65,7 +65,7 @@ export function NavBar() {
 
   return (
     <div>
-      <nav className="bg-white mx-2 rounded-lg relative top-2 shadow-[30px_30px_60px_0_rgb(199,199,199),-30px_-30px_60px_0_rgb(249,249,249)]">
+      <nav className="bg-white mx-2 rounded-lg relative top-2 border border-gray-200 shadow-2xl">
         <div className="mx-auto px-2">
           <div className="relative flex h-16 items-center justify-between">
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
@@ -113,8 +113,8 @@ export function NavBar() {
                       <span className="absolute -inset-1.5"></span>
                       <span className="sr-only">Open user menu</span>
                       <img
-                        className="mt-2 h-8 w-8 rounded-full"
-                        src="https://img.icons8.com/?size=100&id=83190&format=png&color=FFFFEC"
+                        className="mt-2 mr-2 h-8 w-8 rounded-full"
+                        src="https://img.icons8.com/?size=100&id=83190&format=png&color=000000"
                         alt=""
                       />
                     </button>

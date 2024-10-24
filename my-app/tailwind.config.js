@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        "monkey-white": "#FFFFFF",
+        "monkey-white": "#FFFFF2",
         "monkey-beige": "#C0EBA6",
         "monkey-brown": "#c6a969",
         "monkey-green": "#166534",
@@ -24,7 +24,7 @@ export default {
 
           neutral: "#FFFFFF",
 
-          "base-100": "#FFFFFF",
+          "base-100": "#FFFFF2",
 
           info: "#0000ff",
 
