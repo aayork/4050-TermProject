@@ -2,7 +2,7 @@ import { UserCard } from "../../components/UserCard";
 import { useState, useEffect } from "react";
 import { EditUserModal } from "../../components/EditUserModal";
 import { Loading } from "../../components/Loading";
-//import {getUsers} from "../../utils/API"
+import { getAllUsers, updateUser, deleteUser } from "../../utils/API";
 
 export function ManageUsers() {
   const [users, setUsers] = useState([]);
@@ -19,10 +19,17 @@ export function ManageUsers() {
     document.getElementById("userModal").showModal();
   };
 
-  const handleSaveUser = (userData) => {
+  const handleSaveUser = async (userData) => {
     if (selectedUser) {
       // Update the user in the list (edit)
       console.log("Edit user:", userData);
+      try {
+        await updateUser(formState);
+        setInitialFormState(formState);
+      } catch (error) {
+        console.error("Error updating user:", error);
+        alert("Failed to update user information.");
+      }
     } else {
       // Add a new user to the list
       console.log("Add new user:", userData);
@@ -31,36 +38,18 @@ export function ManageUsers() {
 
   //get users
   useEffect(() => {
-    //get users
-
     const fetchUsers = async () => {
-      // const users = await getUsers();
-      setUsers(people);
-      setLoading(false);
+      try {
+        const users = await getAllUsers();
+        setUsers(users);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchUsers();
   }, []);
-
-  const will = {
-    first_name: "Will",
-    last_name: "Gresham",
-    username: "willgresham34",
-    email: "willgresham34@gmail.com",
-    id: "123131",
-    status: "admin",
-  };
-
-  const Aidan = {
-    first_name: "Aidan",
-    last_name: "York",
-    username: "aayork",
-    email: "aayork@gmail.com",
-    id: "15435",
-    status: "user",
-  };
-
-  const people = [will, Aidan];
 
   if (loading) {
     return <Loading message="Loading Users" />;
@@ -101,21 +90,46 @@ export function ManageUsers() {
         <div className="">
           <h1 className="font-semibold"> Managers:</h1>
           <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
-            {users.map((user) => (
-              <div className="grid-item min-w-fit" key={user.id}>
-                <UserCard user={user} onEdit={() => openEditUserModal(user)} />
-              </div>
-            ))}
+            {users
+              .filter((user) => user.movie_profile.status == "admin")
+              .map((user) => (
+                <div className="grid-item min-w-fit" key={user.id}>
+                  <UserCard
+                    user={user}
+                    onEdit={() => openEditUserModal(user)}
+                  />
+                </div>
+              ))}
           </div>
         </div>
         <div className="">
           <h1 className="font-semibold"> Employees:</h1>
           <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
-            {users.map((user) => (
-              <div className="grid-item min-w-fit" key={user.id}>
-                <UserCard user={user} onEdit={() => openEditUserModal(user)} />
-              </div>
-            ))}
+            {users
+              .filter((user) => user.movie_profile.status == "employee")
+              .map((user) => (
+                <div className="grid-item min-w-fit" key={user.id}>
+                  <UserCard
+                    user={user}
+                    onEdit={() => openEditUserModal(user)}
+                  />
+                </div>
+              ))}
+          </div>
+        </div>
+        <div className="">
+          <h1 className="font-semibold"> Customers:</h1>
+          <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+            {users
+              .filter((user) => user.movie_profile.status == "customer")
+              .map((user) => (
+                <div className="grid-item min-w-fit" key={user.id}>
+                  <UserCard
+                    user={user}
+                    onEdit={() => openEditUserModal(user)}
+                  />
+                </div>
+              ))}
           </div>
         </div>
       </div>

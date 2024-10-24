@@ -19,6 +19,7 @@ export const register = async ({
       password2: password,
       first_name: firstName,
       last_name: lastName,
+      status: "customer",
     }),
   });
 
@@ -210,8 +211,8 @@ export const getUser = async () => {
   return result;
 };
 
-export const getUsers = async () => {
-  const response = await fetch(`${API_BASEURL}api/info/getAllUsers/`, {
+export const getAllUsers = async () => {
+  const response = await fetch(`${API_BASEURL}api/auth/getAllUsers/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -222,8 +223,39 @@ export const getUsers = async () => {
   return result;
 };
 
+export const addUser = async (user) => {
+  const response = await fetch(`${API_BASEURL}api/auth/register/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: user.email,
+      username: user.username,
+      password1: user.password,
+      password2: user.password,
+      first_name: user.firstName,
+      last_name: user.lastName,
+      status: user.status,
+    }),
+  });
+
+  const result = await parseResponse(response);
+  const message = Object.values(result);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < message.length; i++) {
+      errorMessage += message[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
+  return message;
+};
+
 export const deleteUser = async (id) => {
-  const response = await fetch(`${API_BASEURL}api/info/deleteUser/${id}`, {
+  const response = await fetch(`${API_BASEURL}api/auth/deleteUser/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -235,14 +267,20 @@ export const deleteUser = async (id) => {
 };
 
 export const updateUser = async (user) => {
-  const response = await fetch(`${API_BASEURL}api/info/updateUser/${user.id}`, {
+  const response = await fetch(`${API_BASEURL}api/auth/updateUser/${user.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
-    body: {
-      user: JSON.stringify(user),
-    },
+    body: JSON.stringify({
+      email: user.email,
+      username: user.username,
+      first_name: user.firstName,
+      last_name: user.lastName,
+      movie_profile: {
+        status: user.movie_profile.status,
+      },
+    }),
   });
 
   const result = await parseResponse(response);
@@ -299,7 +337,7 @@ export const updatePromotion = async (promo) => {
 //delete promotion maybe?
 
 //Payment Card API's
-export const getPayment = async (id) => {
+export const getPayments = async (id) => {
   const response = await fetch(`${API_BASEURL}api/info/getPayment/${id}`, {
     method: "GET",
     headers: {

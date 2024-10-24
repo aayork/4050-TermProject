@@ -1,17 +1,34 @@
 import { useEffect, useState } from "react";
-import { getUser } from "../utils/API";
+import {
+  getUser,
+  updateUser,
+  deleteUser,
+  getPayments,
+  createPayment,
+} from "../utils/API";
 import { Loading } from "../components/Loading";
+import { PaymentCard } from "../components/PaymentCard";
 
 export function UserProfile() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isEditable, setIsEditable] = useState(false);
+  const [initialFormState, setInitialFormState] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    username: "",
+    promotion: false,
+  });
+
   const [formState, setFormState] = useState({
     firstName: "",
     lastName: "",
     email: "",
     username: "",
+    promotion: false,
   });
+  const [payments, setPayments] = useState([]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -28,12 +45,18 @@ export function UserProfile() {
         setLoggedIn(true);
 
         if (user) {
-          setFormState({
+          const fetchedFormState = {
             firstName: user.first_name,
             lastName: user.last_name,
             email: user.email,
             username: user.username,
-          });
+            promotion: user.promotion,
+          };
+          setFormState(fetchedFormState);
+          setInitialFormState(fetchedFormState);
+
+          const payments = await getPayments(user.id);
+          setPayments(payments);
         }
       } catch (error) {
         alert(error);
@@ -44,22 +67,40 @@ export function UserProfile() {
     getUserInfo();
   }, []);
 
-  const toggleEditMode = () => {
+  const toggleEditMode = async () => {
     if (isEditable) {
-      //call update method here
+      // Check if form state was changed
+      const formChanged =
+        JSON.stringify(formState) !== JSON.stringify(initialFormState);
+
+      if (formChanged) {
+        try {
+          // Call update API method here
+          await updateUser(formState);
+          setInitialFormState(formState); // Update initial state after successful save
+          alert("User updated successfully");
+        } catch (error) {
+          alert("Error updating user: " + error.message);
+        }
+      }
     }
     setIsEditable(!isEditable);
   };
 
-  const cancel = async (event) => {
+  const cancel = (event) => {
     event.preventDefault();
-    // setFormState(initForm);
+    // Revert form state to initial values when canceled
+    setFormState(initialFormState);
     document.getElementById("addCard").close();
   };
 
   if (loading) {
     return <Loading message="Loading User" />;
   }
+
+  const deleteCard = (cardId) => {
+    console.log("Deleting Card " + cardId);
+  };
 
   return (
     <div>
@@ -125,6 +166,19 @@ export function UserProfile() {
                       readOnly={!isEditable}
                     />
                   </label>
+                  <div className="w-full flex ">
+                    <label className="label cursor-pointer">
+                      <span className="label-text text-lg">
+                        Do you wish to receive promotions?{" "}
+                      </span>
+                      <input
+                        type="checkbox"
+                        defaultChecked
+                        className="checkbox checkbox-primary checkbox-sm mx-2"
+                      />
+                    </label>
+                  </div>
+
                   <button className="btn btn-primary btn-sm text-lg text-white">
                     Reset Password
                   </button>
@@ -133,7 +187,13 @@ export function UserProfile() {
             </div>
             <div className="card">
               <div className="card-title">Saved Cards</div>
-              <div className="card-content"></div>
+              <div className="card-content">
+                {payments.map((card) => (
+                  <div className="grid-item min-w-fit" key={card.name}>
+                    <PaymentCard card={card} onDelete={deleteCard(card.id)} />
+                  </div>
+                ))}
+              </div>
               <button
                 className="btn btn-primary btn-sm text-lg text-white"
                 onClick={() => document.getElementById("addCard").showModal()}
@@ -142,7 +202,7 @@ export function UserProfile() {
               </button>
               <dialog id="addCard" className="modal">
                 <div className="modal-box">
-                  <h3 className="font-semisemibold text-lg">
+                  <h3 className="font-semibold text-lg">
                     Add Credit/Debit Card
                   </h3>
                   <div className="border border-monkey-green"></div>
@@ -214,39 +274,17 @@ export function UserProfile() {
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            d="M8 7V3m8 4V3m-9 8h10l-2 5H9l-2-5z"
                           />
                         </svg>
                       </label>
-
                       <label className="relative flex-1 flex flex-col">
-                        <span className="font-semibold flex items-center gap-2">
-                          CVC/CVV
-                          <span className="relative group">
-                            <span className="hidden group-hover:flex justify-center items-center px-2 py-1 text-xs absolute -right-2 transform translate-x-full -translate-y-1/2 w-max top-1/2 bg-monkey-green rounded text-white">
-                              3 digits on back of card
-                            </span>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                          </span>
-                        </span>
+                        <span className="font-semibold">CVV</span>
                         <input
                           className="rounded-md peer pl-12 pr-2 py-2 border-2 border-monkey-green placeholder-gray-300"
                           type="text"
-                          name="card_cvc"
-                          placeholder="&bull;&bull;&bull;"
+                          name="cvv"
+                          placeholder="000"
                         />
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -259,25 +297,20 @@ export function UserProfile() {
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth="2"
-                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                            d="M12 11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1a1 1 0 001 1h14a1 1 0 001-1v-1c0-2.66-5.33-4-8-4z"
                           />
                         </svg>
                       </label>
                     </div>
-
-                    <div className="modal-action w-full grid grid-cols-2">
+                    <div className="w-full flex justify-between gap-4">
                       <button
-                        className="btn btn-secondary btn-sm text-monkey-white"
+                        className="btn btn-sm btn-outline flex-1"
                         onClick={cancel}
                       >
                         Cancel
                       </button>
-                      <button
-                        className="btn btn-primary btn-sm text-monkey-white"
-                        type="submit"
-                        onClick={cancel}
-                      >
-                        Create
+                      <button className="btn btn-primary btn-sm text-white flex-1">
+                        Save
                       </button>
                     </div>
                   </form>
@@ -285,7 +318,7 @@ export function UserProfile() {
               </dialog>
             </div>
           </div>
-          {/* right column start */}
+          {/* Right column */}
           <div className="">
             <div className="card">
               <div className="card-title px-2">Past Orders</div>
@@ -296,7 +329,7 @@ export function UserProfile() {
       ) : (
         <div className="flex justify-center">
           <div className="card flex justify-center">
-            <div className="font-semisemibold text-xl">
+            <div className="font-semibold text-xl">
               You need to login to access this page
             </div>
             <br />
