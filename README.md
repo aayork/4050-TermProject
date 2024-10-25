@@ -47,18 +47,28 @@ TODO: Guide users through getting your code up and running on their own system. 
       pip install virtualenv
       ### Windows
       source *filepath_to_venv_activate_file*
+    3. Other dependencies
+      pip install dj-rest-auth==4.0.0
+      pip install django-environ==0.11.2
   ## Node Packages
     1. Tailwind requires
       npm install autoprefixer --save-dev
+  ## MySQL client 8.4 (on macOS)
+    brew install mysql-client@8.4
+    brew unlink mysql
+    brew link mysql-client@8.4
+
+    pip uninstall mysqlclient
+    pip install mysqlclient --no-cache-dir
 2.	Software dependencies
 3.	Latest releases
 4.	API references
 
 # Build and Test
-## How to run React
+## How to run React (Frontend)
     cd my-app
     npm run dev
-## How to run Django
+## How to run Django (Backend Server)
     python3 CinemaProject/manage.py runserver
 
 # Contributor
