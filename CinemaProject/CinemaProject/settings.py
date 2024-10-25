@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -90,6 +92,13 @@ EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:5173/login/"
 # make sure this is set in the front end
 PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = "http://localhost:5173/password-reset/confirm/"
 # make sure this is set in the front end
+
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+ENCRYPTION_KEY = env("ENCRYPTION_KEY")
+if not ENCRYPTION_KEY:
+    raise ValueError("No ENCRYPTION_KEY found in environment variables")
 
 SITE_ID = 1
 

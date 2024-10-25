@@ -215,15 +215,44 @@ class PromotionSerializer(serializers.ModelSerializer):
     # needs the attirbutes of promotion so it can be converted
     class Meta:
         model = Promotion
-        fields = ['name', 'discountRate', 'code', 'startDate', 'endDate']
+        fields = ['name', 'discountPercentage', 'code', 'startDate', 'endDate']
 
 ###############################################################
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+    cardNumber = serializers.CharField(
+        max_length=16,
+        min_length=16,
+        write_only=False
+    )
+    CVV = serializers.CharField(
+        max_length=4,
+        min_length=3,
+        write_only=False
+    )
+
     class Meta:
         model = Payment
-        fields = ['id', 'user', 'cardNumber', 'expirationDate', 'CVV', 'firstName', 'lastName']
+        fields = ['id', 'user', 'cardNumber', 'CVV', 'expirationDate', 'firstName', 'lastName']
+
+
+class GetPaymentSerializer(serializers.ModelSerializer):
+    maskedCardNumber = serializers.SerializerMethodField()
+    maskedCVV = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Payment
+        fields = ['id', 'user', 'maskedCardNumber', 'expirationDate', 'maskedCVV', 'firstName', 'lastName']
+
+    def get_maskedCardNumber(self, obj):
+        # Get the last 4 digits of the card number
+        decrypted_card_number = obj.get_card_number()  # Call the decryption method
+        return f"**** **** **** {decrypted_card_number[-4:]}" if decrypted_card_number else None
+
+    def get_maskedCVV(self, obj):
+        # Return the masked CVV
+        return "***"  # Return a static mask for the CVV
 
 
 class AddressSerializer(serializers.ModelSerializer):

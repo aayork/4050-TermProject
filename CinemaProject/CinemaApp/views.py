@@ -10,7 +10,8 @@ from .models import Promotion
 from .models import MovieProfile
 from .models import Payment
 from authentication.serializers import (MovieSerializer, PromotionSerializer,
-                                        MovieProfileSerializer, PaymentSerializer, AddressSerializer)
+                                        MovieProfileSerializer, PaymentSerializer,
+                                        AddressSerializer, GetPaymentSerializer)
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -68,7 +69,7 @@ class GetAllProfiles(generics.ListAPIView):
 
 
 class UserPaymentView(generics.ListAPIView):
-    serializer_class = PaymentSerializer
+    serializer_class = GetPaymentSerializer
 
     def get_queryset(self):
         user_id = self.kwargs.get('user_id')
@@ -151,3 +152,14 @@ class DeleteAddressView(generics.DestroyAPIView):
     # return an exception message if the payment in question can't be found
     def perform_destroy(self, instance):
         instance.delete()
+
+
+class AddPromotionView(generics.CreateAPIView):
+    queryset = Promotion.objects.all()
+    serializer_class = PromotionSerializer
+
+
+class UpdatePromotionView(generics.UpdateAPIView):
+    queryset = Promotion.objects.all()
+    serializer_class = PromotionSerializer
+

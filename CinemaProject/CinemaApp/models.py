@@ -1,8 +1,11 @@
 from django.conf import settings
+from cryptography.fernet import Fernet
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MaxLengthValidator, MinLengthValidator
+from django.utils.timezone import datetime, now
+from django.core.validators import MaxLengthValidator, MinLengthValidator, RegexValidator
+import base64
 
 
 class Theatre(models.Model):
@@ -131,6 +134,7 @@ class MovieProfile(models.Model):
         blank=True,  # Allows empty values in forms
         default=CustomerState.ACTIVE
     )
+    receive_promotions = models.BooleanField(default=False)
     # orders = self.orders
     # payments = self.payments
     # addresses = self.addresses
@@ -145,29 +149,52 @@ class MovieProfile(models.Model):
         return f"{self.user} - {self.status}"
 
 
+key = settings.ENCRYPTION_KEY.encode()
+cipher = Fernet(key)
+
+from django.db import models
+from django.core.validators import RegexValidator, ValidationError
+
+
 class Payment(models.Model):
     user = models.ForeignKey(MovieProfile, related_name="payments", on_delete=models.CASCADE)
-    cardNumber = models.CharField(
-        max_length=16,
-        validators=[MinLengthValidator(16), MaxLengthValidator(16)],
-        blank=False, null=False)
-    expirationDate = models.DateField(blank=False, null=False)
-    CVV = models.CharField(
-        max_length=4,
-        validators=[MinLengthValidator(3), MaxLengthValidator(4)],
-        blank=False, null=False
+    cardNumber = models.BinaryField(blank=False, null=False, default=0000000000000000)
+    CVV = models.BinaryField(blank=False, null=False, default=000)
+    expirationDate = models.DateField(blank=False, null=False, default=datetime.now)
+    firstName = models.CharField(max_length=40, blank=False, null=False, default="Jon")
+    lastName = models.CharField(max_length=40, blank=False, null=False, default="Doe")
+
+    card_number_validator = RegexValidator(
+        regex=r'^\d{16}$', message="Card number must be 16 digits."
     )
-    firstName = models.CharField(max_length=40, blank=False, null=False)
-    lastName = models.CharField(max_length=40, blank=False, null=False)
+
+    cvv_validator = RegexValidator(
+        regex=r'^\d{3,4}$', message="CVV must be 3 or 4 digits."
+    )
 
     def save(self, *args, **kwargs):
         # Check if the user already has 3 payment options
         if self.user.payments.count() >= 3 and not self.pk:  # Exclude existing records
             raise ValidationError("You cannot have more than 3 payment methods.")
+
+        if isinstance(self.cardNumber, str):
+            self.card_number_validator(self.cardNumber)  # Validate the card number
+            self.cardNumber = cipher.encrypt(self.cardNumber.encode())
+
+        if isinstance(self.CVV, str):
+            self.cvv_validator(self.CVV)  # Validate the CVV
+            self.CVV = cipher.encrypt(self.CVV.encode())
+
         super().save(*args, **kwargs)
 
+    def get_card_number(self):
+        return cipher.decrypt(self.cardNumber).decode()
+
+    def get_cvv(self):
+        return cipher.decrypt(self.CVV).decode()
+
     def __str__(self):
-        return f"{self.firstName} - {self.lastName} - (**** **** **** {self.cardNumber[-4:]})"
+        return f"{self.firstName} - {self.lastName} - (**** **** **** {self.get_card_number()[-4:]})"
 
 
 class Address(models.Model):
@@ -183,7 +210,7 @@ class Address(models.Model):
 
 class Promotion(models.Model):
     name = models.CharField(max_length=2250, blank=False, null=False)
-    discountRate = models.FloatField(blank=False, null=False)
+    discountPercentage = models.IntegerField(blank=False, null=False)
     code = models.CharField(max_length=15, blank=False, null=False)
     startDate = models.DateField(blank=False, null=False)
     endDate = models.DateField(blank=False, null=False)
