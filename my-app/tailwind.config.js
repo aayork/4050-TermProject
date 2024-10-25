@@ -4,11 +4,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        "monkey-white": "#ffffec",
-        "monkey-beige": "#f1e4c3",
+        "monkey-white": "#FFFFF2",
+        "monkey-beige": "#C0EBA6",
         "monkey-brown": "#c6a969",
-        "monkey-green": "#597e52",
-        "monkey-yellow": "#ffe135",
+        "monkey-green": "#166534",
+        "monkey-yellow": "#FCCD2A",
       },
     },
   },
@@ -16,15 +16,15 @@ export default {
     themes: [
       {
         mytheme: {
-          primary: "#597e52",
+          primary: "#347928",
 
-          secondary: "#c6a969",
+          secondary: "#222222",
 
-          accent: "#ffe135",
+          accent: "#FCCD2A",
 
-          neutral: "#f1e4c3",
+          neutral: "#FFFFFF",
 
-          "base-100": "#ffffec",
+          "base-100": "#FFFFF2",
 
           info: "#0000ff",
 

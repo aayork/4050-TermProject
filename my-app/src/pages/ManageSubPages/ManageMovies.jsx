@@ -51,7 +51,7 @@ export function ManageMovies() {
   }, []);
 
   if (loading) {
-    return <Loading message="Loading Movies" />;
+    return <Loading message="Loading" />;
   }
 
   return (
