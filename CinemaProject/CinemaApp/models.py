@@ -211,7 +211,7 @@ class Address(models.Model):
 class Promotion(models.Model):
     name = models.CharField(max_length=2250, blank=False, null=False)
     discountPercentage = models.IntegerField(blank=False, null=False)
-    code = models.CharField(max_length=15, blank=False, null=False)
+    code = models.CharField(max_length=15, blank=False, null=False, unique=True)
     startDate = models.DateField(blank=False, null=False)
     endDate = models.DateField(blank=False, null=False)
     # orders = self.orders
