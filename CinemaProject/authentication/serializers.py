@@ -272,11 +272,10 @@ class MovieProfileSerializer(serializers.ModelSerializer):
     payments = PaymentSerializer(many=True, read_only=True)
     addresses = AddressSerializer(many=True, read_only=True)
     orders = OrderSerializer(many=True, read_only=True)
-    receive_promotion = PromotionSerializer(many=True, read_only=True)
 
     class Meta:
         model = MovieProfile
-        fields = ['status', 'payments', 'addresses', 'orders']
+        fields = ['status', 'payments', 'addresses', 'orders', 'receive_promotion']
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
