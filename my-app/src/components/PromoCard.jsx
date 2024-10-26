@@ -1,37 +1,30 @@
-import PropTypes from "prop-types";
-
-export function PromoCard({ promo }) {
-  const name = promo.name;
-  const code = promo.code;
-  const discount = promo.discount;
-  const startDate = promo.startDate;
-  const endDate = promo.endDate;
-
+export function PromoCard({ promo, onEdit }) {
   return (
     <div className="m-5 p-0 shadow-xl border border-black rounded-xl">
       <div className=" p-2">
-        <h2 className="font-semibold">{name}</h2>
+        <h2 className="font-semibold">{promo.name}</h2>
         <h3>
-          <b className="font-semibold">Code:</b> {code}
+          <b className="font-semibold">Code: </b> {promo.code}
         </h3>
         <h3>
-          <b className="font-semibold">Discount:</b> {discount}%
+          <b className="font-semibold">Discount: </b> {promo.discount}%
         </h3>
         <h3>
-          <b className="font-semibold">Active Dates:</b> {startDate}-{endDate}
+          <b className="font-semibold">Start Date: </b>
+          {promo.startDate.toLocaleDateString("en-US")}
         </h3>
-        <a className="btn btn-xs btn-primary w-full mt-2">Edit Promo</a>
+        <h3>
+          <b className="font-semibold">End Date: </b>
+          {promo.endDate.toLocaleDateString("en-US")}
+        </h3>
+
+        <button
+          onClick={onEdit}
+          className="btn btn-xs btn-primary w-full mt-2 text-white"
+        >
+          Edit Promo
+        </button>
       </div>
     </div>
   );
 }
-
-PromoCard.propTypes = {
-  promo: PropTypes.shape({
-    name: PropTypes.string || null,
-    code: PropTypes.string || null,
-    discount: PropTypes.string || null,
-    startDate: PropTypes.string || null,
-    endDate: PropTypes.string || null,
-  }),
-};

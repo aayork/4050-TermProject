@@ -1,6 +1,4 @@
-export function ManageMovieCard({ movie }) {
-  //get movie information
-
+export function ManageMovieCard({ movie, onEdit }) {
   return (
     <div className="m-5 p-0 shadow-xl border border-black rounded-xl">
       <div className=" p-2">
@@ -10,13 +8,12 @@ export function ManageMovieCard({ movie }) {
         <h2 className="">
           <b className="font-semibold">Title:</b> {movie.movieName}
         </h2>
-        <h3></h3>
-        <a
-          href={`/admin/movieEdit/${movie.id}`}
-          className="btn btn-xs btn-primary w-full mt-2"
+        <button
+          onClick={onEdit}
+          className="btn btn-xs btn-primary w-full mt-2 text-white"
         >
           Edit Movie
-        </a>
+        </button>
       </div>
     </div>
   );

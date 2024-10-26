@@ -1,62 +1,72 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PromoCard } from "../../components/PromoCard";
+import { EditPromoModal } from "../../components/EditPromoModal";
+import { Loading } from "../../components/Loading";
+//import { getPromos } from "../../utils/API";
 
 export function ManagePromos() {
-  const initForm = {
-    name: "",
-    code: "",
-    discount: "",
-    startDate: "",
-    endDate: "",
-  };
-  const [formState, setFormState] = useState(initForm);
+  const [promos, setPromos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedPromo, setSelectedPromo] = useState(null);
 
-  const cancel = async (event) => {
-    event.preventDefault();
-    setFormState(initForm);
-    document.getElementById("addPromoModal").close();
+  const openAddPromoModal = () => {
+    setSelectedPromo(null);
+    document.getElementById("promoModal").showModal();
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
+  const openEditPromoModal = (promo) => {
+    setSelectedPromo(promo);
+    document.getElementById("promoModal").showModal();
   };
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
-    console.log(formState);
-    setFormState(initForm);
-    document.getElementById("addPromoModal").close();
+  const handleSavePromo = (promoData) => {
+    if (selectedPromo) {
+      // Update the movie in the list (edit)
+      console.log("Edit promo:", promoData);
+    } else {
+      // Add a new movie to the list
+      console.log("Add new promo:", promoData);
+    }
   };
+
+  useEffect(() => {
+    const fetchPromos = async () => {
+      //const promos = await getPromos();
+      setPromos(promoDemo);
+      setLoading(false);
+    };
+
+    fetchPromos();
+  }, []);
 
   const halfOff = {
     name: "Half Off",
     code: "50OFF",
     discount: "50",
-    startDate: "9/29/2024",
-    endDate: "10/31/2024",
+    startDate: new Date("9/29/2024"),
+    endDate: new Date("10/31/2024"),
   };
 
   const quarterOff = {
     name: "Fall Discount",
     code: "FALL24",
     discount: "24",
-    startDate: "9/29/2024",
-    endDate: "10/31/2024",
+    startDate: new Date("9/29/2024"),
+    endDate: new Date("10/31/2024"),
   };
 
-  const promos = [halfOff, quarterOff];
+  const promoDemo = [halfOff, quarterOff];
+
+  if (loading) {
+    return <Loading message="Loading Promos" />;
+  }
 
   return (
     <div>
       <div>
         <button
           className="btn my-2 flex items-center"
-          onClick={() => document.getElementById("addPromoModal").showModal()}
+          onClick={openAddPromoModal}
         >
           Add Promotion
           <svg
@@ -74,85 +84,14 @@ export function ManagePromos() {
             />
           </svg>
         </button>
-        {/* modal start */}
-        <dialog id="addPromoModal" className="modal">
-          <div className="modal-box">
-            <h3 className="font-semibold text-lg">Add New Promotion</h3>
-            <div className="border border-monkey-green"></div>
-            <form method="dialog" onSubmit={handleFormSubmit}>
-              <div className="flex flex-col gap-2 py-2">
-                <label className="input input-bordered flex  input-primary items-center gap-2">
-                  Name :
-                  <input
-                    type="text"
-                    className="grow"
-                    onChange={handleChange}
-                    placeholder=""
-                    name="name"
-                  />
-                </label>
-                <label className="input input-bordered flex  input-primary items-center gap-2">
-                  Code :
-                  <input
-                    type="text"
-                    className="grow"
-                    onChange={handleChange}
-                    placeholder=""
-                    name="code"
-                  />
-                </label>
-                <label className="input input-bordered flex  input-primary items-center gap-2">
-                  Discount :
-                  <input
-                    type="number"
-                    max="100"
-                    min="0"
-                    name="discount"
-                    className="grow"
-                    placeholder=""
-                    onChange={handleChange}
-                  />
-                </label>
-                <label className="input input-bordered flex  input-primary items-center gap-2">
-                  Start Date :
-                  <input
-                    type="date"
-                    className="grow"
-                    placeholder=""
-                    name="startDate"
-                    onChange={handleChange}
-                  />
-                </label>
-                <label className="input input-bordered flex  input-primary items-center gap-2">
-                  End Date :
-                  <input
-                    type="date"
-                    className="grow"
-                    name="endDate"
-                    placeholder=""
-                    onChange={handleChange}
-                  />
-                </label>
-              </div>
-              <div className="modal-action">
-                <button
-                  className="btn btn-primary btn-sm mx-2 text-monkey-white"
-                  onClick={cancel}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="btn btn-primary btn-sm text-monkey-white"
-                  type="submit"
-                  onSubmit={handleFormSubmit}
-                >
-                  Create
-                </button>
-              </div>
-            </form>
-          </div>
+
+        <dialog id="promoModal" className="modal">
+          <EditPromoModal
+            onClose={() => document.getElementById("promoModal").close()}
+            onSave={handleSavePromo}
+            promo={selectedPromo}
+          />
         </dialog>
-        {/* modal end */}
       </div>
       <div className="flex flex-col">
         <div className="">
@@ -160,7 +99,10 @@ export function ManagePromos() {
           <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos.map((promo) => (
               <div className="grid-item min-w-fit" key={promo.name}>
-                <PromoCard promo={promo} />
+                <PromoCard
+                  promo={promo}
+                  onEdit={() => openEditPromoModal(promo)}
+                />
               </div>
             ))}
           </div>
@@ -170,7 +112,10 @@ export function ManagePromos() {
           <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos.map((promo) => (
               <div className="grid-item min-w-fit" key={promo.name}>
-                <PromoCard promo={promo} />
+                <PromoCard
+                  promo={promo}
+                  onEdit={() => openEditPromoModal(promo)}
+                />
               </div>
             ))}
           </div>
@@ -180,7 +125,10 @@ export function ManagePromos() {
           <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos.map((promo) => (
               <div className="grid-item min-w-fit" key={promo.name}>
-                <PromoCard promo={promo} />
+                <PromoCard
+                  promo={promo}
+                  onEdit={() => openEditPromoModal(promo)}
+                />
               </div>
             ))}
           </div>
