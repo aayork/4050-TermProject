@@ -5,7 +5,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from CinemaApp.models import (MovieProfile, Payment, Address, Order,
-                              Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie, Actor, Director, Promotion, Genre)
+Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie, Actor, Director, Promotion, Genre)
 
 
 class CustomRegisterSerializer(RegisterSerializer):
@@ -199,7 +199,6 @@ class TicketSerializer(serializers.ModelSerializer):
         model = Ticket
         fields = ['seats']
 
-
 class OrderDetailsSerializer(serializers.ModelSerializer):
     tickets = TicketSerializer(many=True, read_only=True)
 
@@ -273,6 +272,7 @@ class MovieProfileSerializer(serializers.ModelSerializer):
     payments = PaymentSerializer(many=True, read_only=True)
     addresses = AddressSerializer(many=True, read_only=True)
     orders = OrderSerializer(many=True, read_only=True)
+    receive_promotion = PromotionSerializer(many=True, read_only=True)
 
     class Meta:
         model = MovieProfile
