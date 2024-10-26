@@ -304,7 +304,7 @@ export const getPromos = async () => {
 };
 
 export const createPromotion = async (promo) => {
-  const response = await fetch(`${API_BASEURL}api/info/createPromotion/`, {
+  const response = await fetch(`${API_BASEURL}api/info/promotion/add`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -319,7 +319,7 @@ export const createPromotion = async (promo) => {
 
 export const updatePromotion = async (promo) => {
   const response = await fetch(
-    `${API_BASEURL}api/info/updatePromotion/${promo.id}`,
+    `${API_BASEURL}api/info/promotion/update/${promo.id}/`,
     {
       method: "PUT",
       headers: {
@@ -338,7 +338,7 @@ export const updatePromotion = async (promo) => {
 
 //Payment Card API's
 export const getPayments = async (id) => {
-  const response = await fetch(`${API_BASEURL}api/info/getPayment/${id}`, {
+  const response = await fetch(`${API_BASEURL}api/info/user/payment/${id}/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -351,7 +351,7 @@ export const getPayments = async (id) => {
 };
 
 export const createPayment = async (card) => {
-  const response = await fetch(`${API_BASEURL}api/info/createPayment/`, {
+  const response = await fetch(`${API_BASEURL}api/info/user/payment/add/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -365,12 +365,15 @@ export const createPayment = async (card) => {
 };
 
 export const deletePayment = async (id) => {
-  const response = await fetch(`${API_BASEURL}api/info/deletePayment/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch(
+    `${API_BASEURL}api/info/user/payment/delete/${id}/`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   const result = await parseResponse(response);
   return result;
