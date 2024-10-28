@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { confirmPasswordReset } from "../utils/API";
 
@@ -19,24 +19,6 @@ export function ResetConfirm() {
       [name]: value,
     });
   };
-
-  // Confirm account if there is a key
-  useEffect(() => {
-    const confirmAccount = async () => {
-      if (token) {
-        try {
-          await confirmEmail(token);
-          alert(
-            "Your account has been confirmed. You can now set a new password.",
-          );
-        } catch (error) {
-          alert("An error occurred while confirming your account.");
-        }
-      }
-    };
-
-    confirmAccount();
-  }, [token]);
 
   // Handle form submission
   const handleFormSubmit = async (event) => {
