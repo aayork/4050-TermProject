@@ -38,7 +38,7 @@ export function Login() {
 
   // handle form submit
   const handleFormSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
     console.log(formState);
 
@@ -85,9 +85,21 @@ export function Login() {
             >
               Login
             </button>
-            <a className="text-xs text-white underline" href="/createAccount">
-              Don&apos;t have an account? Create One!
-            </a>
+            <div className="inline-flex">
+              <a
+                className="text-xs text-white underline m-2"
+                href="/createAccount"
+              >
+                Don&apos;t have an account? Create One!
+              </a>
+              <a
+                href="/reset-password"
+                className="text-xs text-white underline m-2"
+                aria-current="page"
+              >
+                Forgot Password
+              </a>
+            </div>
           </div>
         </form>
       </div>
