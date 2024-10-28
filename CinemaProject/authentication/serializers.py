@@ -275,7 +275,7 @@ class MovieProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MovieProfile
-        fields = ['status', 'payments', 'addresses', 'orders', 'receive_promotion']
+        fields = ['status', 'payments', 'addresses', 'orders', 'receive_promotions']
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
