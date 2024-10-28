@@ -397,7 +397,7 @@ async function parseResponse(response) {
   return parsedResult;
 }
 
-// Reset password
+// Sends reset pw email
 export const requestPasswordReset = async (email) => {
   const response = await fetch(`${API_BASEURL}api/auth/password/reset/`, {
     method: "POST",
@@ -417,7 +417,7 @@ export const requestPasswordReset = async (email) => {
   return result;
 };
 
-// Confirm reset password
+// Resets pw on backend
 export const confirmPasswordReset = async (uid, token, newPassword) => {
   const response = await fetch(
     `${API_BASEURL}api/auth/password/reset/confirm/`,
