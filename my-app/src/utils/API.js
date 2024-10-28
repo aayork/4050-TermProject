@@ -426,7 +426,12 @@ export const confirmPasswordReset = async (uid, token, newPassword) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ uid, token, password: newPassword }),
+      body: JSON.stringify({
+        new_password1: newPassword,
+        new_password2: newPassword,
+        uid,
+        token,
+      }),
     },
   );
 
