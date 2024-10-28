@@ -305,10 +305,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
             movie_profile.save()
 
         receive_promotions = validated_data.get('receive_promotions', None)
-        if receive_promotions:
-            movie_profile = instance.movie_profile
-            movie_profile.receive_promotions = receive_promotions
-            movie_profile.save()
+        movie_profile = instance.movie_profile
+        movie_profile.receive_promotions = receive_promotions
+        movie_profile.save()
 
         return instance
 
