@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  getUser,
-  updateUser,
-  deleteUser,
-  getPayments,
-  createPayment,
-} from "../utils/API";
+import { getUser, updateUser, getPayments, deletePayment } from "../utils/API";
 import { Loading } from "../components/Loading";
 import { PaymentCard } from "../components/PaymentCard";
 import { AddCardModal } from "../components/AddCardModal";
@@ -14,12 +8,20 @@ export function UserProfile() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isEditable, setIsEditable] = useState(false);
+  const [userId, setUserId] = useState(0);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
   const [initialFormState, setInitialFormState] = useState({
     firstName: "",
     lastName: "",
     email: "",
     username: "",
-    promotion: false,
+    receive_promotions: false,
+    address: {
+      street: "",
+      city: "",
+      state: "",
+      zip: "",
+    },
   });
 
   const [formState, setFormState] = useState({
@@ -27,16 +29,50 @@ export function UserProfile() {
     lastName: "",
     email: "",
     username: "",
-    promotion: false,
+    receive_promotions: false,
+    address: {
+      street: "",
+      city: "",
+      state: "",
+      zip: "",
+    },
   });
   const [payments, setPayments] = useState([]);
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
+    const { name, type, checked, value } = event.target;
+
+    if (name.startsWith("address.")) {
+      const addressField = name.split(".")[1];
+      setFormState((prevState) => ({
+        ...prevState,
+        address: {
+          ...prevState.address,
+          [addressField]: value,
+        },
+      }));
+    } else {
+      const newValue = type === "checkbox" ? checked : value;
+      setFormState({
+        ...formState,
+        [name]: newValue,
+      });
+    }
+  };
+
+  const handleCardAdd = () => {
+    document.getElementById("addCard").close();
+    setShouldUpdate(!shouldUpdate);
+  };
+
+  const deletePaymentCard = async (cardId) => {
+    try {
+      const result = await deletePayment(cardId);
+      console.log(result);
+      setShouldUpdate(!shouldUpdate);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -45,19 +81,28 @@ export function UserProfile() {
         const user = await getUser();
         setLoggedIn(true);
 
+        console.log(user);
         if (user) {
           const fetchedFormState = {
             firstName: user.first_name,
             lastName: user.last_name,
             email: user.email,
             username: user.username,
-            promotion: user.promotion,
+            receive_promotions: user.movie_profile.receive_promotions,
+            address: {
+              street: user.address?.street || "",
+              city: user.address?.city || "",
+              state: user.address?.state || "",
+              zip: user.address?.zip || "",
+            },
           };
+
+          setUserId(user.id);
           setFormState(fetchedFormState);
           setInitialFormState(fetchedFormState);
 
-          const payments = await getPayments(user.id);
-          setPayments(payments);
+          const paymentArray = await getPayments(user.id);
+          setPayments(paymentArray);
         }
       } catch (error) {
         alert(error);
@@ -66,19 +111,17 @@ export function UserProfile() {
     };
 
     getUserInfo();
-  }, []);
+  }, [shouldUpdate]);
 
   const toggleEditMode = async () => {
     if (isEditable) {
-      // Check if form state was changed
       const formChanged =
         JSON.stringify(formState) !== JSON.stringify(initialFormState);
 
       if (formChanged) {
         try {
-          // Call update API method here
-          await updateUser(formState);
-          setInitialFormState(formState); // Update initial state after successful save
+          await updateUser(formState, userId);
+          setInitialFormState(formState);
           alert("User updated successfully");
         } catch (error) {
           alert("Error updating user: " + error.message);
@@ -88,20 +131,14 @@ export function UserProfile() {
     setIsEditable(!isEditable);
   };
 
-  const cancel = (event) => {
-    event.preventDefault();
-    // Revert form state to initial values when canceled
+  const cancelEdit = () => {
     setFormState(initialFormState);
-    document.getElementById("addCard").close();
+    setIsEditable(false);
   };
 
   if (loading) {
     return <Loading message="Loading User" />;
   }
-
-  const deleteCard = (cardId) => {
-    console.log("Deleting Card " + cardId);
-  };
 
   return (
     <div>
@@ -111,15 +148,36 @@ export function UserProfile() {
             <div className="card">
               <div className="card-title flex justify-between px-2">
                 <div>Profile Details</div>
-                <button
-                  className="btn-primary btn btn-sm text-white"
-                  onClick={toggleEditMode}
-                >
-                  {isEditable ? "Save" : "Edit"}
-                </button>
+                <div className="flex justify-end gap-2">
+                  <button
+                    className="btn-primary btn btn-sm text-white"
+                    onClick={toggleEditMode}
+                  >
+                    {isEditable ? "Save" : "Edit"}
+                  </button>
+                  {isEditable && (
+                    <button
+                      className="btn-secondary btn btn-sm text-white"
+                      onClick={cancelEdit}
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
               </div>
               <form action="">
                 <div className="flex flex-col gap-2 py-2">
+                  <label className="input input-bordered input-primary flex items-center gap-2">
+                    <div className="font-semibold">Email :</div>
+                    <input
+                      type="text"
+                      className="grow"
+                      name="email"
+                      value={formState.email}
+                      onChange={handleChange}
+                      readOnly
+                    />
+                  </label>
                   <label className="input input-bordered flex input-primary items-center gap-2">
                     <div className="font-semibold">First Name :</div>
                     <input
@@ -144,17 +202,7 @@ export function UserProfile() {
                       readOnly={!isEditable}
                     />
                   </label>
-                  <label className="input input-bordered input-primary flex items-center gap-2">
-                    <div className="font-semibold">Email :</div>
-                    <input
-                      type="text"
-                      className="grow"
-                      name="email"
-                      value={formState.email}
-                      onChange={handleChange}
-                      readOnly={!isEditable}
-                    />
-                  </label>
+
                   <label className="input input-bordered input-primary flex items-center gap-2">
                     <div className="font-semibold">Username :</div>
                     <input
@@ -167,22 +215,69 @@ export function UserProfile() {
                       readOnly={!isEditable}
                     />
                   </label>
+                  <div className="px-2 font-semibold">Billing Address</div>
+                  <label className="input input-bordered flex input-primary items-center gap-2">
+                    <div className="font-semibold">Street Address:</div>
+                    <input
+                      type="text"
+                      className="grow"
+                      name="address.street"
+                      value={formState.address.street}
+                      onChange={handleChange}
+                      readOnly={!isEditable}
+                    />
+                  </label>
+                  <label className="input input-bordered flex input-primary items-center gap-2">
+                    <div className="font-semibold">City:</div>
+                    <input
+                      type="text"
+                      className="grow"
+                      name="address.city"
+                      value={formState.address.city}
+                      onChange={handleChange}
+                      readOnly={!isEditable}
+                    />
+                  </label>
+                  <label className="input input-bordered flex input-primary items-center gap-2">
+                    <div className="font-semibold">State:</div>
+                    <input
+                      type="text"
+                      className="grow"
+                      name="address.state"
+                      value={formState.address.state}
+                      onChange={handleChange}
+                      readOnly={!isEditable}
+                    />
+                  </label>
+                  <label className="input input-bordered flex input-primary items-center gap-2">
+                    <div className="font-semibold">Zip Code:</div>
+                    <input
+                      type="text"
+                      className="grow"
+                      name="address.zip"
+                      value={formState.address.zip}
+                      onChange={handleChange}
+                      readOnly={!isEditable}
+                    />
+                  </label>
                   <div className="w-full flex ">
                     <label className="label cursor-pointer">
                       <span className="label-text text-lg">
-                        Do you wish to receive promotions?{" "}
+                        Do you wish to receive promotions?
                       </span>
                       <input
                         type="checkbox"
-                        defaultChecked
+                        name="receive_promotions"
+                        checked={formState.receive_promotions}
+                        onChange={handleChange}
                         className="checkbox checkbox-primary checkbox-sm mx-2"
+                        disabled={!isEditable}
                       />
                     </label>
                   </div>
-
-                  <button className="btn btn-primary btn-sm text-lg text-white">
-                    Reset Password
-                  </button>
+                  <div className="btn btn-primary btn-sm text-lg text-white">
+                    <a href="/reset-password">Reset Password</a>
+                  </div>
                 </div>
               </form>
             </div>
@@ -190,8 +285,11 @@ export function UserProfile() {
               <div className="card-title">Saved Cards</div>
               <div className="card-content">
                 {payments.map((card) => (
-                  <div className="grid-item min-w-fit" key={card.name}>
-                    <PaymentCard card={card} onDelete={deleteCard(card.id)} />
+                  <div className="w-full" key={card.id}>
+                    <PaymentCard
+                      card={card}
+                      onDelete={() => deletePaymentCard(card.id)}
+                    />
                   </div>
                 ))}
               </div>
@@ -204,6 +302,8 @@ export function UserProfile() {
               <dialog id="addCard" className="modal">
                 <AddCardModal
                   onClose={() => document.getElementById("addCard").close()}
+                  onAdd={() => handleCardAdd()}
+                  userId={userId}
                 />
               </dialog>
             </div>

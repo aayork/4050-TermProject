@@ -6,6 +6,7 @@ export const register = async ({
   email,
   username,
   password,
+  receive_promotions,
 }) => {
   const response = await fetch(`${API_BASEURL}api/auth/register/`, {
     method: "POST",
@@ -20,6 +21,7 @@ export const register = async ({
       first_name: firstName,
       last_name: lastName,
       status: "customer",
+      receive_promotions: receive_promotions,
     }),
   });
 
@@ -121,7 +123,6 @@ export const getMovies = async () => {
   });
 
   const result = await parseResponse(response);
-
   return result;
 };
 
@@ -266,8 +267,20 @@ export const deleteUser = async (id) => {
   return result;
 };
 
-export const updateUser = async (user) => {
-  const response = await fetch(`${API_BASEURL}api/auth/updateUser/${user.id}`, {
+export const updateUser = async (user, userId) => {
+  console.log(
+    JSON.stringify({
+      email: user.email,
+      username: user.username,
+      first_name: user.firstName,
+      last_name: user.lastName,
+      movie_profile: {
+        status: user.status,
+        receive_promotions: user.receive_promotions,
+      },
+    })
+  );
+  const response = await fetch(`${API_BASEURL}api/auth/updateUser/${userId}/`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -278,12 +291,22 @@ export const updateUser = async (user) => {
       first_name: user.firstName,
       last_name: user.lastName,
       movie_profile: {
-        status: user.movie_profile.status,
+        status: user.status,
+        receive_promotions: user.receive_promotions,
       },
     }),
   });
 
   const result = await parseResponse(response);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
   return result;
 };
 
@@ -361,6 +384,14 @@ export const createPayment = async (card) => {
 
   const result = await parseResponse(response);
 
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
   return result;
 };
 
@@ -375,8 +406,7 @@ export const deletePayment = async (id) => {
     },
   );
 
-  const result = await parseResponse(response);
-  return result;
+  return response;
 };
 
 // parse response for api

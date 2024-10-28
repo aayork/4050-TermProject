@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { createPayment } from "../utils/API";
 
-export function AddCardModal({ onClose }) {
-  const [cardForm, setCardForm] = useState({
-    card_name: "",
-    card_number: "",
-    expire_date: "",
-    cvv: "",
-  });
+export function AddCardModal({ onAdd, onClose, userId }) {
+  const initForm = {
+    user: userId,
+    firstName: "",
+    lastName: "",
+    cardNumber: "",
+    expirationDate: "",
+    CVV: "",
+  };
+  const [cardForm, setCardForm] = useState(initForm);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,12 +24,36 @@ export function AddCardModal({ onClose }) {
     e.preventDefault();
 
     try {
+      if (cardForm.cardNumber.length != 16) {
+        alert("Card Number must be 16 characters");
+        return;
+      }
+
+      cardForm.expirationDate = convertToDate(cardForm.expirationDate);
       const result = await createPayment(cardForm);
       console.log(result);
-      onClose();
+      onAdd();
     } catch (exception) {
       console.log(exception);
+      alert(exception);
+      setCardForm(initForm);
     }
+  };
+
+  const convertToDate = (dateString) => {
+    try {
+      const [month, year] = dateString.split("/").map(Number);
+      const date = new Date(year, month - 1);
+      const formattedDate = date.toISOString().split("T")[0];
+      return formattedDate;
+    } catch {
+      alert("Error with Expiration Date Format");
+    }
+  };
+
+  const handleClose = (event) => {
+    event.preventDefault();
+    onClose();
   };
 
   return (
@@ -39,28 +66,24 @@ export function AddCardModal({ onClose }) {
       >
         <label className="relative w-full flex flex-col">
           <span className="font-semibold">Name on Card</span>
-          <input
-            className="rounded-md peer pl-12 pr-2 py-2 border-2 border-monkey-green placeholder-gray-300"
-            type="text"
-            name="card_name"
-            placeholder="John Doe"
-            value={cardForm.card_name}
-            onChange={handleChange}
-          />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="absolute bottom-0 left-0 -mb-0.5 transform translate-x-1/2 -translate-y-1/2 text-black peer-placeholder-shown:text-gray-300 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1a1 1 0 001 1h14a1 1 0 001-1v-1c0-2.66-5.33-4-8-4z"
+          <div className="flex justify-between w-full gap-2">
+            <input
+              className="rounded-md peer pl-2 pr-2 w-1/2 py-2 border-2 border-monkey-green placeholder-gray-300"
+              type="text"
+              name="firstName"
+              placeholder="John"
+              value={cardForm.firstName}
+              onChange={handleChange}
             />
-          </svg>
+            <input
+              className="rounded-md peer pl-2 w-1/2 pr-2 py-2 border-2 border-monkey-green placeholder-gray-300"
+              type="text"
+              name="lastName"
+              placeholder="Doe"
+              value={cardForm.lastName}
+              onChange={handleChange}
+            />
+          </div>
         </label>
 
         <label className="relative w-full flex flex-col">
@@ -68,9 +91,9 @@ export function AddCardModal({ onClose }) {
           <input
             className="rounded-md peer pl-12 pr-2 py-2 border-2 border-monkey-green placeholder-gray-300"
             type="text"
-            name="card_number"
-            placeholder="0000 0000 0000"
-            value={cardForm.card_number}
+            name="cardNumber"
+            placeholder="0000000000000000"
+            value={cardForm.cardNumber}
             onChange={handleChange}
           />
           <svg
@@ -89,62 +112,37 @@ export function AddCardModal({ onClose }) {
           </svg>
         </label>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 w-full">
           <label className="relative flex-1 flex flex-col">
             <span className="font-semibold">Expiration date</span>
             <input
-              className="rounded-md peer pl-12 pr-2 py-2 border-2 border-monkey-green placeholder-gray-300"
+              className="rounded-md peer pl-2 pr-2 py-2 border-2 border-monkey-green placeholder-gray-300"
               type="text"
-              name="expire_date"
+              name="expirationDate"
               placeholder="MM/YYYY"
-              value={cardForm.expire_date}
+              value={cardForm.expirationDate}
               onChange={handleChange}
             />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="absolute bottom-0 left-0 -mb-0.5 transform translate-x-1/2 -translate-y-1/2 text-black peer-placeholder-shown:text-gray-300 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M8 7V3m8 4V3m-9 8h10l-2 5H9l-2-5z"
-              />
-            </svg>
           </label>
 
           <label className="relative flex-1 flex flex-col">
             <span className="font-semibold">CVV</span>
             <input
-              className="rounded-md peer pl-12 pr-2 py-2 border-2 border-monkey-green placeholder-gray-300"
+              className="rounded-md peer pl-2 pr-2 py-2 border-2 border-monkey-green placeholder-gray-300"
               type="text"
-              name="cvv"
+              name="CVV"
               placeholder="000"
-              value={cardForm.cvv}
+              value={cardForm.CVV}
               onChange={handleChange}
             />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="absolute bottom-0 left-0 -mb-0.5 transform translate-x-1/2 -translate-y-1/2 text-black peer-placeholder-shown:text-gray-300 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1a1 1 0 001 1h14a1 1 0 001-1v-1c0-2.66-5.33-4-8-4z"
-              />
-            </svg>
           </label>
         </div>
 
         <div className="w-full flex justify-between gap-4">
-          <button className="btn btn-sm btn-outline flex-1" onClick={onClose}>
+          <button
+            className="btn btn-sm btn-outline flex-1"
+            onClick={handleClose}
+          >
             Cancel
           </button>
           <button
