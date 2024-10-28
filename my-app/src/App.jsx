@@ -10,6 +10,7 @@ import { Admin } from "./pages/Admin";
 import { UserProfile } from "./pages/UserProfile";
 import { OrderSummary } from "./pages/CheckoutSubPages/OrderSummary";
 import { ResetPassword } from "./pages/ResetPassword";
+import { ResetConfirm } from "./pages/ResetConfirm";
 
 function App() {
   return (
@@ -27,6 +28,10 @@ function App() {
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/summary" element={<OrderSummary />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route
+            path="/password-reset/confirm/:uid/:token"
+            element={<ResetConfirm />}
+          />
         </Routes>
       </Router>
     </div>
