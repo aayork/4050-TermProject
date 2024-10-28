@@ -90,7 +90,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:5173/login/"
 # make sure this is set in the front end
-PASSWORD_RESET_CONFIRM_REDIRECT_BASE_URL = "http://localhost:5173/password-reset/confirm/"
+PASSWORD_RESET_CONFIRM_BASE_URL = "http://localhost:5173/password-reset/confirm/"
 # make sure this is set in the front end
 
 env = environ.Env()

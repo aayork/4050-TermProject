@@ -72,7 +72,7 @@ export const confirmEmail = async (key) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ key: key }),
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -133,7 +133,7 @@ export const getMovieDetails = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -179,7 +179,7 @@ export const updateMovie = async (movie) => {
       body: {
         movie: JSON.stringify(movie),
       },
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -326,7 +326,7 @@ export const updatePromotion = async (promo) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(promo),
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -372,7 +372,7 @@ export const deletePayment = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -396,3 +396,51 @@ async function parseResponse(response) {
 
   return parsedResult;
 }
+
+// Sends reset pw email
+export const requestPasswordReset = async (email) => {
+  const response = await fetch(`${API_BASEURL}api/auth/password/reset/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  });
+
+  const result = await parseResponse(response);
+
+  if (!response.ok) {
+    const errorMessage = Object.values(result).join("\n");
+    throw new Error(errorMessage);
+  }
+
+  return result;
+};
+
+// Resets pw on backend
+export const confirmPasswordReset = async (uid, token, newPassword) => {
+  const response = await fetch(
+    `${API_BASEURL}api/auth/password/reset/confirm/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        new_password1: newPassword,
+        new_password2: newPassword,
+        uid,
+        token,
+      }),
+    },
+  );
+
+  const result = await parseResponse(response);
+
+  if (!response.ok) {
+    const errorMessage = Object.values(result).join("\n");
+    throw new Error(errorMessage);
+  }
+
+  return result;
+};

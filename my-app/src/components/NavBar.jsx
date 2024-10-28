@@ -73,7 +73,7 @@ export function NavBar() {
                 <a href="/">
                   <img
                     className="h-8 w-auto text-black text-xs ml-2"
-                    src="src/assets/banana.png"
+                    src="/src/assets/banana.png"
                     alt="Movie Monkey"
                   />
                 </a>
