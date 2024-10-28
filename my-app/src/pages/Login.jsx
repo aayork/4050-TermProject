@@ -90,14 +90,14 @@ export function Login() {
                 className="text-xs text-white underline m-2"
                 href="/createAccount"
               >
-                Don&apos;t have an account? Create One!
+                Create an account!
               </a>
               <a
                 href="/reset-password"
                 className="text-xs text-white underline m-2"
                 aria-current="page"
               >
-                Forgot Password
+                Forgot Password?
               </a>
             </div>
           </div>

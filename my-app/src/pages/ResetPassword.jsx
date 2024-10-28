@@ -13,7 +13,7 @@ export function ResetPassword() {
     try {
       // Pass the email to the requestPasswordReset function
       const result = await requestPasswordReset(email);
-      setMessage("Password reset link sent successfully.");
+      setMessage("If an account exists, a reset email was sent successfully.");
       console.log(result);
     } catch (error) {
       setMessage(error.message || "Failed to send reset link.");
