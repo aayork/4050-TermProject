@@ -131,6 +131,11 @@ export function UserProfile() {
     setIsEditable(!isEditable);
   };
 
+  const cancelEdit = () => {
+    setFormState(initialFormState);
+    setIsEditable(false);
+  };
+
   if (loading) {
     return <Loading message="Loading User" />;
   }
@@ -143,12 +148,22 @@ export function UserProfile() {
             <div className="card">
               <div className="card-title flex justify-between px-2">
                 <div>Profile Details</div>
-                <button
-                  className="btn-primary btn btn-sm text-white"
-                  onClick={toggleEditMode}
-                >
-                  {isEditable ? "Save" : "Edit"}
-                </button>
+                <div className="flex justify-end gap-2">
+                  <button
+                    className="btn-primary btn btn-sm text-white"
+                    onClick={toggleEditMode}
+                  >
+                    {isEditable ? "Save" : "Edit"}
+                  </button>
+                  {isEditable && (
+                    <button
+                      className="btn-secondary btn btn-sm text-white"
+                      onClick={cancelEdit}
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
               </div>
               <form action="">
                 <div className="flex flex-col gap-2 py-2">

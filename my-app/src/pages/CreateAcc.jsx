@@ -18,10 +18,12 @@ export function CreateAcc() {
 
   //updated fields on change
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, type, checked, value } = event.target;
+
+    const newValue = type === "checkbox" ? checked : value;
     setFormState({
       ...formState,
-      [name]: value,
+      [name]: newValue,
     });
   };
 
@@ -118,11 +120,12 @@ export function CreateAcc() {
           <div className="w-full flex ">
             <label className="label cursor-pointer">
               <span className="label-text text-sm text-white">
-                Do you wish to receive promotions?{" "}
+                Do you wish to receive promotions?
               </span>
               <input
                 type="checkbox"
-                defaultChecked
+                name="receive_promotions"
+                onChange={handleChange}
                 className="checkbox checkbox-secondary checkbox-sm mx-2"
               />
             </label>

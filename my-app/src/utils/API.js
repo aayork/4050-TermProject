@@ -6,6 +6,7 @@ export const register = async ({
   email,
   username,
   password,
+  receive_promotions,
 }) => {
   const response = await fetch(`${API_BASEURL}api/auth/register/`, {
     method: "POST",
@@ -20,6 +21,7 @@ export const register = async ({
       first_name: firstName,
       last_name: lastName,
       status: "customer",
+      receive_promotions: receive_promotions,
     }),
   });
 
