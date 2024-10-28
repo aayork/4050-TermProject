@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-pyy3t_go-ui^1$=pf+1isymgcjpie+mar$c60ryu15u27=p@#x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['movie-monkey.c7k2ok6mc24d.us-east-1.rds.amazonaws.com', 'localhost']
+ALLOWED_HOSTS = ['movie-monkey.c7k2ok6mc24d.us-east-1.rds.amazonaws.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
