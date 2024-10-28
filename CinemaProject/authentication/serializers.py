@@ -12,12 +12,14 @@ class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
     status = serializers.ChoiceField(choices=[('admin', 'ADMIN'), ('customer', 'CUSTOMER')])
+    receive_promotions = serializers.BooleanField(required=False)
 
     def get_cleaned_data(self):
         data = super().get_cleaned_data()
         data['first_name'] = self.validated_data.get('first_name', '')
         data['last_name'] = self.validated_data.get('last_name', '')
         data['status'] = self.validated_data.get('status', 'customer')
+        data['receive_promotions'] = self.validated_data.get('receive_promotions', '')
         return data
 
     def save(self, request):
@@ -28,7 +30,9 @@ class CustomRegisterSerializer(RegisterSerializer):
 
         # Create MovieProfile with the status passed
         status = self.validated_data.get('status', 'customer')
-        movie_profile, created = MovieProfile.objects.get_or_create(user=user, defaults={'status': status})
+        receive_promotions = self.validated_data.get('receive_promotions', '')
+        movie_profile, created = MovieProfile.objects.get_or_create(
+            user=user, defaults={'status': status, 'receive_promotions': receive_promotions})
 
         if created:
             print(f"MovieProfile created for {user} with status {status}")
@@ -275,7 +279,7 @@ class MovieProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MovieProfile
-        fields = ['status', 'payments', 'addresses', 'orders', 'receive_promotion']
+        fields = ['status', 'payments', 'addresses', 'orders', 'receive_promotions']
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -298,6 +302,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
         if status:
             movie_profile = instance.movie_profile  # Access the related MovieProfile
             movie_profile.status = status
+            movie_profile.save()
+
+        receive_promotions = validated_data.get('receive_promotions', None)
+        if receive_promotions:
+            movie_profile = instance.movie_profile
+            movie_profile.receive_promotions = receive_promotions
             movie_profile.save()
 
         return instance

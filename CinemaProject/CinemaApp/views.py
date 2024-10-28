@@ -163,6 +163,7 @@ class UpdatePromotionView(generics.UpdateAPIView):
     queryset = Promotion.objects.all()
     serializer_class = PromotionSerializer
 
+
 class validatePromotion(generics.RetrieveAPIView):
     queryset = Promotion.objects.all()
     serializer_class = PromotionSerializer
