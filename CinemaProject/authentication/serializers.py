@@ -297,17 +297,22 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.email = validated_data.get('email', instance.email)
         instance.save()
 
-        # Update UserProfile fields
-        status = validated_data.get('status', None)
-        if status:
+        # Update MovieProfile fields if they exist in validated_data
+        movie_profile_data = validated_data.get('movie_profile', None)
+        if movie_profile_data:
             movie_profile = instance.movie_profile  # Access the related MovieProfile
-            movie_profile.status = status
-            movie_profile.save()
 
-        receive_promotions = validated_data.get('receive_promotions', None)
-        movie_profile = instance.movie_profile
-        movie_profile.receive_promotions = receive_promotions
-        movie_profile.save()
+            # Update the status if it is provided
+            status = movie_profile_data.get('status', None)
+            if status is not None:  # Only update if provided
+                movie_profile.status = status
+
+            # Update receive_promotions if it is provided
+            receive_promotions = movie_profile_data.get('receive_promotions', None)
+            if receive_promotions is not None:  # Only update if provided
+                movie_profile.receive_promotions = receive_promotions
+
+            movie_profile.save()
 
         return instance
 
