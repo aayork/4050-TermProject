@@ -9,6 +9,7 @@ import { CreateAcc } from "./pages/CreateAcc";
 import { Admin } from "./pages/Admin";
 import { UserProfile } from "./pages/UserProfile";
 import { OrderSummary } from "./pages/CheckoutSubPages/OrderSummary";
+import { ResetPassword } from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/admin/" element={<Admin />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/summary" element={<OrderSummary />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </Router>
     </div>
