@@ -275,9 +275,9 @@ export function UserProfile() {
                       />
                     </label>
                   </div>
-                  <button className="btn btn-primary btn-sm text-lg text-white">
-                    Reset Password
-                  </button>
+                  <div className="btn btn-primary btn-sm text-lg text-white">
+                    <a href="/reset-password">Reset Password</a>
+                  </div>
                 </div>
               </form>
             </div>
