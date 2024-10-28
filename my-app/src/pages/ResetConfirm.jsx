@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { confirmEmail } from "../utils/API";
+import { confirmPasswordReset } from "../utils/API";
 
 export function ResetConfirm() {
   const { uid, token } = useParams();
@@ -39,10 +39,19 @@ export function ResetConfirm() {
   }, [token]);
 
   // Handle form submission
-  const handleFormSubmit = (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
-    alert("Password reset successful!");
-    // Add any additional actions for form submission if needed
+    if (formState.password !== formState.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    try {
+      await confirmPasswordReset(uid, token, formState.password);
+      alert("Password reset successful!");
+    } catch (error) {
+      alert("An error occurred while resetting your password.");
+    }
   };
 
   return (
