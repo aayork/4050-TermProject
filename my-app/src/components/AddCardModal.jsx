@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { createPayment } from "../utils/API";
 
-export function AddCardModal({ onClose }) {
+export function AddCardModal({ onClose, userId }) {
   const [cardForm, setCardForm] = useState({
-    card_name: "",
-    card_number: "",
-    expire_date: "",
-    cvv: "",
+    user: userId,
+    firstName: "",
+    lastName: "",
+    cardNumber: "",
+    expirationDate: "",
+    CVV: "",
   });
 
   const handleChange = (e) => {
@@ -21,6 +23,7 @@ export function AddCardModal({ onClose }) {
     e.preventDefault();
 
     try {
+      console.log(cardForm);
       const result = await createPayment(cardForm);
       console.log(result);
       onClose();
@@ -42,9 +45,17 @@ export function AddCardModal({ onClose }) {
           <input
             className="rounded-md peer pl-12 pr-2 py-2 border-2 border-monkey-green placeholder-gray-300"
             type="text"
-            name="card_name"
-            placeholder="John Doe"
-            value={cardForm.card_name}
+            name="firstName"
+            placeholder="John"
+            value={cardForm.firstName}
+            onChange={handleChange}
+          />
+          <input
+            className="rounded-md peer pl-12 pr-2 py-2 border-2 border-monkey-green placeholder-gray-300"
+            type="text"
+            name="lastName"
+            placeholder="Doe"
+            value={cardForm.lastName}
             onChange={handleChange}
           />
           <svg
@@ -68,9 +79,9 @@ export function AddCardModal({ onClose }) {
           <input
             className="rounded-md peer pl-12 pr-2 py-2 border-2 border-monkey-green placeholder-gray-300"
             type="text"
-            name="card_number"
+            name="cardNumber"
             placeholder="0000 0000 0000"
-            value={cardForm.card_number}
+            value={cardForm.cardNumber}
             onChange={handleChange}
           />
           <svg
@@ -95,9 +106,9 @@ export function AddCardModal({ onClose }) {
             <input
               className="rounded-md peer pl-12 pr-2 py-2 border-2 border-monkey-green placeholder-gray-300"
               type="text"
-              name="expire_date"
+              name="expirationDate"
               placeholder="MM/YYYY"
-              value={cardForm.expire_date}
+              value={cardForm.expirationDate}
               onChange={handleChange}
             />
             <svg
@@ -123,7 +134,7 @@ export function AddCardModal({ onClose }) {
               type="text"
               name="cvv"
               placeholder="000"
-              value={cardForm.cvv}
+              value={cardForm.CVV}
               onChange={handleChange}
             />
             <svg
