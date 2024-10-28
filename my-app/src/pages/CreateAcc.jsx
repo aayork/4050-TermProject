@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { register } from "../utils/API";
+import { useNavigate } from "react-router-dom";
 
 export function CreateAcc() {
+  const navigate = useNavigate();
   // set initial form state
   const [formState, setFormState] = useState({
     firstName: "",
@@ -11,6 +13,7 @@ export function CreateAcc() {
     password: "",
     confirmPassword: "",
     status: "customer",
+    receive_promotions: false,
   });
 
   //updated fields on change
@@ -38,10 +41,12 @@ export function CreateAcc() {
           username: formState.username,
           password: formState.password,
           status: formState.status,
+          receive_promotions: formState.receive_promotions,
         });
 
         console.log(result);
         alert(result);
+        navigate("/login");
       } catch (error) {
         alert(error);
       }
@@ -109,6 +114,18 @@ export function CreateAcc() {
               type="password"
               onChange={handleChange}
             ></input>
+          </div>
+          <div className="w-full flex ">
+            <label className="label cursor-pointer">
+              <span className="label-text text-sm text-white">
+                Do you wish to receive promotions?{" "}
+              </span>
+              <input
+                type="checkbox"
+                defaultChecked
+                className="checkbox checkbox-secondary checkbox-sm mx-2"
+              />
+            </label>
           </div>
           <div className="flex flex-col">
             <button
