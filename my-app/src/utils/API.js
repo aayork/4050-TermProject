@@ -278,7 +278,7 @@ export const updateUser = async (user, userId) => {
         status: user.status,
         receive_promotions: user.receive_promotions,
       },
-    })
+    }),
   );
   const response = await fetch(`${API_BASEURL}api/auth/updateUser/${userId}/`, {
     method: "PUT",
@@ -448,7 +448,12 @@ export const requestPasswordReset = async (email) => {
 };
 
 // Resets pw on backend
-export const confirmPasswordReset = async (uid, token, newPassword) => {
+export const confirmPasswordReset = async (
+  uid,
+  token,
+  newPassword1,
+  newPassword2,
+) => {
   const response = await fetch(
     `${API_BASEURL}api/auth/password/reset/confirm/`,
     {
@@ -457,8 +462,8 @@ export const confirmPasswordReset = async (uid, token, newPassword) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        new_password1: newPassword,
-        new_password2: newPassword,
+        new_password1: newPassword1,
+        new_password2: newPassword2,
         uid,
         token,
       }),

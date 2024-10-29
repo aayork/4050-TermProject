@@ -23,15 +23,15 @@ export function ResetConfirm() {
   // Handle form submission
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    if (formState.password !== formState.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-
     try {
-      await confirmPasswordReset(uid, token, formState.password);
+      await confirmPasswordReset(
+        uid,
+        token,
+        formState.password,
+        formState.confirmPassword,
+      );
       alert("Password reset successful!");
-    } catch (error) {
+    } catch {
       alert("An error occurred while resetting your password.");
     }
   };
