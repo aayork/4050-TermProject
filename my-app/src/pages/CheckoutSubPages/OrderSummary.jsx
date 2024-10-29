@@ -36,6 +36,18 @@ export function OrderSummary() {
       ) : (
         <p>No seats selected.</p>
       )}
+
+      {selectedSeats.map((seat) => (
+        <div key={seat}>
+          <button className="btn mb-2" onClick={() => deleteSeat(seat)}>
+            Delete
+          </button>
+        </div>
+      ))}
+
+      <Link to="/" className="btn mt-5 p-2">
+        Back to Movie Selection
+      </Link>
     </div>
   );
 }
