@@ -45,7 +45,7 @@ export function Admin() {
   }
 
   return (
-    <div className="mt-2">
+    <div>
       {isAdmin ? (
         <div className="w-full">
           <div role="tablist" className="tabs tabs-bordered w-full flex">
