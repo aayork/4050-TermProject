@@ -62,7 +62,7 @@ export function ManageUsers() {
           className="btn my-2 flex items-center"
           onClick={openAddUserModal}
         >
-          Add Employee
+          Add User
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -89,7 +89,7 @@ export function ManageUsers() {
       <div className="flex flex-col">
         <div className="">
           <h1 className="font-semibold"> Managers:</h1>
-          <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+          <div className="grid gap-4 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2">
             {users
               .filter((user) => user.movie_profile.status == "admin")
               .map((user) => (
@@ -102,24 +102,9 @@ export function ManageUsers() {
               ))}
           </div>
         </div>
-        <div className="">
-          <h1 className="font-semibold"> Employees:</h1>
-          <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
-            {users
-              .filter((user) => user.movie_profile.status == "employee")
-              .map((user) => (
-                <div className="grid-item min-w-fit" key={user.id}>
-                  <UserCard
-                    user={user}
-                    onEdit={() => openEditUserModal(user)}
-                  />
-                </div>
-              ))}
-          </div>
-        </div>
-        <div className="">
+        <div className="my-4">
           <h1 className="font-semibold"> Customers:</h1>
-          <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+          <div className="grid gap-4 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2">
             {users
               .filter((user) => user.movie_profile.status == "customer")
               .map((user) => (

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { PromoCard } from "../../components/PromoCard";
 import { EditPromoModal } from "../../components/EditPromoModal";
 import { Loading } from "../../components/Loading";
-//import { getPromos } from "../../utils/API";
+import { getPromos } from "../../utils/API";
 
 export function ManagePromos() {
   const [promos, setPromos] = useState([]);
@@ -21,41 +21,24 @@ export function ManagePromos() {
 
   const handleSavePromo = (promoData) => {
     if (selectedPromo) {
-      // Update the movie in the list (edit)
+      // Update the promo in the list (edit)
       console.log("Edit promo:", promoData);
     } else {
-      // Add a new movie to the list
+      // Add a new promo to the list
       console.log("Add new promo:", promoData);
     }
   };
 
   useEffect(() => {
     const fetchPromos = async () => {
-      //const promos = await getPromos();
-      setPromos(promoDemo);
+      const promoList = await getPromos();
+      console.log(promoList);
+      setPromos(promoList);
       setLoading(false);
     };
 
     fetchPromos();
   }, []);
-
-  const halfOff = {
-    name: "Half Off",
-    code: "50OFF",
-    discount: "50",
-    startDate: new Date("9/29/2024"),
-    endDate: new Date("10/31/2024"),
-  };
-
-  const quarterOff = {
-    name: "Fall Discount",
-    code: "FALL24",
-    discount: "24",
-    startDate: new Date("9/29/2024"),
-    endDate: new Date("10/31/2024"),
-  };
-
-  const promoDemo = [halfOff, quarterOff];
 
   if (loading) {
     return <Loading message="Loading Promos" />;
@@ -96,9 +79,9 @@ export function ManagePromos() {
       <div className="flex flex-col">
         <div className="">
           <h1 className="font-semibold"> Active: </h1>
-          <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+          <div className="grid grid gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos.map((promo) => (
-              <div className="grid-item min-w-fit" key={promo.name}>
+              <div className="grid-item min-w-fit" key={promo.code}>
                 <PromoCard
                   promo={promo}
                   onEdit={() => openEditPromoModal(promo)}
@@ -109,9 +92,9 @@ export function ManagePromos() {
         </div>
         <div className="">
           <h1 className="font-semibold"> Upcoming: </h1>
-          <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+          <div className="grid grid  gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos.map((promo) => (
-              <div className="grid-item min-w-fit" key={promo.name}>
+              <div className="grid-item min-w-fit" key={promo.code}>
                 <PromoCard
                   promo={promo}
                   onEdit={() => openEditPromoModal(promo)}
@@ -122,9 +105,9 @@ export function ManagePromos() {
         </div>
         <div className="">
           <h1 className="font-semibold"> Expired: </h1>
-          <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+          <div className="grid gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos.map((promo) => (
-              <div className="grid-item min-w-fit" key={promo.name}>
+              <div className="grid-item min-w-fit" key={promo.code}>
                 <PromoCard
                   promo={promo}
                   onEdit={() => openEditPromoModal(promo)}

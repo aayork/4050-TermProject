@@ -42,7 +42,9 @@ export function EditUserModal({ onClose, onSave, user }) {
 
   return (
     <div className="modal-box">
-      <h3 className="font-semibold text-lg">Add New User </h3>
+      <h1 className="font-semibold text-lg">
+        {user ? "Update User" : "Add User"}
+      </h1>
       <div className="border border-monkey-green"></div>
       <form method="dialog" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 py-2">
@@ -106,9 +108,8 @@ export function EditUserModal({ onClose, onSave, user }) {
             <option disabled defaultValue>
               Role
             </option>
-            <option value="admin">Manager</option>
-            <option value="employee">Employee</option>
-            <option value="user">Customer</option>
+            <option value="admin">Admin</option>
+            <option value="customer">Customer</option>
           </select>
         </div>
         <div className="modal-action mt-0">

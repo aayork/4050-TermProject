@@ -74,7 +74,7 @@ export const confirmEmail = async (key) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ key: key }),
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -134,7 +134,7 @@ export const getMovieDetails = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -180,7 +180,7 @@ export const updateMovie = async (movie) => {
       body: {
         movie: JSON.stringify(movie),
       },
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -327,6 +327,7 @@ export const getPromos = async () => {
 };
 
 export const createPromotion = async (promo) => {
+  console.log(JSON.stringify(promo));
   const response = await fetch(`${API_BASEURL}api/info/promotion/add`, {
     method: "POST",
     headers: {
@@ -349,7 +350,24 @@ export const updatePromotion = async (promo) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(promo),
-    },
+    }
+  );
+
+  const result = await parseResponse(response);
+
+  return result;
+};
+
+export const validatePromotion = async (code) => {
+  const response = await fetch(
+    `${API_BASEURL}api/info/promotion/update/${code}/`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(promo),
+    }
   );
 
   const result = await parseResponse(response);
@@ -403,7 +421,7 @@ export const deletePayment = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   return response;
@@ -462,7 +480,7 @@ export const confirmPasswordReset = async (uid, token, newPassword) => {
         uid,
         token,
       }),
-    },
+    }
   );
 
   const result = await parseResponse(response);
