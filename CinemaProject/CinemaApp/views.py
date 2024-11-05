@@ -11,9 +11,10 @@ from .models import MovieProfile
 from .models import Payment
 from authentication.serializers import (MovieSerializer, PromotionSerializer,
                                         MovieProfileSerializer, PaymentSerializer,
-                                        AddressSerializer, GetPaymentSerializer)
+                                        AddressSerializer, GetPaymentSerializer, CustomUserSerializer)
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
 
@@ -173,3 +174,4 @@ class validatePromotion(generics.RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+    
