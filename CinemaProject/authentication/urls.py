@@ -11,7 +11,7 @@ from dj_rest_auth.views import (
 )
 from .views import (email_confirm_redirect, password_reset_confirm_redirect,
                     CustomRegisterView, CustomUserDetailsView, GetAllUsers,
-                    UserUpdateView, UserDeleteView)
+                    UserUpdateView, UserDeleteView, validateAdmin)
 
 
 urlpatterns = [
@@ -32,4 +32,5 @@ urlpatterns = [
     path("password/reset/confirm/<str:uidb64>/<str:token>/",
          password_reset_confirm_redirect, name="password_reset_confirm"),
     path("password/reset/confirm/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
+    path('user/validateAdmin/<int:user_id>/', validateAdmin.as_view(), name='validate-admin')
 ]

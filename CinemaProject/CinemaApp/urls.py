@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views import MovieListView, MovieDetailView, PromotionDetailView, GetAllProfiles, MovieCreateView, MovieUpdateView, MovieDeleteView
 from .views import (DeletePaymentView, UserPaymentView, AddPaymentView,
-                    AddAddressView, DeleteAddressView, UserAddressView, AddPromotionView, UpdatePromotionView, validatePromotion, validateAdmin)
+                    AddAddressView, DeleteAddressView, UserAddressView, AddPromotionView, UpdatePromotionView, validatePromotion)
 
 urlpatterns = [
     path('getMovies/', MovieListView.as_view(), name='movie-list'),
@@ -19,7 +19,6 @@ urlpatterns = [
     path('user/address/add/', AddAddressView.as_view(), name='address-add'),
     path('user/address/delete/<int:id>/', DeleteAddressView.as_view(), name='address-delete'),
     path('user/address/<int:user_id>/', UserAddressView.as_view(), name='address-view'),
-    path('user/validateAdmin/<int:user_id>/', validateAdmin.as_view(), name='validate-admin'), 
 
     path('getPromotions/', PromotionDetailView.as_view(), name='promotion-details'),
     path('promotion/add/', AddPromotionView.as_view(), name='promotion-add'),

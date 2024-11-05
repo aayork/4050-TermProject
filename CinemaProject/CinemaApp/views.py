@@ -175,17 +175,3 @@ class validatePromotion(generics.RetrieveAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
     
-class validateAdmin(APIView):
-    # use a class based view because only returning boolean not entity JSON
-    # return a boolean instead of the actual record
-
-    # to make an endpoint be a get endpoint I must include a get method with the appropriate parameters 
-    def get(self, request, *args, **kwargs):
-        # retrieve movieProfile associated with passedIN UserId
-        # must include 
-        userPk = self.kwargs.get('user_id')
-        movieProfile = MovieProfile.objects.get(user_id=userPk)
-        if (movieProfile.status=='admin'):
-            return Response(True, status=status.HTTP_200_OK)
-        else:
-            return Response(False, status=status.HTTP_200_OK)
