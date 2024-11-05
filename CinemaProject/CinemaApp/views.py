@@ -163,6 +163,14 @@ class AddPromotionView(generics.CreateAPIView):
 class UpdatePromotionView(generics.UpdateAPIView):
     queryset = Promotion.objects.all()
     serializer_class = PromotionSerializer
+    lookup_field = 'code'
+
+    def get_object(self):
+        code = self.kwargs.get("code")
+        try:
+            return Promotion.objects.get(code=code)
+        except Promotion.DoesNotExist:
+            raise NotFound("Promotion not found")
 
 
 class validatePromotion(generics.RetrieveAPIView):
