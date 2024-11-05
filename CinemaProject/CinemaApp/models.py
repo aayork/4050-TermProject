@@ -155,7 +155,6 @@ cipher = Fernet(key)
 from django.db import models
 from django.core.validators import RegexValidator, ValidationError
 
-
 class Payment(models.Model):
     user = models.ForeignKey(MovieProfile, related_name="payments", on_delete=models.CASCADE)
     cardNumber = models.BinaryField(blank=False, null=False, default=0000000000000000)
