@@ -21,18 +21,23 @@ export function ManageUsers() {
 
   const handleSaveUser = async (userData) => {
     if (selectedUser) {
-      // Update the user in the list (edit)
-      console.log("Edit user:", userData);
       try {
-        await updateUser(formState);
-        setInitialFormState(formState);
+        const result = await updateUser(userData);
+        setShouldUpdate(!shouldUpdate);
+        console.log(result);
       } catch (error) {
         console.error("Error updating user:", error);
         alert("Failed to update user information.");
       }
     } else {
-      // Add a new user to the list
-      console.log("Add new user:", userData);
+      try {
+        const result = await register(userData);
+        setShouldUpdate(!shouldUpdate);
+        console.log(result);
+      } catch (error) {
+        console.error("Error updating user:", error);
+        alert("Failed to update user information.");
+      }
     }
   };
 
@@ -49,7 +54,7 @@ export function ManageUsers() {
     };
 
     fetchUsers();
-  }, []);
+  }, [shouldUpdate]);
 
   if (loading) {
     return <Loading message="Loading Users" />;

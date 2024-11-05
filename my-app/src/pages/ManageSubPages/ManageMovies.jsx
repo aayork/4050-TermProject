@@ -50,7 +50,6 @@ export function ManageMovies() {
     try {
       const result = await deleteMovie(selectedMovie.id);
       setShouldUpdate(!shouldUpdate);
-      document.getElementById("movieModal").close();
       alert(result.message);
     } catch (error) {
       console.log(error);

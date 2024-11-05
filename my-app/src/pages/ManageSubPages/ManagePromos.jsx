@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { PromoCard } from "../../components/PromoCard";
 import { EditPromoModal } from "../../components/EditPromoModal";
 import { Loading } from "../../components/Loading";
-import { getPromos } from "../../utils/API";
+import { createPromotion, getPromos, updatePromotion } from "../../utils/API";
 
 export function ManagePromos() {
   const [promos, setPromos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPromo, setSelectedPromo] = useState(null);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
 
   const openAddPromoModal = () => {
     setSelectedPromo(null);
@@ -19,26 +20,36 @@ export function ManagePromos() {
     document.getElementById("promoModal").showModal();
   };
 
-  const handleSavePromo = (promoData) => {
+  const handleSavePromo = async (promoData) => {
     if (selectedPromo) {
-      // Update the promo in the list (edit)
-      console.log("Edit promo:", promoData);
+      try {
+        const result = await updatePromotion(promoData);
+        console.log(result);
+        setShouldUpdate(!shouldUpdate);
+      } catch (error) {
+        console.log(error);
+      }
     } else {
-      // Add a new promo to the list
-      console.log("Add new promo:", promoData);
+      try {
+        const result = await createPromotion(promoData);
+        console.log(result);
+        setShouldUpdate(!shouldUpdate);
+      } catch (error) {
+        console.log(error);
+        alert(error);
+      }
     }
   };
 
   useEffect(() => {
     const fetchPromos = async () => {
       const promoList = await getPromos();
-      console.log(promoList);
       setPromos(promoList);
       setLoading(false);
     };
 
     fetchPromos();
-  }, []);
+  }, [shouldUpdate]);
 
   if (loading) {
     return <Loading message="Loading Promos" />;
@@ -76,15 +87,15 @@ export function ManagePromos() {
           />
         </dialog>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-4">
         <div className="">
           <h1 className="font-semibold"> Active: </h1>
           <div className="grid grid gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos
               .filter((promo) => {
                 return (
-                  new Date(promo.endDate) < Date.now() &&
-                  Date.now() < new Date(promo.endDate)
+                  new Date(promo.startDate) <= Date.now() &&
+                  Date.now() <= new Date(promo.endDate)
                 );
               })
               .map((promo) => (
@@ -102,7 +113,7 @@ export function ManagePromos() {
           <div className="grid grid  gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {promos
               .filter((promo) => {
-                return new Date(promo.endDate) > Date.now();
+                return new Date(promo.startDate) > Date.now();
               })
               .map((promo) => (
                 <div className="grid-item min-w-fit" key={promo.code}>

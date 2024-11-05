@@ -353,12 +353,18 @@ export const getPromos = async () => {
 
 export const createPromotion = async (promo) => {
   console.log(JSON.stringify(promo));
-  const response = await fetch(`${API_BASEURL}api/info/promotion/add`, {
+  const response = await fetch(`${API_BASEURL}api/info/promotion/add/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(promo),
+    body: JSON.stringify({
+      name: promo.name,
+      discountPercentage: promo.discountPercentage,
+      code: promo.code,
+      startDate: promo.startDate,
+      endDate: promo.endDate,
+    }),
   });
 
   const result = await parseResponse(response);
@@ -368,13 +374,19 @@ export const createPromotion = async (promo) => {
 
 export const updatePromotion = async (promo) => {
   const response = await fetch(
-    `${API_BASEURL}api/info/promotion/update/${promo.id}/`,
+    `${API_BASEURL}api/info/promotion/update/${promo.code}/`,
     {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(promo),
+      body: JSON.stringify({
+        name: promo.name,
+        discountPercentage: promo.discountPercentage,
+        code: promo.code,
+        startDate: promo.startDate,
+        endDate: promo.endDate,
+      }),
     }
   );
 

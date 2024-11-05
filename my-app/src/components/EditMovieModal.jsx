@@ -38,9 +38,18 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
     onClose();
   };
 
-  const close = (event) => {
-    event.preventDefault();
+  const close = (e) => {
+    e.preventDefault();
     onClose();
+  };
+
+  const deleteMovie = (e) => {
+    e.preventDefault();
+
+    if (window.confirm("Are you sure you want to delete " + movie.movieName)) {
+      onDelete();
+      onClose();
+    }
   };
 
   return (
@@ -176,14 +185,14 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
           </div>
           <div className="modal-action mt-0">
             <button
-              className="btn btn-secondary btn-sm mx-2 text-monkey-white text-white"
+              className="btn btn-secondary btn-sm text-monkey-white text-white"
               onClick={close}
             >
               Cancel
             </button>
             <button
-              className="btn btn-secondary btn-sm mx-2 text-monkey-white text-white"
-              onClick={onDelete}
+              className="btn btn-warning btn-sm text-monkey-white text-white"
+              onClick={deleteMovie}
             >
               Delete
             </button>
