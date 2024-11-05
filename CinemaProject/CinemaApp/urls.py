@@ -22,7 +22,7 @@ urlpatterns = [
 
     path('getPromotions/', PromotionDetailView.as_view(), name='promotion-details'),
     path('promotion/add/', AddPromotionView.as_view(), name='promotion-add'),
-    path('promotion/update/<int:pk>/', UpdatePromotionView.as_view(), name='promotion-update'),
-    path('validate/<str:code>/', validatePromotion.as_view(), name="validate-promotion")
+    path('promotion/update/<str:code>/', UpdatePromotionView.as_view(), name='promotion-update'),
+    path('promotion/validate/<str:code>/', validatePromotion.as_view(), name="validate-promotion")
 ]
 
