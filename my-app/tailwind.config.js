@@ -11,7 +11,7 @@ export default {
         "monkey-yellow": "#FCCD2A",
       },
       screens: {
-        xs: "520px",
+        xs: "490px",
       },
     },
   },

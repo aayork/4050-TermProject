@@ -1,6 +1,6 @@
 export function ManageMovieCard({ movie, onEdit }) {
   return (
-    <div className="p-2 flex flex-col justify-between shadow-xl border border-black rounded-xl h-full">
+    <div className="p-2 bg-white flex flex-col justify-between shadow-xl border border-black rounded-xl h-full">
       <div className="">
         <h2 className="">
           <b className="font-semibold">Id:</b> {movie.id}

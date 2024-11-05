@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 
-export function EditMovieModal({ onClose, onSave, movie }) {
+export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
   const initForm = useMemo(
     () => ({
       id: "",
@@ -44,7 +44,7 @@ export function EditMovieModal({ onClose, onSave, movie }) {
   };
 
   return (
-    <div className="modal-box">
+    <div className="modal-box max-w-2xl">
       <h1 className="font-semibold text-lg">
         {movie ? "Update Movie" : "Add Movie"}
       </h1>
@@ -52,7 +52,7 @@ export function EditMovieModal({ onClose, onSave, movie }) {
       <form method="dialog" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 py-2">
           <label className="input input-bordered flex  input-primary items-center gap-2">
-            Title :
+            Title:
             <input
               type="text"
               className="grow"
@@ -62,7 +62,7 @@ export function EditMovieModal({ onClose, onSave, movie }) {
             />
           </label>
           <label className="input input-bordered  input-primary flex items-center gap-2">
-            Rating :
+            Rating:
             <input
               type="text"
               className="grow"
@@ -72,7 +72,7 @@ export function EditMovieModal({ onClose, onSave, movie }) {
             />
           </label>
           <label className="input input-bordered input-primary flex items-center gap-2">
-            Run Time (mins) :
+            Run Time (mins):
             <input
               type="number"
               className="grow"
@@ -82,7 +82,7 @@ export function EditMovieModal({ onClose, onSave, movie }) {
             />
           </label>
           <label className="input input-bordered input-primary flex items-center gap-2">
-            Year :
+            Year:
             <input
               type="number"
               className="grow"
@@ -92,7 +92,7 @@ export function EditMovieModal({ onClose, onSave, movie }) {
             />
           </label>
           <label className="input input-bordered input-primary flex items-center gap-2">
-            Studio :
+            Studio:
             <input
               type="text"
               className="grow"
@@ -104,19 +104,19 @@ export function EditMovieModal({ onClose, onSave, movie }) {
           <div className="grid grid-cols-2 gap-2">
             <div className="">
               <label className="input input-bordered input-primary flex items-center">
-                Critic Score :&nbsp;
+                Critic Score:
                 <input
                   type="number"
                   className="grow w-1/3"
                   onChange={handleChange}
-                  name="critic_score"
+                  name="critics_score"
                   value={movieDetails.critics_score}
                 />
               </label>
             </div>
             <div>
               <label className="input input-bordered input-primary flex items-center">
-                Audience Score :&nbsp;
+                Audience Score:
                 <input
                   type="number"
                   className="grow w-1/3"
@@ -128,7 +128,7 @@ export function EditMovieModal({ onClose, onSave, movie }) {
             </div>
           </div>
           <label className="input input-bordered input-primary flex items-center gap-2">
-            Trailer Embed URL :
+            Trailer Embed URL:
             <input
               type="url"
               className="grow"
@@ -138,7 +138,7 @@ export function EditMovieModal({ onClose, onSave, movie }) {
             />
           </label>
           <label className="input input-bordered input-primary flex items-center gap-2">
-            Poster URL :
+            Poster URL:
             <input
               type="url"
               className="grow"
@@ -180,6 +180,12 @@ export function EditMovieModal({ onClose, onSave, movie }) {
               onClick={close}
             >
               Cancel
+            </button>
+            <button
+              className="btn btn-secondary btn-sm mx-2 text-monkey-white text-white"
+              onClick={onDelete}
+            >
+              Delete
             </button>
             <button
               className="btn btn-primary btn-sm text-white"

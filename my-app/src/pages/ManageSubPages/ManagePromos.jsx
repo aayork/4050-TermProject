@@ -80,40 +80,55 @@ export function ManagePromos() {
         <div className="">
           <h1 className="font-semibold"> Active: </h1>
           <div className="grid grid gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
-            {promos.map((promo) => (
-              <div className="grid-item min-w-fit" key={promo.code}>
-                <PromoCard
-                  promo={promo}
-                  onEdit={() => openEditPromoModal(promo)}
-                />
-              </div>
-            ))}
+            {promos
+              .filter((promo) => {
+                return (
+                  new Date(promo.endDate) < Date.now() &&
+                  Date.now() < new Date(promo.endDate)
+                );
+              })
+              .map((promo) => (
+                <div className="grid-item min-w-fit" key={promo.code}>
+                  <PromoCard
+                    promo={promo}
+                    onEdit={() => openEditPromoModal(promo)}
+                  />
+                </div>
+              ))}
           </div>
         </div>
         <div className="">
           <h1 className="font-semibold"> Upcoming: </h1>
           <div className="grid grid  gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
-            {promos.map((promo) => (
-              <div className="grid-item min-w-fit" key={promo.code}>
-                <PromoCard
-                  promo={promo}
-                  onEdit={() => openEditPromoModal(promo)}
-                />
-              </div>
-            ))}
+            {promos
+              .filter((promo) => {
+                return new Date(promo.endDate) > Date.now();
+              })
+              .map((promo) => (
+                <div className="grid-item min-w-fit" key={promo.code}>
+                  <PromoCard
+                    promo={promo}
+                    onEdit={() => openEditPromoModal(promo)}
+                  />
+                </div>
+              ))}
           </div>
         </div>
         <div className="">
           <h1 className="font-semibold"> Expired: </h1>
           <div className="grid gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
-            {promos.map((promo) => (
-              <div className="grid-item min-w-fit" key={promo.code}>
-                <PromoCard
-                  promo={promo}
-                  onEdit={() => openEditPromoModal(promo)}
-                />
-              </div>
-            ))}
+            {promos
+              .filter((promo) => {
+                return new Date(promo.endDate) < Date.now();
+              })
+              .map((promo) => (
+                <div className="grid-item min-w-fit" key={promo.code}>
+                  <PromoCard
+                    promo={promo}
+                    onEdit={() => openEditPromoModal(promo)}
+                  />
+                </div>
+              ))}
           </div>
         </div>
       </div>

@@ -148,9 +148,23 @@ export const createMovie = async (movie) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: {
-      movie: JSON.stringify(movie),
-    },
+    body: JSON.stringify({
+      movieName: movie.movieName,
+      year: movie.year,
+      trailer: movie.trailer,
+      rating: movie.rating,
+      runtime: movie.runtime,
+      critics_score: movie.critics_score,
+      audience_score: movie.audience_score,
+      description: movie.description,
+      photo: movie.photo,
+      studio: movie.studio,
+      is_active: movie.is_active,
+      actors: movie.actors,
+      directors: movie.directors,
+      genres: movie.genres,
+      showtimes: movie.showtimes,
+    }),
   });
 
   const result = await parseResponse(response);
@@ -158,7 +172,7 @@ export const createMovie = async (movie) => {
 };
 
 export const deleteMovie = async (id) => {
-  const response = await fetch(`${API_BASEURL}api/info/deleteMovie/${id}`, {
+  const response = await fetch(`${API_BASEURL}api/info/deleteMovie/${id}/`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -171,19 +185,42 @@ export const deleteMovie = async (id) => {
 
 export const updateMovie = async (movie) => {
   const response = await fetch(
-    `${API_BASEURL}api/info/updateMovie/${movie.id}`,
+    `${API_BASEURL}api/info/updateMovie/${movie.id}/`,
     {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: {
-        movie: JSON.stringify(movie),
-      },
+      body: JSON.stringify({
+        movieName: movie.movieName,
+        year: movie.year,
+        trailer: movie.trailer,
+        rating: movie.rating,
+        runtime: movie.runtime,
+        critics_score: movie.critics_score,
+        audience_score: movie.audience_score,
+        description: movie.description,
+        photo: movie.photo,
+        studio: movie.studio,
+        is_active: movie.is_active,
+        actors: movie.actors,
+        directors: movie.directors,
+        genres: movie.genres,
+        showtimes: movie.showtimes,
+      }),
     }
   );
 
   const result = await parseResponse(response);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
   return result;
 };
 
@@ -268,18 +305,6 @@ export const deleteUser = async (id) => {
 };
 
 export const updateUser = async (user, userId) => {
-  console.log(
-    JSON.stringify({
-      email: user.email,
-      username: user.username,
-      first_name: user.firstName,
-      last_name: user.lastName,
-      movie_profile: {
-        status: user.status,
-        receive_promotions: user.receive_promotions,
-      },
-    })
-  );
   const response = await fetch(`${API_BASEURL}api/auth/updateUser/${userId}/`, {
     method: "PUT",
     headers: {
