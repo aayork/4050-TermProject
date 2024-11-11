@@ -9,7 +9,9 @@ export function EditUserModal({ onClose, onSave, user }) {
       username: "",
       email: "",
       password: "",
-      status: "",
+      movie_profile: {
+        status: "",
+      },
     }),
     []
   );
@@ -18,7 +20,9 @@ export function EditUserModal({ onClose, onSave, user }) {
   useEffect(() => {
     if (user) {
       //if editing populate
+      console.log(user);
       setUserDetails(user);
+      console.log(userDetails);
     } else {
       //if adding clear form
       setUserDetails(initForm);
@@ -88,7 +92,7 @@ export function EditUserModal({ onClose, onSave, user }) {
               value={userDetails.username}
             />
           </label>
-          <label className="input input-bordered input-primary flex items-center gap-2">
+          {/* <label className="input input-bordered input-primary flex items-center gap-2">
             Password :
             <input
               type="text"
@@ -97,15 +101,14 @@ export function EditUserModal({ onClose, onSave, user }) {
               onChange={handleChange}
               value={userDetails.password}
             />
-          </label>
+          </label> */}
           <select
             className="select select-bordered w-full select-primary"
-            name="role"
-            defaultValue=""
+            name="status"
+            value={userDetails.status || ""}
             onChange={handleChange}
-            selected={userDetails.status}
           >
-            <option disabled defaultValue>
+            <option disabled value="">
               Role
             </option>
             <option value="admin">Admin</option>

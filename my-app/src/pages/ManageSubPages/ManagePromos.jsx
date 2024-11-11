@@ -23,7 +23,7 @@ export function ManagePromos() {
   const handleSavePromo = async (promoData) => {
     if (selectedPromo) {
       try {
-        const result = await updatePromotion(promoData);
+        const result = await updatePromotion(promoData, selectedPromo.code);
         console.log(result);
         setShouldUpdate(!shouldUpdate);
       } catch (error) {

@@ -372,9 +372,9 @@ export const createPromotion = async (promo) => {
   return result;
 };
 
-export const updatePromotion = async (promo) => {
+export const updatePromotion = async (promo, ogCode) => {
   const response = await fetch(
-    `${API_BASEURL}api/info/promotion/update/${promo.code}/`,
+    `${API_BASEURL}api/info/promotion/update/${ogCode}/`,
     {
       method: "PUT",
       headers: {

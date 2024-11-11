@@ -1,6 +1,6 @@
 export function PromoCard({ promo, onEdit }) {
   return (
-    <div className="flex flex-col p-2 justify-between shadow-xl border border-black rounded-xl bg-white">
+    <div className="flex flex-col p-2 justify-between shadow-xl border border-primary rounded-xl bg-white">
       <div className="">
         <h2 className="font-semibold">{promo.name}</h2>
         <h3>

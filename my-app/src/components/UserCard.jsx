@@ -1,6 +1,6 @@
 export function UserCard({ user, onEdit }) {
   return (
-    <div className="p-2 flex flex-col bg-white justify-between shadow-xl border border-black rounded-xl h-full">
+    <div className="p-2 flex flex-col bg-white justify-between shadow-xl border border-primary rounded-xl h-full">
       <div className="">
         <h2 className="">
           <b className="font-semibold">Name:</b> {user.first_name}&nbsp;

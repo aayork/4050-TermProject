@@ -8,6 +8,7 @@ export function ManageUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
 
   const openAddUserModal = () => {
     setSelectedUser(null);
