@@ -249,6 +249,30 @@ export const getUser = async () => {
   return result;
 };
 
+export const validateAdmin = async () => {
+  const token = localStorage.getItem("auth");
+
+  const response = await fetch(`${API_BASEURL}api/auth/user/validateAdmin/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Token ${token}`,
+    },
+  });
+
+  const result = await parseResponse(response);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
+  return result;
+};
+
 export const getAllUsers = async () => {
   const response = await fetch(`${API_BASEURL}api/auth/getAllUsers/`, {
     method: "GET",
@@ -403,7 +427,7 @@ export const validatePromotion = async (code) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(promo),
+      body: JSON.stringify(code),
     }
   );
 

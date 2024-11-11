@@ -32,8 +32,8 @@ export function NavBar() {
 
     const getUserStatus = async () => {
       try {
-        const user = await getUser();
-        return user.movie_profile.status;
+        //   const user = await validateAdmin();
+        // return user.movie_profile.status;
       } catch (error) {
         alert(error);
       }
