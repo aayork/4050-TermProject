@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { MovieDetails } from "./MovieDetails";
 
 // Function to convert row index to letters (e.g., 0 -> A, 25 -> Z, 26 -> AA)
 const getRowLabel = (index) => {
@@ -52,7 +53,7 @@ export function MovieHall({ movie }) {
   return (
     <div className="flex flex-col items-center p-5">
       <h1 className="text-2xl font-bold mb-4">Movie Details</h1>
-      <iframe width="700" height="450" src={movie.trailer}></iframe>
+      <MovieDetails movie={movie} />
       {!selectedShowtime ? (
         <div>
           <h2 className="text-lg font-semibold mb-4">Show Times</h2>
