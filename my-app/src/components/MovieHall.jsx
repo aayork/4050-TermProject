@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MovieDetails } from "./MovieDetails";
+import { MovieInfo } from "./MovieInfo";
 
 // Function to convert row index to letters (e.g., 0 -> A, 25 -> Z, 26 -> AA)
 const getRowLabel = (index) => {
@@ -10,6 +10,19 @@ const getRowLabel = (index) => {
     index = Math.floor(index / 26) - 1;
   }
   return label;
+};
+
+// Helper function to format date
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString();
+};
+
+// Helper function to format time
+const formatTime = (timeString) => {
+  return new Date(timeString).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 };
 
 export function MovieHall({ movie }) {
@@ -51,12 +64,46 @@ export function MovieHall({ movie }) {
   };
 
   return (
-    <div className="flex flex-col items-center p-5">
+    <div className="flex flex-col p-5">
       <h1 className="text-2xl font-bold mb-4">Movie Details</h1>
-      <MovieDetails movie={movie} />
+      <MovieInfo movie={movie} />
       {!selectedShowtime ? (
         <div>
-          <h2 className="text-lg font-semibold mb-4">Show Times</h2>
+          {/* Showtimes Section */}
+          <div>
+            <h2 className="text-2xl font-bold mb-6">Upcoming Showtimes</h2>
+            <div className="grid gap-6">
+              {movie.showtimes.map((showtime, index) => (
+                <div
+                  key={index}
+                  className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+                >
+                  <h3 className="text-xl font-semibold mb-2">
+                    {showtime.movieRoom.theatre.name}
+                  </h3>
+                  <p className="text-gray-600 mb-3">
+                    {showtime.movieRoom.theatre.street},{" "}
+                    {showtime.movieRoom.theatre.city},{" "}
+                    {showtime.movieRoom.theatre.state}{" "}
+                    {showtime.movieRoom.theatre.zipcode}
+                  </p>
+                  <div className="flex gap-4 mb-2">
+                    <span className="font-medium">
+                      {formatDate(showtime.date)}
+                    </span>
+                    <span className="font-medium">
+                      {formatTime(showtime.startTime)} -{" "}
+                      {formatTime(showtime.endTime)}
+                    </span>
+                  </div>
+                  <p className="text-gray-600">
+                    Room {showtime.movieRoom.number}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/*
           <div className="flex space-x-4">
             {showTimes.map((time) => (
               <button
@@ -68,6 +115,7 @@ export function MovieHall({ movie }) {
               </button>
             ))}
           </div>
+          */}
         </div>
       ) : (
         <>

@@ -1,4 +1,4 @@
-export function MovieDetails({ movie }) {
+export function MovieInfo({ movie }) {
   // Helper function to format runtime
   const formatRuntime = (minutes) => {
     const hours = Math.floor(minutes / 60);
@@ -6,24 +6,23 @@ export function MovieDetails({ movie }) {
     return `${hours}h ${remainingMinutes}m`;
   };
 
-  // Helper function to format date
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString();
-  };
-
-  // Helper function to format time
-  const formatTime = (timeString) => {
-    return new Date(timeString).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="w-full mx-auto">
       {/* Movie Header Section */}
       <div className="flex flex-col md:flex-row gap-8 mb-10">
-        {/* Movie Poster */}
+        {/* Trailer Section */}
+        <div className="mb-12 shadow-lg">
+          <div className="aspect-w-16 aspect-h-9">
+            <iframe
+              src={movie.trailer}
+              title={`${movie.movieName} Trailer`}
+              className="w-[800px] h-[450px] rounded-lg"
+              allowFullScreen
+              frameBorder="0"
+            ></iframe>
+          </div>
+        </div>
+        {/* Movie Poster
         <div className="flex-shrink-0">
           <img
             src={movie.photo}
@@ -31,6 +30,7 @@ export function MovieDetails({ movie }) {
             className="w-full md:w-[300px] rounded-lg shadow-lg"
           />
         </div>
+        */}
 
         {/* Movie Info */}
         <div className="flex-1">
@@ -93,51 +93,6 @@ export function MovieDetails({ movie }) {
 
           {/* Description */}
           <p className="text-gray-700 leading-relaxed">{movie.description}</p>
-        </div>
-      </div>
-
-      {/* Trailer Section */}
-      <div className="mb-12">
-        <h2 className="text-2xl font-bold mb-4">Trailer</h2>
-        <div className="aspect-w-16 aspect-h-9">
-          <iframe
-            src={movie.trailer}
-            title={`${movie.movieName} Trailer`}
-            className="w-full h-[450px] rounded-lg"
-            allowFullScreen
-            frameBorder="0"
-          ></iframe>
-        </div>
-      </div>
-
-      {/* Showtimes Section */}
-      <div>
-        <h2 className="text-2xl font-bold mb-6">Upcoming Showtimes</h2>
-        <div className="grid gap-6">
-          {movie.showtimes.map((showtime, index) => (
-            <div
-              key={index}
-              className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
-            >
-              <h3 className="text-xl font-semibold mb-2">
-                {showtime.movieRoom.theatre.name}
-              </h3>
-              <p className="text-gray-600 mb-3">
-                {showtime.movieRoom.theatre.street},{" "}
-                {showtime.movieRoom.theatre.city},{" "}
-                {showtime.movieRoom.theatre.state}{" "}
-                {showtime.movieRoom.theatre.zipcode}
-              </p>
-              <div className="flex gap-4 mb-2">
-                <span className="font-medium">{formatDate(showtime.date)}</span>
-                <span className="font-medium">
-                  {formatTime(showtime.startTime)} -{" "}
-                  {formatTime(showtime.endTime)}
-                </span>
-              </div>
-              <p className="text-gray-600">Room {showtime.movieRoom.number}</p>
-            </div>
-          ))}
         </div>
       </div>
     </div>
