@@ -6,11 +6,19 @@ from django.contrib.auth.models import User
 from django.utils.timezone import datetime, now
 from django.core.validators import MaxLengthValidator, MinLengthValidator, RegexValidator
 import base64
+key = settings.ENCRYPTION_KEY.encode()
+cipher = Fernet(key)
+
+from django.db import models
+from django.core.validators import RegexValidator, ValidationError
 
 
 class Theatre(models.Model):
     name = models.CharField(max_length=250)
-    address = models.CharField(max_length=500)
+    street = models.CharField(max_length=100, default='1020 Milledge Ave')
+    city = models.CharField(max_length=50, default='Athens')
+    state = models.CharField(max_length=50, default='GA')
+    zipcode = models.CharField(max_length=20, default=30019)
     is_active = models.BooleanField(default=True)
     # movie rooms = self.movie_rooms
 
@@ -80,6 +88,8 @@ class MovieRoom(models.Model):
     number = models.IntegerField(blank=False, default=0)
     theatre = models.ForeignKey(Theatre, related_name='movie_rooms', on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
+    numOfRows = models.IntegerField(default=8)
+    seatsPerRow = models.IntegerField(default=12)
     # showtimes = self.showtimes
 
     def __str__(self):
@@ -95,7 +105,7 @@ class ShowTime(models.Model):
     # seats = self.seats
 
     def __str__(self):
-        return f"{self.id} - {self.movieRoom} - {self.startTime}"
+        return f"Id: {self.id} - Room Id: {self.movieRoom} - Start Time: {self.startTime}"
 
 
 class Seat(models.Model):
@@ -137,7 +147,7 @@ class MovieProfile(models.Model):
     receive_promotions = models.BooleanField(default=False)
     # orders = self.orders
     # payments = self.payments
-    # addresses = self.addresses
+    # address = self.address
 
     def save(self, *args, **kwargs):
         # Enforce that admin users have a null customer_state
@@ -148,12 +158,6 @@ class MovieProfile(models.Model):
     def __str__(self):
         return f"{self.user} - {self.status}"
 
-
-key = settings.ENCRYPTION_KEY.encode()
-cipher = Fernet(key)
-
-from django.db import models
-from django.core.validators import RegexValidator, ValidationError
 
 class Payment(models.Model):
     user = models.ForeignKey(MovieProfile, related_name="payments", on_delete=models.CASCADE)
@@ -197,7 +201,7 @@ class Payment(models.Model):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(MovieProfile, related_name="addresses", on_delete=models.CASCADE)
+    user = models.OneToOneField(MovieProfile, related_name="address", on_delete=models.CASCADE)
     street = models.CharField(max_length=150, blank=False, null=False)
     city = models.CharField(max_length=150, blank=False, null=False)
     state = models.CharField(max_length=40, blank=False, null=False)
@@ -220,7 +224,8 @@ class Promotion(models.Model):
 
 
 class Order(models.Model):
-    promotion = models.ForeignKey(Promotion, related_name="orders", on_delete=models.CASCADE, null=True, blank=True, default=None)
+    discountPercentage = models.FloatField(blank=False, null=False, default=0)
+    totalPrice = models.FloatField(blank=False, null=False, default=0)
     movieProfile = models.ForeignKey(MovieProfile, related_name="orders", on_delete=models.CASCADE)
     purchaseDate = models.DateField(blank=False, null=False)
     # tickets = self.tickets
