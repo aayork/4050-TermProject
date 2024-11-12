@@ -8,6 +8,8 @@ from django.template.loader import render_to_string
 from dj_rest_auth.registration.views import RegisterView
 from .serializers import CustomRegisterSerializer, CustomUserSerializer
 from django.contrib.auth.models import User
+from CinemaApp.models import MovieProfile
+from rest_framework.views import APIView
 
 
 def email_confirm_redirect(request, key):
@@ -56,4 +58,20 @@ class UserDeleteView(generics.DestroyAPIView):
         return Response({
             'message': f'User "{user.username}" was successfully deleted.'
         }, status=status.HTTP_200_OK)
+
+class validateAdmin(APIView):
+    # use a class based view because only returning boolean not entity JSON
+    # return a boolean instead of the actual record
+
+    # to make an endpoint be a get endpoint I must include a get method with the appropriate parameters 
+    def get(self, request, *args, **kwargs):
+        # retrieve movieProfile associated with passedIN UserId
+        # must include 
+        userPk = self.kwargs.get('user_id')
+        movieProfile = MovieProfile.objects.get(user_id=userPk)
+        if (movieProfile.status=='admin'):
+            return Response(True, status=status.HTTP_200_OK)
+        else:
+            return Response(False, status=status.HTTP_200_OK)
+
 
