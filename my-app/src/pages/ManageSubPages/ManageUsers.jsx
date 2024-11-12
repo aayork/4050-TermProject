@@ -2,7 +2,7 @@ import { UserCard } from "../../components/UserCard";
 import { useState, useEffect } from "react";
 import { EditUserModal } from "../../components/EditUserModal";
 import { Loading } from "../../components/Loading";
-import { getAllUsers, updateUser, deleteUser } from "../../utils/API";
+import { getAllUsers, updateUser, deleteUser, register } from "../../utils/API";
 
 export function ManageUsers() {
   const [users, setUsers] = useState([]);
@@ -23,7 +23,7 @@ export function ManageUsers() {
   const handleSaveUser = async (userData) => {
     if (selectedUser) {
       try {
-        const result = await updateUser(userData);
+        const result = await updateUser(userData, selectedUser.id);
         setShouldUpdate(!shouldUpdate);
         console.log(result);
       } catch (error) {
@@ -32,7 +32,14 @@ export function ManageUsers() {
       }
     } else {
       try {
-        const result = await register(userData);
+        const result = await register({
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          email: userData.email,
+          username: userData.username,
+          password: userData.password,
+          status: userData.status,
+        });
         setShouldUpdate(!shouldUpdate);
         console.log(result);
       } catch (error) {
