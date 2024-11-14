@@ -75,7 +75,7 @@ class SeatSerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    seat = SeatSerializer(many=True, read_only=True)
+    seat = serializers.PrimaryKeyRelatedField(queryset=Seat.objects.all())
 
     class Meta:
         model = Ticket
@@ -92,7 +92,7 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
 
 class CreateOrderSerializer(serializers.ModelSerializer):
     tickets = TicketSerializer(many=True)
-    userId = serializers.IntegerField()
+    userId = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = Order
@@ -111,7 +111,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         print("tickets_data:", tickets_data)
 
         for ticket_data in tickets_data:
-            seat = Seat.objects.get(id=ticket_data['seat'])  # Ensure a single Seat instance is retrieved
+            seat = Seat.objects.get(id=ticket_data['seat'].id)  # Ensure a single Seat instance is retrieved
             Ticket.objects.create(
                 seat=seat,
                 type=ticket_data['type'],
