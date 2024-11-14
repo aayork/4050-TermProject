@@ -82,7 +82,7 @@ export function HomePage() {
           <div>
             <h3 className="font-semibold text-xl">Coming Soon...</h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-auto-fit gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {movies
               .filter(
                 (movie) =>

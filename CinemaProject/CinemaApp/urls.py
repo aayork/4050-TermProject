@@ -25,7 +25,5 @@ urlpatterns = [
     path('promotion/update/<str:code>/', UpdatePromotionView.as_view(), name='promotion-update'),
     path('promotion/validate/<str:code>/', validatePromotion.as_view(), name="validate-promotion"),
 
-    # not ready yet
     path('createOrder/', CreateOrderView.as_view(), name='create-order'),
 ]
-

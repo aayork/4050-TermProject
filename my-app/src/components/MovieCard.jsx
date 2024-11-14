@@ -80,6 +80,6 @@ MovieCard.propTypes = {
     photo: PropTypes.string.isRequired,
     trailer: PropTypes.string.isRequired,
     critics_score: PropTypes.number.isRequired,
-    id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
   }).isRequired,
 };

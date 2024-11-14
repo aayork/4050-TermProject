@@ -35,7 +35,15 @@ export function MovieHall({ movie }) {
 
   const navigate = useNavigate();
 
-  const showTimes = ["12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"];
+  const showTimes = movie.showtimes.map((showtime) => ({
+    id: showtime.id,
+    theatre: showtime.movieRoom.theatre.name,
+    address: `${showtime.movieRoom.theatre.street}, ${showtime.movieRoom.theatre.city}, ${showtime.movieRoom.theatre.state} ${showtime.movieRoom.theatre.zipcode}`,
+    date: formatDate(showtime.date),
+    startTime: formatTime(showtime.startTime),
+    endTime: formatTime(showtime.endTime),
+    room: showtime.movieRoom.number,
+  }));
 
   const toggleSeatSelection = (seatId) => {
     if (selectedSeats.includes(seatId)) {
@@ -69,60 +77,46 @@ export function MovieHall({ movie }) {
       <MovieInfo movie={movie} />
       {!selectedShowtime ? (
         <div>
-          {/* Showtimes Section */}
           <div>
             <h2 className="text-2xl font-bold mb-6">Upcoming Showtimes</h2>
             <div className="grid gap-6">
-              {movie.showtimes.map((showtime, index) => (
-                <div
-                  key={index}
-                  className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+              {showTimes.map((showtime) => (
+                <button
+                  key={showtime.id}
+                  onClick={() => setSelectedShowtime(showtime)}
+                  className="text-left border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow hover:bg-gray-50"
                 >
                   <h3 className="text-xl font-semibold mb-2">
-                    {showtime.movieRoom.theatre.name}
+                    {showtime.theatre}
                   </h3>
-                  <p className="text-gray-600 mb-3">
-                    {showtime.movieRoom.theatre.street},{" "}
-                    {showtime.movieRoom.theatre.city},{" "}
-                    {showtime.movieRoom.theatre.state}{" "}
-                    {showtime.movieRoom.theatre.zipcode}
-                  </p>
+                  <p className="text-gray-600 mb-3">{showtime.address}</p>
                   <div className="flex gap-4 mb-2">
+                    <span className="font-medium">{showtime.date}</span>
                     <span className="font-medium">
-                      {formatDate(showtime.date)}
-                    </span>
-                    <span className="font-medium">
-                      {formatTime(showtime.startTime)} -{" "}
-                      {formatTime(showtime.endTime)}
+                      {showtime.startTime} - {showtime.endTime}
                     </span>
                   </div>
-                  <p className="text-gray-600">
-                    Room {showtime.movieRoom.number}
-                  </p>
-                </div>
+                  <p className="text-gray-600">Room {showtime.room}</p>
+                </button>
               ))}
             </div>
           </div>
-          {/*
-          <div className="flex space-x-4">
-            {showTimes.map((time) => (
-              <button
-                key={time}
-                onClick={() => setSelectedShowtime(time)}
-                className="btn btn-primary"
-              >
-                {time}
-              </button>
-            ))}
-          </div>
-          */}
         </div>
       ) : (
         <>
           <div className="mt-5">
-            <h2 className="text-lg font-semibold">
-              Showtime Selected: {selectedShowtime}
-            </h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">
+                Selected Showtime: {selectedShowtime.theatre} -{" "}
+                {selectedShowtime.date} {selectedShowtime.startTime}
+              </h2>
+              <button
+                onClick={() => setSelectedShowtime(null)}
+                className="btn btn-sm"
+              >
+                Change Showtime
+              </button>
+            </div>
             <h3 className="text-lg font-semibold mb-4 mt-3">
               Select Your Seats:
             </h3>
