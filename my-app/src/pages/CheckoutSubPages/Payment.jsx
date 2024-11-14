@@ -1,10 +1,10 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { getPromos, createOrder } from "../../utils/API";
 
 export function Payment() {
   // Get the passed state from the previous page
   const location = useLocation();
-  const navigate = useNavigate(); // Use useNavigate for navigation
+  const navigate = useNavigate();
   const { selectedSeats, seatTypes, selectedShowtime } = location.state;
 
   // Define pricing for each seat type
@@ -20,11 +20,38 @@ export function Payment() {
     return total + seatPrices[type];
   }, 0);
 
-  const handleConfirm = () => {
-    // Navigate to the summary page with the necessary data
-    navigate("/summary", {
-      state: { selectedSeats, seatTypes, selectedShowtime }, // Pass the data to the summary page
-    });
+  const handleConfirm = async () => {
+    // Create tickets array from selected seats and their types
+    const tickets = selectedSeats.map((seatId) => ({
+      seat: seatId,
+      type: (seatTypes[seatId] || "Adult").toLowerCase(), // Convert to lowercase to match backend enum
+      showtime: selectedShowtime.id, // Include showtime ID if needed
+    }));
+
+    const purchaseDate = new Date().toISOString();
+
+    const userId = localStorage.getItem("userId");
+
+    try {
+      const response = await createOrder(
+        0,
+        totalPrice,
+        userId,
+        purchaseDate,
+        tickets,
+      );
+
+      navigate("/summary", {
+        state: {
+          selectedSeats,
+          seatTypes,
+          selectedShowtime,
+          orderId: response.id,
+        },
+      });
+    } catch (error) {
+      console.error("Error creating order:", error);
+    }
   };
 
   return (
@@ -34,13 +61,11 @@ export function Payment() {
       <h2 className="text-lg font-semibold mt-4">Total: ${totalPrice}</h2>
 
       <form className="flex flex-col w-full max-w-md">
-        {/* Name Input */}
         <label className="input input-bordered flex items-center gap-2 mb-4">
           Name
           <input type="text" className="grow" placeholder="John Doe" />
         </label>
 
-        {/* Email Input */}
         <label className="input input-bordered flex items-center gap-2 mb-4">
           Email
           <input
@@ -50,7 +75,6 @@ export function Payment() {
           />
         </label>
 
-        {/* Card Number Input */}
         <label className="input input-bordered flex items-center gap-2 mb-4">
           Card Number
           <input
@@ -60,24 +84,19 @@ export function Payment() {
           />
         </label>
 
-        {/* Expiration Date Input */}
         <label className="input input-bordered flex items-center gap-2 mb-4">
           Expiration Date
           <input type="text" className="grow" placeholder="MM/YY" />
         </label>
 
-        {/* CVV Input */}
         <label className="input input-bordered flex items-center gap-2 mb-4">
           CVV
           <input type="text" className="grow" placeholder="123" />
         </label>
 
-        {/* Optional Note */}
         <label className="input input-bordered flex items-center gap-2 mb-4">
-          <input type="text" className="grow" placeholder="Add a note" />
-          <span className="badge badge-info bg-monkey-yellow text-black">
-            Optional
-          </span>
+          Promo Code
+          <input type="text" className="grow" placeholder="WELCOME30" />
         </label>
 
         <div className="flex flex-row justify-center">

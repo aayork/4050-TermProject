@@ -30,7 +30,7 @@ export function MovieHall({ movie }) {
   const columns = 12;
 
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [selectedShowtime, setSelectedShowtime] = useState(null);
+  const [selectedShowtime, setStartTime] = useState(null);
   const [seatTypes, setSeatTypes] = useState({});
 
   const navigate = useNavigate();
@@ -41,8 +41,6 @@ export function MovieHall({ movie }) {
     address: `${showtime.movieRoom.theatre.street}, ${showtime.movieRoom.theatre.city}, ${showtime.movieRoom.theatre.state} ${showtime.movieRoom.theatre.zipcode}`,
     date: formatDate(showtime.date),
     startTime: formatTime(showtime.startTime),
-    endTime: formatTime(showtime.endTime),
-    room: showtime.movieRoom.number,
   }));
 
   const toggleSeatSelection = (seatId) => {
@@ -83,7 +81,7 @@ export function MovieHall({ movie }) {
               {showTimes.map((showtime) => (
                 <button
                   key={showtime.id}
-                  onClick={() => setSelectedShowtime(showtime)}
+                  onClick={() => setStartTime(showtime.startTime)}
                   className="text-left border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow hover:bg-gray-50"
                 >
                   <h3 className="text-xl font-semibold mb-2">
@@ -107,18 +105,17 @@ export function MovieHall({ movie }) {
           <div className="mt-5">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">
-                Selected Showtime: {selectedShowtime.theatre} -{" "}
-                {selectedShowtime.date} {selectedShowtime.startTime}
+                Selected Showtime: {selectedShowtime?.theatre || "Theatre"}{" "}
+                {selectedShowtime?.date || "Date"}
+                {" at "}
+                {selectedShowtime?.startTime || "Time"}
               </h2>
-              <button
-                onClick={() => setSelectedShowtime(null)}
-                className="btn btn-sm"
-              >
+              <button onClick={() => setStartTime(null)} className="btn btn-sm">
                 Change Showtime
               </button>
             </div>
             <h3 className="text-lg font-semibold mb-4 mt-3">
-              Select Your Seats:
+              Select Your Seats
             </h3>
             <div
               className="grid gap-2"
