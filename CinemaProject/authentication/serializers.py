@@ -151,12 +151,10 @@ class GenreSerializer(serializers.ModelSerializer):
                 return super().to_internal_value(data)
         return super().to_internal_value(data)
 
-
 class MovieSerializer(serializers.ModelSerializer):
     genres = GenreSerializer(many=True, required=False)
     actors = ActorSerializer(many=True, required=False)
     directors = DirectorSerializer(many=True, required=False)
-    showtimes = ShowTimeSerializer(many=True, required=False)
 
     class Meta:
         model = Movie
@@ -242,6 +240,13 @@ class MovieSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class ShowTimeSerializer(serializers.ModelSerializer):
+    movieRoom = MovieRoomSerializer(many=False)
+    movie = MovieSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = ShowTime
+        fields = ['movie', 'startTime', 'endTime', 'movieRoom']
 
 class PromotionSerializer(serializers.ModelSerializer):
     # for the foreign keys connected to Promotion, we need to also
