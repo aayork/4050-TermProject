@@ -20,7 +20,7 @@ export function UserProfile() {
       street: "",
       city: "",
       state: "",
-      zip: "",
+      postalCode: "",
     },
   });
 
@@ -34,7 +34,7 @@ export function UserProfile() {
       street: "",
       city: "",
       state: "",
-      zip: "",
+      postalCode: "",
     },
   });
   const [payments, setPayments] = useState([]);
@@ -90,10 +90,10 @@ export function UserProfile() {
             username: user.username,
             receive_promotions: user.movie_profile.receive_promotions,
             address: {
-              street: user.address?.street || "",
-              city: user.address?.city || "",
-              state: user.address?.state || "",
-              zip: user.address?.zip || "",
+              street: user.movie_profile.address?.street || "",
+              city: user.movie_profile.address?.city || "",
+              state: user.movie_profile.address?.state || "",
+              postalCode: user.movie_profile.address?.postalCode || "",
             },
           };
 
@@ -143,7 +143,7 @@ export function UserProfile() {
   return (
     <div>
       {loggedIn ? (
-        <div className="w-full grid grid-cols-2 gap-2">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-2">
           <div className="">
             <div className="card">
               <div className="card-title flex justify-between px-2">
@@ -250,12 +250,12 @@ export function UserProfile() {
                     />
                   </label>
                   <label className="input input-bordered flex input-primary items-center gap-2">
-                    <div className="font-semibold">Zip Code:</div>
+                    <div className="font-semibold">Postal Code:</div>
                     <input
                       type="text"
                       className="grow"
-                      name="address.zip"
-                      value={formState.address.zip}
+                      name="address.postalCode"
+                      value={formState.address.postalCode}
                       onChange={handleChange}
                       readOnly={!isEditable}
                     />

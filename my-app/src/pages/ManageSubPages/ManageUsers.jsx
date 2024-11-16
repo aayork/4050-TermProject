@@ -33,8 +33,8 @@ export function ManageUsers() {
     } else {
       try {
         const result = await register({
-          firstName: userData.firstName,
-          lastName: userData.lastName,
+          firstName: userData.first_name,
+          lastName: userData.last_name,
           email: userData.email,
           username: userData.username,
           password: userData.password,

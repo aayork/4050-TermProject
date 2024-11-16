@@ -342,6 +342,12 @@ export const updateUser = async (user, userId) => {
       movie_profile: {
         status: user.status,
         receive_promotions: user.receive_promotions,
+        address: {
+          street: user.address.street,
+          city: user.address.city,
+          state: user.address.state,
+          postalCode: user.address.postalCode,
+        },
       },
     }),
   });
