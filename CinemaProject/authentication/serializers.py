@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from CinemaApp.models import (MovieProfile, Payment, Address, Order,
 Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie, Actor, Director, Promotion, Genre)
+from allauth.account.models import EmailAddress
 
 
 class CustomRegisterSerializer(RegisterSerializer):
@@ -46,7 +47,7 @@ class TheatreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Theatre
-        fields = ['name', 'address', 'is_active']
+        fields = ['name', 'street', 'city', 'state', 'zipcode', 'is_active']
 
 
 class MovieRoomSerializer(serializers.ModelSerializer):
@@ -54,15 +55,69 @@ class MovieRoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MovieRoom
-        fields = ['number', 'theatre']
+        fields = ['theatre', 'number', 'is_active', 'numOfRows', 'seatsPerRow']
 
 
 class ShowTimeSerializer(serializers.ModelSerializer):
-    movie_room = MovieRoomSerializer(many=False, read_only=True)
+    movieRoom = MovieRoomSerializer(read_only=True)
 
     class Meta:
         model = ShowTime
-        fields = ['movie', 'start_time', 'end_time', 'movie_room']
+        fields = ['movie', 'movieRoom', 'date', 'startTime', 'endTime']
+
+
+class SeatSerializer(serializers.ModelSerializer):
+    showtime = ShowTimeSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Seat
+        fields = ['id', 'seatID', 'price', 'showtime']
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    seat = serializers.PrimaryKeyRelatedField(queryset=Seat.objects.all())
+
+    class Meta:
+        model = Ticket
+        fields = ['seat', 'type']
+
+
+class OrderDetailsSerializer(serializers.ModelSerializer):
+    tickets = TicketSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Payment
+        fields = ['id', 'purchaseDate', 'tickets']
+
+
+class CreateOrderSerializer(serializers.ModelSerializer):
+    tickets = TicketSerializer(many=True)
+    userId = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Order
+        fields = ['discountPercentage', 'totalPrice', 'userId', 'purchaseDate', 'tickets']
+
+    def create(self, validated_data):
+        tickets_data = validated_data.pop('tickets', [])
+        userId = validated_data.pop('userId')
+
+        user = User.objects.get(pk=userId)
+        movieProfile = MovieProfile.objects.get(user=user)
+
+        # Create the movie object
+        order = Order.objects.create(movieProfile=movieProfile, **validated_data)
+
+        print("tickets_data:", tickets_data)
+
+        for ticket_data in tickets_data:
+            seat = Seat.objects.get(id=ticket_data['seat'].id)  # Ensure a single Seat instance is retrieved
+            Ticket.objects.create(
+                seat=seat,
+                type=ticket_data['type'],
+                order=order
+            )
+        return order
 
 
 class ActorSerializer(serializers.ModelSerializer):
@@ -188,29 +243,6 @@ class MovieSerializer(serializers.ModelSerializer):
         return instance
 
 
-class SeatSerializer(serializers.ModelSerializer):
-    showtime = ShowTimeSerializer(many=False, read_only=True)
-
-    class Meta:
-        model = Seat
-        fields = ['seatID', 'price', 'showtime']
-
-
-class TicketSerializer(serializers.ModelSerializer):
-    seats = SeatSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Ticket
-        fields = ['seats']
-
-class OrderDetailsSerializer(serializers.ModelSerializer):
-    tickets = TicketSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Payment
-        fields = ['purchaseDate', 'tickets']
-
-
 class PromotionSerializer(serializers.ModelSerializer):
     # for the foreign keys connected to Promotion, we need to also
     # have a way for this serializer to access them
@@ -261,7 +293,7 @@ class GetPaymentSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ['id', 'user', 'street', 'city', 'state', 'postalCode']
+        fields = ['id', 'street', 'city', 'state', 'postalCode']
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -274,20 +306,27 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class MovieProfileSerializer(serializers.ModelSerializer):
     payments = PaymentSerializer(many=True, read_only=True)
-    addresses = AddressSerializer(many=True, read_only=True)
+    address = AddressSerializer()
     orders = OrderSerializer(many=True, read_only=True)
 
     class Meta:
         model = MovieProfile
-        fields = ['status', 'payments', 'addresses', 'orders', 'receive_promotions']
+        fields = ['status', 'receive_promotions', 'address', 'payments', 'orders']
+
+
+class CustomEmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailAddress
+        fields = ['verified']
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
     movie_profile = MovieProfileSerializer()
+    emailStatus = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'movie_profile']
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'emailStatus', 'movie_profile']
 
     def update(self, instance, validated_data):
         # Update User fields
@@ -297,23 +336,31 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.email = validated_data.get('email', instance.email)
         instance.save()
 
-        # Update MovieProfile fields if they exist in validated_data
-        movie_profile_data = validated_data.get('movie_profile', None)
-        if movie_profile_data:
-            movie_profile = instance.movie_profile  # Access the related MovieProfile
+        # Update MovieProfile fields
+        movie_profile_data = validated_data.get('movie_profile', {})
+        movie_profile, _ = MovieProfile.objects.get_or_create(user=instance)
 
-            # Update the status if it is provided
-            status = movie_profile_data.get('status', None)
-            if status is not None:  # Only update if provided
-                movie_profile.status = status
+        movie_profile.status = movie_profile_data.get('status', movie_profile.status)
+        movie_profile.receive_promotions = movie_profile_data.get('receive_promotions',
+                                                                  movie_profile.receive_promotions)
+        movie_profile.save()
 
-            # Update receive_promotions if it is provided
-            receive_promotions = movie_profile_data.get('receive_promotions', None)
-            if receive_promotions is not None:  # Only update if provided
-                movie_profile.receive_promotions = receive_promotions
+        # Update Address fields if provided
+        address_data = movie_profile_data.get('address', {})
+        address, _ = Address.objects.get_or_create(user=movie_profile)
 
-            movie_profile.save()
+        address.street = address_data.get('street', address.street)
+        address.city = address_data.get('city', address.city)
+        address.state = address_data.get('state', address.state)
+        address.postalCode = address_data.get('postalCode', address.postalCode)
+        address.save()
 
         return instance
 
+    def get_emailStatus(self, obj):
+        try:
+            email_address = EmailAddress.objects.get(user_id=obj.id)  # Assuming a OneToOneField or ForeignKey to User
+            return CustomEmailSerializer(email_address).data
+        except EmailAddress.DoesNotExist:
+            return None
 # need a way to convert promotion python objects into JSON

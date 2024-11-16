@@ -2,16 +2,14 @@ from dj_rest_auth import serializers
 from django.shortcuts import render
 from django.http import JsonResponse, Http404
 from rest_framework import generics, status, permissions
-from .models import Movie, Address
+from .models import Movie, Address, MovieProfile, Payment, Promotion, ShowTime, Order
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from .models import Promotion
-from .models import MovieProfile
-from .models import Payment
 from authentication.serializers import (MovieSerializer, PromotionSerializer,
                                         MovieProfileSerializer, PaymentSerializer,
-                                        AddressSerializer, GetPaymentSerializer, CustomUserSerializer)
+                                        AddressSerializer, GetPaymentSerializer, CustomUserSerializer,
+                                        ShowTimeSerializer, CreateOrderSerializer)
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -182,4 +180,8 @@ class validatePromotion(generics.RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
-    
+
+
+class CreateOrderView(generics.CreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = CreateOrderSerializer
