@@ -14,32 +14,21 @@ export function Payment() {
     Senior: 9,
   };
 
-  // Calculate the total price
   const totalPrice = selectedSeats.reduce((total, seat) => {
-    const type = seatTypes[seat] || "Adult"; // Default to Adult if type is not found
+    const type = seatTypes[seat] || "Adult";
     return total + seatPrices[type];
   }, 0);
 
   const handleConfirm = async () => {
-    // Create tickets array from selected seats and their types
     const tickets = selectedSeats.map((seatId) => ({
-      seat: 2, // Ensure seatId is the seat's integer ID (update to use the correct seat ID)
-      type: (seatTypes[seatId] || "Adult").toLowerCase(), // Ensure type matches the backend's enum
+      seatId: 0, // NOT COMPLETE. Use getSeats endpoint to get primary key
+      type: (seatTypes[seatId] || "Adult").toLowerCase(),
     }));
 
     const purchaseDate = new Date().toISOString().split("T")[0]; // Format as YYYY-MM-DD
-    const user = await getUser("auth"); // Use `await` correctly outside of the `const` declaration
+    const user = await getUser("auth");
     const userId = user.id;
     const discountPercentage = 0;
-    console.log("User:", user);
-
-    // Log the data you're going to send
-    console.log("Payload for order creation:");
-    console.log("Discount Percentage:", discountPercentage);
-    console.log("Total Price:", totalPrice);
-    console.log("User ID:", userId);
-    console.log("Purchase Date:", purchaseDate);
-    console.log("Tickets:", tickets);
 
     if (!userId) {
       console.error("User ID is missing!");

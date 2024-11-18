@@ -30,7 +30,7 @@ export function MovieHall({ movie }) {
   const columns = 12;
 
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [selectedShowtime, setStartTime] = useState(null);
+  const [selectedShowtime, setSelectedShowtime] = useState(null);
   const [seatTypes, setSeatTypes] = useState({});
 
   const navigate = useNavigate();
@@ -61,11 +61,12 @@ export function MovieHall({ movie }) {
 
   // Proceed to Checkout with selected seats and types
   const proceedToCheckout = () => {
+    const startTime = selectedShowtime?.startTime; // Safely access startTime
     navigate("/checkout", {
       state: {
         selectedSeats,
         seatTypes,
-        selectedShowtime,
+        startTime,
       },
     });
   };
@@ -82,7 +83,7 @@ export function MovieHall({ movie }) {
               {showTimes.map((showtime) => (
                 <button
                   key={showtime.id}
-                  onClick={() => setStartTime(showtime.startTime)}
+                  onClick={() => setSelectedShowtime(showtime)}
                   className="text-left border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow hover:bg-gray-50"
                 >
                   <h3 className="text-xl font-semibold mb-2">
@@ -95,7 +96,6 @@ export function MovieHall({ movie }) {
                       {showtime.startTime} - {showtime.endTime}
                     </span>
                   </div>
-                  <p className="text-gray-600">Room {showtime.room}</p>
                 </button>
               ))}
             </div>
@@ -111,7 +111,10 @@ export function MovieHall({ movie }) {
                 {" at "}
                 {selectedShowtime?.startTime || "Time"}
               </h2>
-              <button onClick={() => setStartTime(null)} className="btn btn-sm">
+              <button
+                onClick={() => setSelectedShowtime(null)}
+                className="btn btn-sm"
+              >
                 Change Showtime
               </button>
             </div>

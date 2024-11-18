@@ -6,6 +6,12 @@ export function MovieInfo({ movie }) {
     return `${hours}h ${remainingMinutes}m`;
   };
 
+  function getScoreColor(score) {
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-600";
+  }
+
   return (
     <div className="w-full mx-auto">
       {/* Movie Header Section */}
@@ -22,15 +28,6 @@ export function MovieInfo({ movie }) {
             ></iframe>
           </div>
         </div>
-        {/* Movie Poster
-        <div className="flex-shrink-0">
-          <img
-            src={movie.photo}
-            alt={movie.movieName}
-            className="w-full md:w-[300px] rounded-lg shadow-lg"
-          />
-        </div>
-        */}
 
         {/* Movie Info */}
         <div className="flex-1">
@@ -55,13 +52,17 @@ export function MovieInfo({ movie }) {
           <div className="flex gap-8 mb-6">
             <div>
               <span className="text-gray-600 text-sm">Critics Score</span>
-              <div className="text-2xl font-bold text-green-600">
+              <div
+                className={`text-2xl font-bold ${getScoreColor(movie.critics_score)}`}
+              >
                 {movie.critics_score}%
               </div>
             </div>
             <div>
               <span className="text-gray-600 text-sm">Audience Score</span>
-              <div className="text-2xl font-bold text-green-600">
+              <div
+                className={`text-2xl font-bold ${getScoreColor(movie.audience_score)}`}
+              >
                 {movie.audience_score}%
               </div>
             </div>
@@ -83,9 +84,10 @@ export function MovieInfo({ movie }) {
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-2">Cast:</h3>
             <div className="flex flex-wrap gap-4">
-              {movie.actors.map((actor) => (
+              {movie.actors.map((actor, index) => (
                 <span key={actor.id} className="text-gray-700 font-medium">
                   {actor.first_name} {actor.last_name}
+                  {index < movie.actors.length - 1 && ","}
                 </span>
               ))}
             </div>
