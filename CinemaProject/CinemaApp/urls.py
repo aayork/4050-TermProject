@@ -2,7 +2,8 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views import MovieListView, MovieDetailView, PromotionDetailView, GetAllProfiles, MovieCreateView, MovieUpdateView, MovieDeleteView
 from .views import (DeletePaymentView, UserPaymentView, AddPaymentView,
-                    AddAddressView, DeleteAddressView, UserAddressView, AddPromotionView, UpdatePromotionView, validatePromotion, CreateOrderView)
+                    AddAddressView, DeleteAddressView, UserAddressView, AddPromotionView, UpdatePromotionView, validatePromotion, CreateOrderView
+                    ,DeleteShowTimeView,AddShowtimeView,EditShowtimeView)
 
 urlpatterns = [
     path('getMovies/', MovieListView.as_view(), name='movie-list'),
@@ -27,5 +28,10 @@ urlpatterns = [
 
     # not ready yet
     path('createOrder/', CreateOrderView.as_view(), name='create-order'),
+
+    # showtime
+    path('showtime/add/', AddShowtimeView.as_view(), name='AddShowtime'),
+    path('showtime/edit/<int:id>/', EditShowtimeView.as_view(), name='EditShowtime'),
+    path('showtime/delete/<int:id>/', DeleteShowTimeView.as_view(), name='DeleteShowtime')
 ]
 
