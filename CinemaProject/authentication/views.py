@@ -10,6 +10,7 @@ from .serializers import CustomRegisterSerializer, CustomUserSerializer
 from django.contrib.auth.models import User
 from CinemaApp.models import MovieProfile
 from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
 
 
 def email_confirm_redirect(request, key):
@@ -29,8 +30,7 @@ class CustomRegisterView(RegisterView):
 
 
 class CustomUserDetailsView(UserDetailsView):
-    serializer_class = CustomUserSerializer
-
+    serializer_class = CustomUserSerializer      
 
 class GetAllUsers(generics.ListAPIView):
     # retrieving the user objects that have a status of admin using the
@@ -43,7 +43,6 @@ class UserUpdateView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
     lookup_field = 'id'
-
 
 class UserDeleteView(generics.DestroyAPIView):
     queryset = User.objects.all()
@@ -67,11 +66,16 @@ class validateAdmin(APIView):
     def get(self, request, *args, **kwargs):
         # retrieve movieProfile associated with passedIN UserId
         # must include 
-        userPk = self.kwargs.get('user_id')
-        movieProfile = MovieProfile.objects.get(user_id=userPk)
-        if (movieProfile.status=='admin'):
-            return Response(True, status=status.HTTP_200_OK)
-        else:
-            return Response(False, status=status.HTTP_200_OK)
+        try:
+            auth = self.kwargs.get('auth_token')
+            token = Token.objects.get(pk=auth)
+            user = User.objects.get(auth_token=token)
+            movieProfile = MovieProfile.objects.get(user=user)
+            if (movieProfile.status=='admin'):
+                return Response(True, status=status.HTTP_200_OK)
+            else:
+                return Response(False, status=status.HTTP_200_OK)
+        except Token.DoesNotExist:
+            return Response(f"Token {auth} cannot be found", status=status.HTTP_404_NOT_FOUND)
 
 
