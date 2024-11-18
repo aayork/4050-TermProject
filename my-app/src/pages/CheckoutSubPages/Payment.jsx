@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getPromos, createOrder, getUser } from "../../utils/API";
+import { createOrder, getUser } from "../../utils/API";
 
 export function Payment() {
   // Get the passed state from the previous page
