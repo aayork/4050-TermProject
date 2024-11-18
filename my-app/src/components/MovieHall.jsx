@@ -37,8 +37,7 @@ export function MovieHall({ movie }) {
 
   const showTimes = movie.showtimes.map((showtime) => ({
     id: showtime.id,
-    theatre: showtime.movieRoom.theatre.name,
-    address: `${showtime.movieRoom.theatre.street}, ${showtime.movieRoom.theatre.city}, ${showtime.movieRoom.theatre.state} ${showtime.movieRoom.theatre.zipcode}`,
+
     date: formatDate(showtime.date),
     startTime: formatTime(showtime.startTime),
     endTime: formatTime(showtime.endTime),
@@ -85,9 +84,6 @@ export function MovieHall({ movie }) {
                   onClick={() => setStartTime(showtime.startTime)}
                   className="text-left border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow hover:bg-gray-50"
                 >
-                  <h3 className="text-xl font-semibold mb-2">
-                    {showtime.theatre}
-                  </h3>
                   <p className="text-gray-600 mb-3">{showtime.address}</p>
                   <div className="flex gap-4 mb-2">
                     <span className="font-medium">{showtime.date}</span>
@@ -106,7 +102,6 @@ export function MovieHall({ movie }) {
           <div className="mt-5">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">
-                Selected Showtime: {selectedShowtime?.theatre || "Theatre"}{" "}
                 {selectedShowtime?.date || "Date"}
                 {" at "}
                 {selectedShowtime?.startTime || "Time"}
