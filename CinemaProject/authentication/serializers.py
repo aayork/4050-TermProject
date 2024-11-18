@@ -306,7 +306,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'purchaseDate']
+        fields = ['id', 'purchaseDate', 'promotion']
 
 
 class MovieProfileSerializer(serializers.ModelSerializer):

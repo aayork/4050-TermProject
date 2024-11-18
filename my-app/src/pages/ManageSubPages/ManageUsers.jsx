@@ -2,12 +2,18 @@ import { UserCard } from "../../components/UserCard";
 import { useState, useEffect } from "react";
 import { EditUserModal } from "../../components/EditUserModal";
 import { Loading } from "../../components/Loading";
-import { getAllUsers, updateUser, deleteUser } from "../../utils/API";
+import {
+  getAllUsers,
+  updateUser,
+  deleteUser,
+  managerCreate,
+} from "../../utils/API";
 
 export function ManageUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
 
   const openAddUserModal = () => {
     setSelectedUser(null);
@@ -21,18 +27,40 @@ export function ManageUsers() {
 
   const handleSaveUser = async (userData) => {
     if (selectedUser) {
-      // Update the user in the list (edit)
-      console.log("Edit user:", userData);
       try {
-        await updateUser(formState);
-        setInitialFormState(formState);
+        const result = await updateUser(userData, selectedUser.id);
+        setShouldUpdate(!shouldUpdate);
+        alert("Updated " + result.username);
       } catch (error) {
         console.error("Error updating user:", error);
         alert("Failed to update user information.");
       }
     } else {
-      // Add a new user to the list
-      console.log("Add new user:", userData);
+      try {
+        const result = await managerCreate({
+          firstName: userData.first_name,
+          lastName: userData.last_name,
+          email: userData.email,
+          username: userData.username,
+          password: userData.password,
+          status: userData.movie_profile.status,
+        });
+        setShouldUpdate(!shouldUpdate);
+        console.log(result);
+      } catch (error) {
+        console.error("Error creating user:", error);
+        alert("Failed to update user information.");
+      }
+    }
+  };
+
+  const handleDeleteUser = async (userId) => {
+    try {
+      const result = await deleteUser(userId);
+      setShouldUpdate(!shouldUpdate);
+      alert(result.message);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -49,7 +77,7 @@ export function ManageUsers() {
     };
 
     fetchUsers();
-  }, []);
+  }, [shouldUpdate]);
 
   if (loading) {
     return <Loading message="Loading Users" />;
@@ -62,7 +90,7 @@ export function ManageUsers() {
           className="btn my-2 flex items-center"
           onClick={openAddUserModal}
         >
-          Add Employee
+          Add User
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -82,6 +110,7 @@ export function ManageUsers() {
           <EditUserModal
             onClose={() => document.getElementById("userModal").close()}
             onSave={handleSaveUser}
+            onDelete={handleDeleteUser}
             user={selectedUser}
           />
         </dialog>
@@ -89,7 +118,7 @@ export function ManageUsers() {
       <div className="flex flex-col">
         <div className="">
           <h1 className="font-semibold"> Managers:</h1>
-          <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+          <div className="grid gap-4 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2">
             {users
               .filter((user) => user.movie_profile.status == "admin")
               .map((user) => (
@@ -102,24 +131,9 @@ export function ManageUsers() {
               ))}
           </div>
         </div>
-        <div className="">
-          <h1 className="font-semibold"> Employees:</h1>
-          <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
-            {users
-              .filter((user) => user.movie_profile.status == "employee")
-              .map((user) => (
-                <div className="grid-item min-w-fit" key={user.id}>
-                  <UserCard
-                    user={user}
-                    onEdit={() => openEditUserModal(user)}
-                  />
-                </div>
-              ))}
-          </div>
-        </div>
-        <div className="">
+        <div className="my-4">
           <h1 className="font-semibold"> Customers:</h1>
-          <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+          <div className="grid gap-4 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2">
             {users
               .filter((user) => user.movie_profile.status == "customer")
               .map((user) => (

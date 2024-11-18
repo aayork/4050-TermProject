@@ -71,15 +71,3 @@ export function MovieCard({ movie }) {
     </div>
   );
 }
-
-MovieCard.propTypes = {
-  movie: PropTypes.shape({
-    movieName: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    rating: PropTypes.string.isRequired,
-    photo: PropTypes.string.isRequired,
-    trailer: PropTypes.string.isRequired,
-    critics_score: PropTypes.number.isRequired,
-    id: PropTypes.string.isRequired,
-  }).isRequired,
-};

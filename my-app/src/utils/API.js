@@ -74,7 +74,7 @@ export const confirmEmail = async (key) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ key: key }),
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -113,6 +113,45 @@ export const logout = async () => {
   return message;
 };
 
+export const managerCreate = async ({
+  firstName,
+  lastName,
+  email,
+  username,
+  password,
+  status,
+}) => {
+  const response = await fetch(`${API_BASEURL}api/auth/register/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email,
+      username: username,
+      password1: password,
+      password2: password,
+      first_name: firstName,
+      last_name: lastName,
+      status: status,
+      receive_promotions: false,
+    }),
+  });
+
+  const result = await parseResponse(response);
+  const message = Object.values(result);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < message.length; i++) {
+      errorMessage += message[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
+  return message;
+};
+
 // movie API stuff
 export const getMovies = async () => {
   const response = await fetch(`${API_BASEURL}api/info/getMovies/`, {
@@ -134,7 +173,7 @@ export const getMovieDetails = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -148,9 +187,23 @@ export const createMovie = async (movie) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: {
-      movie: JSON.stringify(movie),
-    },
+    body: JSON.stringify({
+      movieName: movie.movieName,
+      year: movie.year,
+      trailer: movie.trailer,
+      rating: movie.rating,
+      runtime: movie.runtime,
+      critics_score: movie.critics_score,
+      audience_score: movie.audience_score,
+      description: movie.description,
+      photo: movie.photo,
+      studio: movie.studio,
+      is_active: movie.is_active,
+      actors: movie.actors,
+      directors: movie.directors,
+      genres: movie.genres,
+      showtimes: movie.showtimes,
+    }),
   });
 
   const result = await parseResponse(response);
@@ -158,7 +211,7 @@ export const createMovie = async (movie) => {
 };
 
 export const deleteMovie = async (id) => {
-  const response = await fetch(`${API_BASEURL}api/info/deleteMovie/${id}`, {
+  const response = await fetch(`${API_BASEURL}api/info/deleteMovie/${id}/`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -171,19 +224,42 @@ export const deleteMovie = async (id) => {
 
 export const updateMovie = async (movie) => {
   const response = await fetch(
-    `${API_BASEURL}api/info/updateMovie/${movie.id}`,
+    `${API_BASEURL}api/info/updateMovie/${movie.id}/`,
     {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: {
-        movie: JSON.stringify(movie),
-      },
-    },
+      body: JSON.stringify({
+        movieName: movie.movieName,
+        year: movie.year,
+        trailer: movie.trailer,
+        rating: movie.rating,
+        runtime: movie.runtime,
+        critics_score: movie.critics_score,
+        audience_score: movie.audience_score,
+        description: movie.description,
+        photo: movie.photo,
+        studio: movie.studio,
+        is_active: movie.is_active,
+        actors: movie.actors,
+        directors: movie.directors,
+        genres: movie.genres,
+        showtimes: movie.showtimes,
+      }),
+    }
   );
 
   const result = await parseResponse(response);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
   return result;
 };
 
@@ -198,6 +274,32 @@ export const getUser = async () => {
       Authorization: `Token ${token}`,
     },
   });
+
+  const result = await parseResponse(response);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
+  return result;
+};
+
+export const validateAdmin = async () => {
+  const token = localStorage.getItem("auth");
+
+  const response = await fetch(
+    `${API_BASEURL}api/auth/user/validateAdmin/${token}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   const result = await parseResponse(response);
 
@@ -256,7 +358,7 @@ export const addUser = async (user) => {
 };
 
 export const deleteUser = async (id) => {
-  const response = await fetch(`${API_BASEURL}api/auth/deleteUser/${id}`, {
+  const response = await fetch(`${API_BASEURL}api/auth/deleteUser/${id}/`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -268,18 +370,6 @@ export const deleteUser = async (id) => {
 };
 
 export const updateUser = async (user, userId) => {
-  console.log(
-    JSON.stringify({
-      email: user.email,
-      username: user.username,
-      first_name: user.firstName,
-      last_name: user.lastName,
-      movie_profile: {
-        status: user.status,
-        receive_promotions: user.receive_promotions,
-      },
-    })
-  );
   const response = await fetch(`${API_BASEURL}api/auth/updateUser/${userId}/`, {
     method: "PUT",
     headers: {
@@ -288,11 +378,17 @@ export const updateUser = async (user, userId) => {
     body: JSON.stringify({
       email: user.email,
       username: user.username,
-      first_name: user.firstName,
-      last_name: user.lastName,
+      first_name: user.first_name,
+      last_name: user.last_name,
       movie_profile: {
-        status: user.status,
-        receive_promotions: user.receive_promotions,
+        status: user.movie_profile.status,
+        receive_promotions: user.movie_profile.receive_promotions,
+        address: {
+          street: user.movie_profile.address.street,
+          city: user.movie_profile.address.city,
+          state: user.movie_profile.address.state,
+          postalCode: user.movie_profile.address.postalCode,
+        },
       },
     }),
   });
@@ -327,12 +423,18 @@ export const getPromos = async () => {
 };
 
 export const createPromotion = async (promo) => {
-  const response = await fetch(`${API_BASEURL}api/info/promotion/add`, {
+  const response = await fetch(`${API_BASEURL}api/info/promotion/add/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(promo),
+    body: JSON.stringify({
+      name: promo.name,
+      discountPercentage: promo.discountPercentage,
+      code: promo.code,
+      startDate: promo.startDate,
+      endDate: promo.endDate,
+    }),
   });
 
   const result = await parseResponse(response);
@@ -340,16 +442,39 @@ export const createPromotion = async (promo) => {
   return result;
 };
 
-export const updatePromotion = async (promo) => {
+export const updatePromotion = async (promo, ogCode) => {
   const response = await fetch(
-    `${API_BASEURL}api/info/promotion/update/${promo.id}/`,
+    `${API_BASEURL}api/info/promotion/update/${ogCode}/`,
     {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(promo),
-    },
+      body: JSON.stringify({
+        name: promo.name,
+        discountPercentage: promo.discountPercentage,
+        code: promo.code,
+        startDate: promo.startDate,
+        endDate: promo.endDate,
+      }),
+    }
+  );
+
+  const result = await parseResponse(response);
+
+  return result;
+};
+
+export const validatePromotion = async (code) => {
+  const response = await fetch(
+    `${API_BASEURL}api/info/promotion/update/${code}/`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(code),
+    }
   );
 
   const result = await parseResponse(response);
@@ -403,7 +528,7 @@ export const deletePayment = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   return response;
@@ -462,7 +587,7 @@ export const confirmPasswordReset = async (uid, token, newPassword) => {
         uid,
         token,
       }),
-    },
+    }
   );
 
   const result = await parseResponse(response);
