@@ -65,6 +65,20 @@ export const login = async ({ username, password }) => {
   localStorage.setItem("auth", message);
 };
 
+export const validateAdmin = async () => {
+  const token = localStorage.getItem("auth");
+
+  const response = await fetch(
+    `${API_BASEURL}api/auth/user/validateAdmin/${token}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+};
+
 export const confirmEmail = async (key) => {
   const response = await fetch(
     `${API_BASEURL}api/auth/account-confirm-email/`,
