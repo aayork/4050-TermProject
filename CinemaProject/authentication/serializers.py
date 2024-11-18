@@ -59,7 +59,7 @@ class MovieRoomSerializer(serializers.ModelSerializer):
 
 
 class ShowTimeSerializer(serializers.ModelSerializer):
-    movieRoom = MovieRoomSerializer(read_only=True)
+    movieRoom = serializers.PrimaryKeyRelatedField(queryset=MovieRoom.objects.all())
 
     class Meta:
         model = ShowTime

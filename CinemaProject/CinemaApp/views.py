@@ -158,6 +158,7 @@ class AddPromotionView(generics.CreateAPIView):
     serializer_class = PromotionSerializer
 
 
+# Test out 161 class and confirm it works PLEASE!!!
 class UpdatePromotionView(generics.UpdateAPIView):
     queryset = Promotion.objects.all()
     serializer_class = PromotionSerializer
@@ -185,3 +186,21 @@ class validatePromotion(generics.RetrieveAPIView):
 class CreateOrderView(generics.CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = CreateOrderSerializer
+
+class AddShowtimeView(generics.CreateAPIView):
+    queryset = ShowTime.objects.all()
+    serializer_class = ShowTimeSerializer
+
+class EditShowtimeView(generics.UpdateAPIView):
+    lookup_field='id'
+    queryset=ShowTime.objects.all()
+    serializer_class=ShowTimeSerializer
+
+    
+class DeleteShowTimeView (generics.DestroyAPIView):
+    queryset = ShowTime.objects.all()
+    # what is the purpose of the queryset variable: 
+    # it retireves all the possible objects that are in consideration for having the lookup field
+    # how come queryset doesn't hold .get(pk = self.kwargs.get(lookup_field))
+    lookup_field = 'id'
+    serializer_class = ShowTimeSerializer
