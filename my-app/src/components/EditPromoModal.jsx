@@ -38,13 +38,14 @@ export function EditPromoModal({ onClose, onSave, promo }) {
     setPromoDetails((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     onSave(promoDetails);
     onClose();
   };
 
-  const close = (event) => {
-    event.preventDefault();
+  const close = (e) => {
+    e.preventDefault();
     onClose();
   };
 

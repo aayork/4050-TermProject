@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import {} from "react-router-dom";
-import { logout } from "../utils/API";
-import { getUser } from "../utils/API";
+import { logout, validateAdmin } from "../utils/API";
 
 export function NavBar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -32,8 +31,7 @@ export function NavBar() {
 
     const getUserStatus = async () => {
       try {
-        //   const user = await validateAdmin();
-        // return user.movie_profile.status;
+        return await validateAdmin();
       } catch (error) {
         alert(error);
       }
@@ -41,12 +39,8 @@ export function NavBar() {
 
     const fetchUserData = async () => {
       if (loggedIn) {
-        const status = await getUserStatus();
-        if (status === "admin") {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
-        }
+        const result = await getUserStatus();
+        setIsAdmin(result);
       } else {
         setIsAdmin(false);
       }

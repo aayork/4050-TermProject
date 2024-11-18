@@ -291,13 +291,15 @@ export const getUser = async () => {
 export const validateAdmin = async () => {
   const token = localStorage.getItem("auth");
 
-  const response = await fetch(`${API_BASEURL}api/auth/user/validateAdmin/`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Token ${token}`,
-    },
-  });
+  const response = await fetch(
+    `${API_BASEURL}api/auth/user/validateAdmin/${token}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   const result = await parseResponse(response);
 
@@ -421,7 +423,6 @@ export const getPromos = async () => {
 };
 
 export const createPromotion = async (promo) => {
-  console.log(JSON.stringify(promo));
   const response = await fetch(`${API_BASEURL}api/info/promotion/add/`, {
     method: "POST",
     headers: {

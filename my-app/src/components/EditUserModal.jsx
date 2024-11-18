@@ -60,7 +60,6 @@ export function EditUserModal({ onClose, onSave, onDelete, user }) {
 
   const handleDelete = (e) => {
     e.preventDefault();
-    console.log("Delete");
     onDelete(user.id);
     onClose();
   };
