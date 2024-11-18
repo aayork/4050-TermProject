@@ -41,6 +41,7 @@ export function MovieHall({ movie }) {
     address: `${showtime.movieRoom.theatre.street}, ${showtime.movieRoom.theatre.city}, ${showtime.movieRoom.theatre.state} ${showtime.movieRoom.theatre.zipcode}`,
     date: formatDate(showtime.date),
     startTime: formatTime(showtime.startTime),
+    endTime: formatTime(showtime.endTime),
   }));
 
   const toggleSeatSelection = (seatId) => {

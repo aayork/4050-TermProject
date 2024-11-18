@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getPromos, createOrder } from "../../utils/API";
+import { getPromos, createOrder, getUser } from "../../utils/API";
 
 export function Payment() {
   // Get the passed state from the previous page
@@ -23,23 +23,48 @@ export function Payment() {
   const handleConfirm = async () => {
     // Create tickets array from selected seats and their types
     const tickets = selectedSeats.map((seatId) => ({
-      seat: seatId,
-      type: (seatTypes[seatId] || "Adult").toLowerCase(), // Convert to lowercase to match backend enum
-      showtime: selectedShowtime.id, // Include showtime ID if needed
+      seat: 2, // Ensure seatId is the seat's integer ID (update to use the correct seat ID)
+      type: (seatTypes[seatId] || "Adult").toLowerCase(), // Ensure type matches the backend's enum
     }));
 
-    const purchaseDate = new Date().toISOString();
+    const purchaseDate = new Date().toISOString().split("T")[0]; // Format as YYYY-MM-DD
+    const user = getUser(localStorage.getItem("auth"));
+    const userId = 5;
+    const discountPercentage = 0;
+    console.log("User:", user);
 
-    const userId = localStorage.getItem("userId");
+    // Log the data you're going to send
+    console.log("Payload for order creation:");
+    console.log("Discount Percentage:", discountPercentage);
+    console.log("Total Price:", totalPrice);
+    console.log("User ID:", userId);
+    console.log("Purchase Date:", purchaseDate);
+    console.log("Tickets:", tickets);
+
+    if (!userId) {
+      console.error("User ID is missing!");
+      return;
+    }
+    if (!totalPrice) {
+      console.error("Total price is missing!");
+      return;
+    }
+    if (tickets.length === 0) {
+      console.error("Tickets cannot be empty!");
+      return;
+    }
 
     try {
       const response = await createOrder(
-        0,
+        discountPercentage,
         totalPrice,
         userId,
         purchaseDate,
         tickets,
       );
+
+      // Log the response to see what the backend returns
+      console.log("Response from backend:", response);
 
       navigate("/summary", {
         state: {
@@ -50,7 +75,15 @@ export function Payment() {
         },
       });
     } catch (error) {
-      console.error("Error creating order:", error);
+      // Log detailed error response
+      if (error.response) {
+        console.error(
+          "Error response from server:",
+          await error.response.json(),
+        );
+      } else {
+        console.error("Error creating order:", error);
+      }
     }
   };
 

@@ -24,10 +24,6 @@ export function OrderConfirmation() {
       ) : (
         <p>No seats selected.</p>
       )}
-
-      <Link to="/" className="btn mt-5 p-2">
-        Back to Movie Selection
-      </Link>
     </div>
   );
 }

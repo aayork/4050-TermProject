@@ -480,6 +480,11 @@ export const confirmPasswordReset = async (
   return result;
 };
 
+const tickets = [
+  { seat: 35, type: "adult" },
+  { seat: 36, type: "child" },
+];
+
 // Order API Stuff
 export const createOrder = async (
   discountPercentage,
@@ -488,7 +493,7 @@ export const createOrder = async (
   purchaseDate,
   tickets,
 ) => {
-  const response = await fetch(`${API_BASEURL}api/info/createOrder`, {
+  const response = await fetch(`${API_BASEURL}api/info/createOrder/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
