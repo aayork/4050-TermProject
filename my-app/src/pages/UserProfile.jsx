@@ -98,7 +98,6 @@ export function UserProfile() {
 
       if (formChanged) {
         try {
-          console.log("Updated form", formState);
           const updatedUser = {
             username: formState.username,
             first_name: formState.first_name,
