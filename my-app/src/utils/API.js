@@ -494,11 +494,6 @@ export const confirmPasswordReset = async (
   return result;
 };
 
-const tickets = [
-  { seat: 35, type: "adult" },
-  { seat: 36, type: "child" },
-];
-
 // Order API Stuff
 export const createOrder = async (
   discountPercentage,
