@@ -25,7 +25,6 @@ export function Login() {
       if (key) {
         try {
           await confirmEmail(key);
-
           alert("Your account has been confirmed\nPlease login :)");
         } catch (error) {
           alert(error);
@@ -39,8 +38,6 @@ export function Login() {
   // handle form submit
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
-    console.log(formState);
 
     try {
       await login({

@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 
-export function EditUserModal({ onClose, onSave, user }) {
+export function EditUserModal({ onClose, onSave, onDelete, user }) {
   const initForm = useMemo(
     () => ({
       id: "",
@@ -9,7 +9,16 @@ export function EditUserModal({ onClose, onSave, user }) {
       username: "",
       email: "",
       password: "",
-      status: "",
+      movie_profile: {
+        status: "",
+        receive_promotions: false,
+        address: {
+          street: "",
+          city: "",
+          state: "",
+          postalCode: "",
+        },
+      },
     }),
     []
   );
@@ -27,11 +36,31 @@ export function EditUserModal({ onClose, onSave, user }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserDetails((prevData) => ({ ...prevData, [name]: value }));
+
+    setUserDetails((prevData) => {
+      if (name.includes(".")) {
+        const keys = name.split(".");
+        return {
+          ...prevData,
+          [keys[0]]: {
+            ...prevData[keys[0]],
+            [keys[1]]: value,
+          },
+        };
+      }
+      return { ...prevData, [name]: value };
+    });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     onSave(userDetails);
+    onClose();
+  };
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    onDelete(user.id);
     onClose();
   };
 
@@ -42,7 +71,9 @@ export function EditUserModal({ onClose, onSave, user }) {
 
   return (
     <div className="modal-box">
-      <h3 className="font-semibold text-lg">Add New User </h3>
+      <h1 className="font-semibold text-lg">
+        {user ? "Update User" : "Add User"}
+      </h1>
       <div className="border border-monkey-green"></div>
       <form method="dialog" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 py-2">
@@ -86,38 +117,46 @@ export function EditUserModal({ onClose, onSave, user }) {
               value={userDetails.username}
             />
           </label>
-          <label className="input input-bordered input-primary flex items-center gap-2">
-            Password :
-            <input
-              type="text"
-              className="grow"
-              name="password"
-              onChange={handleChange}
-              value={userDetails.password}
-            />
-          </label>
+          {!user && (
+            <label className="input input-bordered input-primary flex items-center gap-2">
+              Password :
+              <input
+                type="text"
+                className="grow"
+                name="password"
+                onChange={handleChange}
+                value={userDetails.password}
+              />
+            </label>
+          )}
           <select
             className="select select-bordered w-full select-primary"
-            name="role"
-            defaultValue=""
+            name="movie_profile.status"
+            value={userDetails.movie_profile.status || ""}
             onChange={handleChange}
-            selected={userDetails.status}
           >
-            <option disabled defaultValue>
+            <option disabled value="">
               Role
             </option>
-            <option value="admin">Manager</option>
-            <option value="employee">Employee</option>
-            <option value="user">Customer</option>
+            <option value="admin">Admin</option>
+            <option value="customer">Customer</option>
           </select>
         </div>
         <div className="modal-action mt-0">
           <button
-            className="btn btn-secondary btn-sm mx-2 text-monkey-white text-white"
+            className="btn btn-secondary btn-sm text-monkey-white text-white"
             onClick={close}
           >
             Cancel
           </button>
+          {user && (
+            <button
+              className="btn btn-warning btn-sm text-white"
+              onClick={handleDelete}
+            >
+              Delete
+            </button>
+          )}
           <button
             className="btn btn-primary btn-sm text-white"
             onClick={handleSubmit}

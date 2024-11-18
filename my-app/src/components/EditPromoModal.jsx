@@ -13,7 +13,7 @@ export function EditPromoModal({ onClose, onSave, promo }) {
     () => ({
       name: "",
       code: "",
-      discount: "",
+      discountPercentage: 0,
       startDate: formatDate(Date.now()),
       endDate: formatDate(Date.now()),
     }),
@@ -38,13 +38,14 @@ export function EditPromoModal({ onClose, onSave, promo }) {
     setPromoDetails((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     onSave(promoDetails);
     onClose();
   };
 
-  const close = (event) => {
-    event.preventDefault();
+  const close = (e) => {
+    e.preventDefault();
     onClose();
   };
 
@@ -82,9 +83,9 @@ export function EditPromoModal({ onClose, onSave, promo }) {
               type="number"
               max="100"
               min="0"
-              name="discount"
+              name="discountPercentage"
               className="grow"
-              value={promoDetails.discount}
+              value={promoDetails.discountPercentage}
               onChange={handleChange}
             />
           </label>

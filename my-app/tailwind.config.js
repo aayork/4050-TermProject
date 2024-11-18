@@ -12,13 +12,16 @@ export default {
         "monkey-green": "#166434",
         "monkey-yellow": "#FCCD2A",
       },
+      screens: {
+        xs: "490px",
+      },
     },
   },
   daisyui: {
     themes: [
       {
         mytheme: {
-          primary: "#347928",
+          primary: "#166434",
 
           secondary: "#222222",
 

@@ -1,6 +1,11 @@
 import { ManageMovieCard } from "../../components/ManageMovieCard";
 import { useState, useEffect } from "react";
-import { getMovies, updateMovie, createMovie } from "../../utils/API";
+import {
+  getMovies,
+  updateMovie,
+  createMovie,
+  deleteMovie,
+} from "../../utils/API";
 import { Loading } from "../../components/Loading";
 import { EditMovieModal } from "../../components/EditMovieModal";
 
@@ -8,6 +13,7 @@ export function ManageMovies() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
 
   const openAddMovieModal = () => {
     setSelectedMovie(null);
@@ -21,21 +27,32 @@ export function ManageMovies() {
 
   const handleSaveMovie = async (movieData) => {
     if (selectedMovie) {
-      console.log("Edit movie:", movieData);
       try {
         const result = await updateMovie(movieData);
         console.log(result);
+        setShouldUpdate(!shouldUpdate);
       } catch (error) {
         console.log(error);
       }
     } else {
-      console.log("Add new movie:", movieData);
       try {
         const result = await createMovie(movieData);
         console.log(result);
+        setShouldUpdate(!shouldUpdate);
       } catch (error) {
         console.log(error);
+        alert(error);
       }
+    }
+  };
+
+  const handleDeleteMovie = async () => {
+    try {
+      const result = await deleteMovie(selectedMovie.id);
+      setShouldUpdate(!shouldUpdate);
+      alert(result.message);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -48,7 +65,7 @@ export function ManageMovies() {
     };
 
     fetchMovies();
-  }, []);
+  }, [shouldUpdate]);
 
   if (loading) {
     return <Loading message="Loading" />;
@@ -81,6 +98,7 @@ export function ManageMovies() {
           <EditMovieModal
             onClose={() => document.getElementById("movieModal").close()}
             onSave={handleSaveMovie}
+            onDelete={handleDeleteMovie}
             movie={selectedMovie}
           />
         </dialog>
@@ -88,7 +106,7 @@ export function ManageMovies() {
       <div className="flex flex-col">
         <div className="">
           <h1 className="font-semibold"> Currently Showing:</h1>
-          <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+          <div className="grid gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {movies
               .filter((movie) => movie.is_active)
               .map((movie) => (
@@ -101,9 +119,9 @@ export function ManageMovies() {
               ))}
           </div>
         </div>
-        <div className="">
+        <div className="my-4">
           <h1 className="font-semibold"> Inactive:</h1>
-          <div className="grid grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+          <div className="grid gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
             {movies
               .filter((movie) => !movie.is_active)
               .map((movie) => (
