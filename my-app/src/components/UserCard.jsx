@@ -7,10 +7,14 @@ export function UserCard({ user, onEdit }) {
           {user.last_name}
         </h2>
         <h3>
-          <b className="font-semibold">Email:</b> {user.email}
+          <b className="font-semibold">Email:</b>
+          <span className={user.emailStatus.verified ? "" : "text-red-600"}>
+            {user.email}
+          </span>
         </h3>
         <h3>
-          <b className="font-semibold">Username:</b> {user.username}
+          <b className="font-semibold">Username:</b>
+          {user.username}
         </h3>
         <h3>
           <b className="font-semibold">Status:</b> {user.movie_profile.status}

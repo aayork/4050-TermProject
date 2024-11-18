@@ -113,6 +113,45 @@ export const logout = async () => {
   return message;
 };
 
+export const managerCreate = async ({
+  firstName,
+  lastName,
+  email,
+  username,
+  password,
+  status,
+}) => {
+  const response = await fetch(`${API_BASEURL}api/auth/register/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email,
+      username: username,
+      password1: password,
+      password2: password,
+      first_name: firstName,
+      last_name: lastName,
+      status: status,
+      receive_promotions: false,
+    }),
+  });
+
+  const result = await parseResponse(response);
+  const message = Object.values(result);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < message.length; i++) {
+      errorMessage += message[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
+  return message;
+};
+
 // movie API stuff
 export const getMovies = async () => {
   const response = await fetch(`${API_BASEURL}api/info/getMovies/`, {
@@ -317,7 +356,7 @@ export const addUser = async (user) => {
 };
 
 export const deleteUser = async (id) => {
-  const response = await fetch(`${API_BASEURL}api/auth/deleteUser/${id}`, {
+  const response = await fetch(`${API_BASEURL}api/auth/deleteUser/${id}/`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -337,16 +376,16 @@ export const updateUser = async (user, userId) => {
     body: JSON.stringify({
       email: user.email,
       username: user.username,
-      first_name: user.firstName,
-      last_name: user.lastName,
+      first_name: user.first_name,
+      last_name: user.last_name,
       movie_profile: {
-        status: user.status,
-        receive_promotions: user.receive_promotions,
+        status: user.movie_profile.status,
+        receive_promotions: user.movie_profile.receive_promotions,
         address: {
-          street: user.address.street,
-          city: user.address.city,
-          state: user.address.state,
-          postalCode: user.address.postalCode,
+          street: user.movie_profile.address.street,
+          city: user.movie_profile.address.city,
+          state: user.movie_profile.address.state,
+          postalCode: user.movie_profile.address.postalCode,
         },
       },
     }),

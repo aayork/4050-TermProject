@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 
-export function EditUserModal({ onClose, onSave, user }) {
+export function EditUserModal({ onClose, onSave, onDelete, user }) {
   const initForm = useMemo(
     () => ({
       id: "",
@@ -36,12 +36,32 @@ export function EditUserModal({ onClose, onSave, user }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserDetails((prevData) => ({ ...prevData, [name]: value }));
+
+    setUserDetails((prevData) => {
+      if (name.includes(".")) {
+        const keys = name.split(".");
+        return {
+          ...prevData,
+          [keys[0]]: {
+            ...prevData[keys[0]],
+            [keys[1]]: value,
+          },
+        };
+      }
+      return { ...prevData, [name]: value };
+    });
   };
 
-  const handleSubmit = () => {
-    console.log(userDetails);
+  const handleSubmit = (e) => {
+    e.preventDefault();
     onSave(userDetails);
+    onClose();
+  };
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    console.log("Delete");
+    onDelete(user.id);
     onClose();
   };
 
@@ -112,8 +132,8 @@ export function EditUserModal({ onClose, onSave, user }) {
           )}
           <select
             className="select select-bordered w-full select-primary"
-            name="status"
-            value={userDetails.status || ""}
+            name="movie_profile.status"
+            value={userDetails.movie_profile.status || ""}
             onChange={handleChange}
           >
             <option disabled value="">
@@ -125,11 +145,19 @@ export function EditUserModal({ onClose, onSave, user }) {
         </div>
         <div className="modal-action mt-0">
           <button
-            className="btn btn-secondary btn-sm mx-2 text-monkey-white text-white"
+            className="btn btn-secondary btn-sm text-monkey-white text-white"
             onClick={close}
           >
             Cancel
           </button>
+          {user && (
+            <button
+              className="btn btn-warning btn-sm text-white"
+              onClick={handleDelete}
+            >
+              Delete
+            </button>
+          )}
           <button
             className="btn btn-primary btn-sm text-white"
             onClick={handleSubmit}

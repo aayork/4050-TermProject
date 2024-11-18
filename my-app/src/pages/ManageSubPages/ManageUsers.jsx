@@ -2,7 +2,12 @@ import { UserCard } from "../../components/UserCard";
 import { useState, useEffect } from "react";
 import { EditUserModal } from "../../components/EditUserModal";
 import { Loading } from "../../components/Loading";
-import { getAllUsers, updateUser, deleteUser, register } from "../../utils/API";
+import {
+  getAllUsers,
+  updateUser,
+  deleteUser,
+  managerCreate,
+} from "../../utils/API";
 
 export function ManageUsers() {
   const [users, setUsers] = useState([]);
@@ -25,27 +30,37 @@ export function ManageUsers() {
       try {
         const result = await updateUser(userData, selectedUser.id);
         setShouldUpdate(!shouldUpdate);
-        console.log(result);
+        alert("Updated " + result.username);
       } catch (error) {
         console.error("Error updating user:", error);
         alert("Failed to update user information.");
       }
     } else {
       try {
-        const result = await register({
+        const result = await managerCreate({
           firstName: userData.first_name,
           lastName: userData.last_name,
           email: userData.email,
           username: userData.username,
           password: userData.password,
-          status: userData.status,
+          status: userData.movie_profile.status,
         });
         setShouldUpdate(!shouldUpdate);
         console.log(result);
       } catch (error) {
-        console.error("Error updating user:", error);
+        console.error("Error creating user:", error);
         alert("Failed to update user information.");
       }
+    }
+  };
+
+  const handleDeleteUser = async (userId) => {
+    try {
+      const result = await deleteUser(userId);
+      setShouldUpdate(!shouldUpdate);
+      alert(result.message);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -95,6 +110,7 @@ export function ManageUsers() {
           <EditUserModal
             onClose={() => document.getElementById("userModal").close()}
             onSave={handleSaveUser}
+            onDelete={handleDeleteUser}
             user={selectedUser}
           />
         </dialog>

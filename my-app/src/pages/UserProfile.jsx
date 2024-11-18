@@ -11,53 +11,33 @@ export function UserProfile() {
   const [userId, setUserId] = useState(0);
   const [shouldUpdate, setShouldUpdate] = useState(false);
   const [initialFormState, setInitialFormState] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     username: "",
     receive_promotions: false,
-    address: {
-      street: "",
-      city: "",
-      state: "",
-      postalCode: "",
-    },
+    street: "",
+    city: "",
+    state: "",
+    postalCode: "",
   });
 
   const [formState, setFormState] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     username: "",
     receive_promotions: false,
-    address: {
-      street: "",
-      city: "",
-      state: "",
-      postalCode: "",
-    },
+    street: "",
+    city: "",
+    state: "",
+    postalCode: "",
   });
   const [payments, setPayments] = useState([]);
 
-  const handleChange = (event) => {
-    const { name, type, checked, value } = event.target;
-
-    if (name.startsWith("address.")) {
-      const addressField = name.split(".")[1];
-      setFormState((prevState) => ({
-        ...prevState,
-        address: {
-          ...prevState.address,
-          [addressField]: value,
-        },
-      }));
-    } else {
-      const newValue = type === "checkbox" ? checked : value;
-      setFormState({
-        ...formState,
-        [name]: newValue,
-      });
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormState((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleCardAdd = () => {
@@ -84,17 +64,15 @@ export function UserProfile() {
         console.log(user);
         if (user) {
           const fetchedFormState = {
-            firstName: user.first_name,
-            lastName: user.last_name,
+            first_name: user.first_name,
+            last_name: user.last_name,
             email: user.email,
             username: user.username,
             receive_promotions: user.movie_profile.receive_promotions,
-            address: {
-              street: user.movie_profile.address?.street || "",
-              city: user.movie_profile.address?.city || "",
-              state: user.movie_profile.address?.state || "",
-              postalCode: user.movie_profile.address?.postalCode || "",
-            },
+            street: user.movie_profile.address.street,
+            city: user.movie_profile.address.city,
+            state: user.movie_profile.address.state,
+            postalCode: user.movie_profile.address.postalCode,
           };
 
           setUserId(user.id);
@@ -120,7 +98,23 @@ export function UserProfile() {
 
       if (formChanged) {
         try {
-          await updateUser(formState, userId);
+          console.log("Updated form", formState);
+          const updatedUser = {
+            username: formState.username,
+            first_name: formState.first_name,
+            last_name: formState.last_name,
+            email: formState.email,
+            movie_profile: {
+              receive_promotions: formState.receive_promotions,
+              address: {
+                street: formState.street,
+                city: formState.city,
+                state: formState.state,
+                postalCode: formState.postalCode,
+              },
+            },
+          };
+          await updateUser(updatedUser, userId);
           setInitialFormState(formState);
           alert("User updated successfully");
         } catch (error) {
@@ -184,8 +178,8 @@ export function UserProfile() {
                       type="text"
                       className="grow"
                       placeholder=""
-                      name="firstName"
-                      value={formState.firstName}
+                      name="first_name"
+                      value={formState.first_name}
                       onChange={handleChange}
                       readOnly={!isEditable}
                     />
@@ -196,8 +190,8 @@ export function UserProfile() {
                       type="text"
                       className="grow"
                       placeholder=""
-                      name="lastName"
-                      value={formState.lastName}
+                      name="last_name"
+                      value={formState.last_name}
                       onChange={handleChange}
                       readOnly={!isEditable}
                     />
@@ -221,8 +215,8 @@ export function UserProfile() {
                     <input
                       type="text"
                       className="grow"
-                      name="address.street"
-                      value={formState.address.street}
+                      name="street"
+                      value={formState.street}
                       onChange={handleChange}
                       readOnly={!isEditable}
                     />
@@ -232,8 +226,8 @@ export function UserProfile() {
                     <input
                       type="text"
                       className="grow"
-                      name="address.city"
-                      value={formState.address.city}
+                      name="city"
+                      value={formState.city}
                       onChange={handleChange}
                       readOnly={!isEditable}
                     />
@@ -243,8 +237,8 @@ export function UserProfile() {
                     <input
                       type="text"
                       className="grow"
-                      name="address.state"
-                      value={formState.address.state}
+                      name="state"
+                      value={formState.state}
                       onChange={handleChange}
                       readOnly={!isEditable}
                     />
@@ -254,8 +248,8 @@ export function UserProfile() {
                     <input
                       type="text"
                       className="grow"
-                      name="address.postalCode"
-                      value={formState.address.postalCode}
+                      name="postalCode"
+                      value={formState.postalCode}
                       onChange={handleChange}
                       readOnly={!isEditable}
                     />
