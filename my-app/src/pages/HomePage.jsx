@@ -12,6 +12,7 @@ export function HomePage() {
     const fetchMovies = async () => {
       const movies = await getMovies();
       console.log(movies);
+      console.log("movie 0 showtime 0:", movies[0].showtimes[0]);
       setMovies(movies);
       setLoading(false);
     };

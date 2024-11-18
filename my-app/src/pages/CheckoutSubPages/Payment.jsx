@@ -28,8 +28,8 @@ export function Payment() {
     }));
 
     const purchaseDate = new Date().toISOString().split("T")[0]; // Format as YYYY-MM-DD
-    const user = getUser(localStorage.getItem("auth"));
-    const userId = 5;
+    const user = await getUser("auth"); // Use `await` correctly outside of the `const` declaration
+    const userId = user.id;
     const discountPercentage = 0;
     console.log("User:", user);
 

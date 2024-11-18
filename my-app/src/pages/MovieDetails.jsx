@@ -22,7 +22,7 @@ export function MovieDetails() {
     };
 
     fetchMovie();
-  }, []);
+  });
 
   if (loading) {
     return <Loading message={`Loading Movie`} />;
