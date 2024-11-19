@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { MovieInfo } from "./MovieInfo";
 
 // Function to convert row index to letters (e.g., 0 -> A, 25 -> Z, 26 -> AA)
 const getRowLabel = (index) => {
@@ -11,6 +12,19 @@ const getRowLabel = (index) => {
   return label;
 };
 
+// Helper function to format date
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString();
+};
+
+// Helper function to format time
+const formatTime = (timeString) => {
+  return new Date(timeString).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
 export function MovieHall({ movie }) {
   const rows = 8;
   const columns = 12;
@@ -18,64 +32,96 @@ export function MovieHall({ movie }) {
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [selectedShowtime, setSelectedShowtime] = useState(null);
   const [seatTypes, setSeatTypes] = useState({});
+  const [seatIdMappings, setSeatIdMappings] = useState({});
 
   const navigate = useNavigate();
 
-  const showTimes = ["12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"];
+  const showTimes = movie.showtimes.map((showtime) => ({
+    id: showtime.id,
+    theatre: showtime.movieRoom.theatre.name,
+    address: `${showtime.movieRoom.theatre.street}, ${showtime.movieRoom.theatre.city}, ${showtime.movieRoom.theatre.state} ${showtime.movieRoom.theatre.zipcode}`,
+    date: formatDate(showtime.date),
+    startTime: formatTime(showtime.startTime),
+    endTime: formatTime(showtime.endTime),
+  }));
 
-  const toggleSeatSelection = (seatId) => {
-    if (selectedSeats.includes(seatId)) {
-      setSelectedSeats(selectedSeats.filter((seat) => seat !== seatId));
+  const toggleSeatSelection = (seatLabel) => {
+    if (selectedSeats.includes(seatLabel)) {
+      setSelectedSeats(selectedSeats.filter((seat) => seat !== seatLabel));
       const newSeatTypes = { ...seatTypes };
-      delete newSeatTypes[seatId];
+      delete newSeatTypes[seatLabel];
       setSeatTypes(newSeatTypes);
     } else {
-      setSelectedSeats([...selectedSeats, seatId]);
+      setSelectedSeats([...selectedSeats, seatLabel]);
     }
   };
 
-  const handleSeatTypeChange = (seatId, type) => {
-    setSeatTypes({ ...seatTypes, [seatId]: type });
+  const handleSeatTypeChange = (seatLabel, type) => {
+    setSeatTypes({ ...seatTypes, [seatLabel]: type });
   };
 
   // Proceed to Checkout with selected seats and types
   const proceedToCheckout = () => {
+    const startTime = selectedShowtime.startTime;
     navigate("/checkout", {
       state: {
         selectedSeats,
         seatTypes,
-        selectedShowtime,
+        startTime,
+        seatIdMappings, // Pass the mappings to the checkout page
       },
     });
   };
 
   return (
-    <div className="flex flex-col items-center p-5">
+    <div className="flex flex-col p-5">
       <h1 className="text-2xl font-bold mb-4">Movie Details</h1>
-      <iframe width="700" height="450" src={movie.trailer}></iframe>
+      <MovieInfo movie={movie} />
       {!selectedShowtime ? (
         <div>
-          <h2 className="text-lg font-semibold mb-4">Show Times</h2>
-          <div className="flex space-x-4">
-            {showTimes.map((time) => (
-              <button
-                key={time}
-                onClick={() => setSelectedShowtime(time)}
-                className="btn btn-primary"
-              >
-                {time}
-              </button>
-            ))}
+          <div>
+            <h2 className="text-2xl font-bold mb-6">Upcoming Showtimes</h2>
+            <div className="grid gap-6">
+              {showTimes.map((showtime) => (
+                <button
+                  key={showtime.id}
+                  onClick={() => setSelectedShowtime(showtime)}
+                  className="text-left border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow hover:bg-gray-50"
+                >
+                  <h3 className="text-xl font-semibold mb-2">
+                    {showtime.theatre}
+                  </h3>
+                  <p className="text-gray-600 mb-3">{showtime.address}</p>
+                  <div className="flex gap-4 mb-2">
+                    <span className="font-medium">{showtime.date}</span>
+                    <span className="font-medium">
+                      {showtime.startTime} - {showtime.endTime}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       ) : (
         <>
           <div className="mt-5">
-            <h2 className="text-lg font-semibold">
-              Showtime Selected: {selectedShowtime}
-            </h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">
+                Selected Showtime: {selectedShowtime?.theatre || "Theatre"}{" "}
+                {selectedShowtime?.date || "Date"}
+                {" at "}
+                {selectedShowtime?.startTime || "Time"}
+              </h2>
+              <button
+                onClick={() => setSelectedShowtime(null)}
+                className="btn btn-sm"
+              >
+                Change Showtime
+              </button>
+            </div>
             <h3 className="text-lg font-semibold mb-4 mt-3">
-              Select Your Seats:
+              Select Your Seats
             </h3>
             <div
               className="grid gap-2"
@@ -87,17 +133,28 @@ export function MovieHall({ movie }) {
               {Array.from({ length: rows }).map((_, rowIndex) => {
                 const rowLabel = getRowLabel(rowIndex);
                 return Array.from({ length: columns }).map((_, colIndex) => {
-                  const seatId = `${rowLabel}${colIndex + 1}`;
-                  const isSelected = selectedSeats.includes(seatId);
+                  const seatLabel = `${rowLabel}${colIndex + 1}`;
+                  // Calculate the actual seat ID (this logic would depend on your database structure)
+                  const actualSeatId = rowIndex * columns + colIndex + 195;
+
+                  // Update the seatIdMappings
+                  if (!seatIdMappings[seatLabel]) {
+                    setSeatIdMappings((prev) => ({
+                      ...prev,
+                      [seatLabel]: actualSeatId,
+                    }));
+                  }
+
+                  const isSelected = selectedSeats.includes(seatLabel);
                   return (
                     <button
-                      key={seatId}
-                      onClick={() => toggleSeatSelection(seatId)}
+                      key={seatLabel}
+                      onClick={() => toggleSeatSelection(seatLabel)}
                       className={`btn btn-square btn-sm ${
                         isSelected ? "bg-green-500" : "bg-monkey-yellow"
                       }`}
                     >
-                      {seatId}
+                      {seatLabel}
                     </button>
                   );
                 });
@@ -110,7 +167,7 @@ export function MovieHall({ movie }) {
                 <ul>
                   {selectedSeats.map((seat) => (
                     <li key={seat} className="mb-3">
-                      {seat}
+                      {seat} (Seat ID: {seatIdMappings[seat]})
                       <select
                         value={seatTypes[seat] || "Adult"}
                         onChange={(e) =>
@@ -131,7 +188,11 @@ export function MovieHall({ movie }) {
             </div>
 
             {/* Proceed to Checkout */}
-            <button onClick={proceedToCheckout} className="btn mt-5">
+            <button
+              onClick={proceedToCheckout}
+              className="btn mt-5"
+              disabled={selectedSeats.length === 0}
+            >
               Proceed to Checkout
             </button>
           </div>

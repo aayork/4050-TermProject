@@ -59,7 +59,7 @@ export function NavBar() {
 
   return (
     <div>
-      <nav className="bg-white m-2 rounded-lg relative top-2 border border-gray-200 shadow-2xl">
+      <nav className="bg-white mb-2 mx-2 rounded-lg relative top-2 border border-gray-200 shadow-2xl">
         <div className="mx-auto px-2">
           <div className="relative flex h-16 items-center justify-between">
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">

@@ -1,11 +1,12 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { createOrder, getUser } from "../../utils/API";
 
 export function Payment() {
   // Get the passed state from the previous page
   const location = useLocation();
-  const navigate = useNavigate(); // Use useNavigate for navigation
-  const { selectedSeats, seatTypes, selectedShowtime } = location.state;
+  const navigate = useNavigate();
+  const { selectedSeats, seatTypes, startTime, seatIdMappings } =
+    location.state;
 
   // Define pricing for each seat type
   const seatPrices = {
@@ -14,17 +15,78 @@ export function Payment() {
     Senior: 9,
   };
 
-  // Calculate the total price
   const totalPrice = selectedSeats.reduce((total, seat) => {
-    const type = seatTypes[seat] || "Adult"; // Default to Adult if type is not found
+    const type = seatTypes[seat] || "Adult";
     return total + seatPrices[type];
   }, 0);
 
-  const handleConfirm = () => {
-    // Navigate to the summary page with the necessary data
-    navigate("/summary", {
-      state: { selectedSeats, seatTypes, selectedShowtime }, // Pass the data to the summary page
-    });
+  const handleConfirm = async () => {
+    const tickets = selectedSeats.map((seatLabel) => ({
+      seat: seatIdMappings[seatLabel],
+      type: (seatTypes[seatLabel] || "Adult").toLowerCase(),
+    }));
+
+    const purchaseDate = new Date().toISOString().split("T")[0];
+    const user = await getUser("auth");
+    const userId = user.id;
+    const discountPercentage = 0;
+
+    if (!userId) {
+      console.error("User ID is missing!");
+      return;
+    }
+    if (!totalPrice) {
+      console.error("Total price is missing!");
+      return;
+    }
+    if (tickets.length === 0) {
+      console.error("Tickets cannot be empty!");
+      return;
+    }
+
+    // Create the order object
+    const orderData = {
+      discountPercentage,
+      totalPrice,
+      userId,
+      purchaseDate,
+      tickets,
+    };
+
+    // Log the API request data in JSON format
+    console.log("Request data:", JSON.stringify(orderData, null, 2));
+
+    try {
+      const response = await createOrder(
+        discountPercentage,
+        totalPrice,
+        userId,
+        purchaseDate,
+        tickets,
+      );
+
+      // Log the response to see what the backend returns
+      console.log("Response from backend:", response);
+
+      navigate("/summary", {
+        state: {
+          selectedSeats,
+          seatTypes,
+          startTime,
+          orderId: response.id,
+        },
+      });
+    } catch (error) {
+      // Log detailed error response
+      if (error.response) {
+        console.error(
+          "Error response from server:",
+          await error.response.json(),
+        );
+      } else {
+        console.error("Error creating order:", error);
+      }
+    }
   };
 
   return (
@@ -34,13 +96,11 @@ export function Payment() {
       <h2 className="text-lg font-semibold mt-4">Total: ${totalPrice}</h2>
 
       <form className="flex flex-col w-full max-w-md">
-        {/* Name Input */}
         <label className="input input-bordered flex items-center gap-2 mb-4">
           Name
           <input type="text" className="grow" placeholder="John Doe" />
         </label>
 
-        {/* Email Input */}
         <label className="input input-bordered flex items-center gap-2 mb-4">
           Email
           <input
@@ -50,7 +110,6 @@ export function Payment() {
           />
         </label>
 
-        {/* Card Number Input */}
         <label className="input input-bordered flex items-center gap-2 mb-4">
           Card Number
           <input
@@ -60,24 +119,19 @@ export function Payment() {
           />
         </label>
 
-        {/* Expiration Date Input */}
         <label className="input input-bordered flex items-center gap-2 mb-4">
           Expiration Date
           <input type="text" className="grow" placeholder="MM/YY" />
         </label>
 
-        {/* CVV Input */}
         <label className="input input-bordered flex items-center gap-2 mb-4">
           CVV
           <input type="text" className="grow" placeholder="123" />
         </label>
 
-        {/* Optional Note */}
         <label className="input input-bordered flex items-center gap-2 mb-4">
-          <input type="text" className="grow" placeholder="Add a note" />
-          <span className="badge badge-info bg-monkey-yellow text-black">
-            Optional
-          </span>
+          Promo Code
+          <input type="text" className="grow" placeholder="WELCOME30" />
         </label>
 
         <div className="flex flex-row justify-center">

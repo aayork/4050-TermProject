@@ -74,7 +74,7 @@ export const confirmEmail = async (key) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ key: key }),
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -173,7 +173,7 @@ export const getMovieDetails = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -247,7 +247,7 @@ export const updateMovie = async (movie) => {
         genres: movie.genres,
         showtimes: movie.showtimes,
       }),
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -298,7 +298,7 @@ export const validateAdmin = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -457,7 +457,7 @@ export const updatePromotion = async (promo, ogCode) => {
         startDate: promo.startDate,
         endDate: promo.endDate,
       }),
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -474,7 +474,7 @@ export const validatePromotion = async (code) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(code),
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -528,7 +528,7 @@ export const deletePayment = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   return response;
@@ -587,7 +587,7 @@ export const confirmPasswordReset = async (uid, token, newPassword) => {
         uid,
         token,
       }),
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -599,7 +599,6 @@ export const confirmPasswordReset = async (uid, token, newPassword) => {
 
   return result;
 };
-
 
 // Order API Stuff
 export const createOrder = async (
