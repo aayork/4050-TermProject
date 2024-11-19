@@ -5,7 +5,8 @@ export function Payment() {
   // Get the passed state from the previous page
   const location = useLocation();
   const navigate = useNavigate();
-  const { selectedSeats, seatTypes, selectedShowtime } = location.state;
+  const { selectedSeats, seatTypes, startTime, seatIdMappings } =
+    location.state;
 
   // Define pricing for each seat type
   const seatPrices = {
@@ -20,12 +21,12 @@ export function Payment() {
   }, 0);
 
   const handleConfirm = async () => {
-    const tickets = selectedSeats.map((seatId) => ({
-      seatId: 195, // NOT COMPLETE. Use getSeats endpoint to get primary key
-      type: (seatTypes[seatId] || "Adult").toLowerCase(),
+    const tickets = selectedSeats.map((seatLabel) => ({
+      seat: seatIdMappings[seatLabel],
+      type: (seatTypes[seatLabel] || "Adult").toLowerCase(),
     }));
 
-    const purchaseDate = new Date().toISOString().split("T")[0]; // Format as YYYY-MM-DD
+    const purchaseDate = new Date().toISOString().split("T")[0];
     const user = await getUser("auth");
     const userId = user.id;
     const discountPercentage = 0;
@@ -43,6 +44,18 @@ export function Payment() {
       return;
     }
 
+    // Create the order object
+    const orderData = {
+      discountPercentage,
+      totalPrice,
+      userId,
+      purchaseDate,
+      tickets,
+    };
+
+    // Log the API request data in JSON format
+    console.log("Request data:", JSON.stringify(orderData, null, 2));
+
     try {
       const response = await createOrder(
         discountPercentage,
@@ -59,7 +72,7 @@ export function Payment() {
         state: {
           selectedSeats,
           seatTypes,
-          selectedShowtime,
+          startTime,
           orderId: response.id,
         },
       });

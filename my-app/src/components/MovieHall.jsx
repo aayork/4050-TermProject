@@ -32,6 +32,7 @@ export function MovieHall({ movie }) {
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [selectedShowtime, setSelectedShowtime] = useState(null);
   const [seatTypes, setSeatTypes] = useState({});
+  const [seatIdMappings, setSeatIdMappings] = useState({});
 
   const navigate = useNavigate();
 
@@ -44,29 +45,30 @@ export function MovieHall({ movie }) {
     endTime: formatTime(showtime.endTime),
   }));
 
-  const toggleSeatSelection = (seatId) => {
-    if (selectedSeats.includes(seatId)) {
-      setSelectedSeats(selectedSeats.filter((seat) => seat !== seatId));
+  const toggleSeatSelection = (seatLabel) => {
+    if (selectedSeats.includes(seatLabel)) {
+      setSelectedSeats(selectedSeats.filter((seat) => seat !== seatLabel));
       const newSeatTypes = { ...seatTypes };
-      delete newSeatTypes[seatId];
+      delete newSeatTypes[seatLabel];
       setSeatTypes(newSeatTypes);
     } else {
-      setSelectedSeats([...selectedSeats, seatId]);
+      setSelectedSeats([...selectedSeats, seatLabel]);
     }
   };
 
-  const handleSeatTypeChange = (seatId, type) => {
-    setSeatTypes({ ...seatTypes, [seatId]: type });
+  const handleSeatTypeChange = (seatLabel, type) => {
+    setSeatTypes({ ...seatTypes, [seatLabel]: type });
   };
 
   // Proceed to Checkout with selected seats and types
   const proceedToCheckout = () => {
-    const startTime = selectedShowtime?.startTime; // Safely access startTime
+    const startTime = selectedShowtime.startTime;
     navigate("/checkout", {
       state: {
         selectedSeats,
         seatTypes,
         startTime,
+        seatIdMappings, // Pass the mappings to the checkout page
       },
     });
   };
@@ -131,17 +133,28 @@ export function MovieHall({ movie }) {
               {Array.from({ length: rows }).map((_, rowIndex) => {
                 const rowLabel = getRowLabel(rowIndex);
                 return Array.from({ length: columns }).map((_, colIndex) => {
-                  const seatId = `${rowLabel}${colIndex + 1}`;
-                  const isSelected = selectedSeats.includes(seatId);
+                  const seatLabel = `${rowLabel}${colIndex + 1}`;
+                  // Calculate the actual seat ID (this logic would depend on your database structure)
+                  const actualSeatId = rowIndex * columns + colIndex + 195;
+
+                  // Update the seatIdMappings
+                  if (!seatIdMappings[seatLabel]) {
+                    setSeatIdMappings((prev) => ({
+                      ...prev,
+                      [seatLabel]: actualSeatId,
+                    }));
+                  }
+
+                  const isSelected = selectedSeats.includes(seatLabel);
                   return (
                     <button
-                      key={seatId}
-                      onClick={() => toggleSeatSelection(seatId)}
+                      key={seatLabel}
+                      onClick={() => toggleSeatSelection(seatLabel)}
                       className={`btn btn-square btn-sm ${
                         isSelected ? "bg-green-500" : "bg-monkey-yellow"
                       }`}
                     >
-                      {seatId}
+                      {seatLabel}
                     </button>
                   );
                 });
@@ -154,7 +167,7 @@ export function MovieHall({ movie }) {
                 <ul>
                   {selectedSeats.map((seat) => (
                     <li key={seat} className="mb-3">
-                      {seat}
+                      {seat} (Seat ID: {seatIdMappings[seat]})
                       <select
                         value={seatTypes[seat] || "Adult"}
                         onChange={(e) =>
@@ -175,7 +188,11 @@ export function MovieHall({ movie }) {
             </div>
 
             {/* Proceed to Checkout */}
-            <button onClick={proceedToCheckout} className="btn mt-5">
+            <button
+              onClick={proceedToCheckout}
+              className="btn mt-5"
+              disabled={selectedSeats.length === 0}
+            >
               Proceed to Checkout
             </button>
           </div>
