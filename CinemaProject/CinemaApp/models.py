@@ -111,7 +111,6 @@ class ShowTime(models.Model):
 class Seat(models.Model):
     seatID = models.CharField(max_length=5, blank=False, null=False)
     showTime = models.ForeignKey(ShowTime, related_name="seats", on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
     is_available = models.BooleanField(default=True)
     # ticket = self.ticket
 
@@ -258,4 +257,38 @@ class Ticket(models.Model):
     def __str__(self):
         return f"{self.id} - {self.seat}"
 # Create your models here.
+
+
+class Prices(models.Model):
+    class TicketType(models.TextChoices):
+        ADULT = 'adult', 'Adult'
+        SENIOR = 'senior', 'Senior'
+        CHILD = 'child', 'Child'
+
+    # Fields for each ticket type
+    adult_price = models.DecimalField(max_digits=6, decimal_places=2, default=10.00)
+    senior_price = models.DecimalField(max_digits=6, decimal_places=2, default=8.00)
+    child_price = models.DecimalField(max_digits=6, decimal_places=2, default=6.00)
+
+    # Other fees
+    booking_fee = models.DecimalField(max_digits=6, decimal_places=2, default=2.00)
+
+    # Optional fields for versioning or applying specific pricing to certain dates
+    last_updated = models.DateField(null=True, blank=True)
+
+    def get_ticket_price(self, ticket_type):
+        """Helper method to get the price based on ticket type."""
+        if ticket_type == self.TicketType.ADULT:
+            return self.adult_price
+        elif ticket_type == self.TicketType.SENIOR:
+            return self.senior_price
+        elif ticket_type == self.TicketType.CHILD:
+            return self.child_price
+        else:
+            raise ValueError("Invalid ticket type")
+
+    def __str__(self):
+        return f"Pricing effective from {self.last_updated or 'now'}"
+
+
 

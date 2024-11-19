@@ -71,7 +71,7 @@ class SeatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Seat
-        fields = ['id', 'seatID', 'price', 'showtime']
+        fields = ['id', 'seatID', 'showtime']
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -150,6 +150,7 @@ class GenreSerializer(serializers.ModelSerializer):
                 # If it doesn't exist, call the normal validation for creating a new genre
                 return super().to_internal_value(data)
         return super().to_internal_value(data)
+
 
 class MovieSerializer(serializers.ModelSerializer):
     genres = GenreSerializer(many=True, required=False)
@@ -353,13 +354,14 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
         # Update Address fields if provided
         address_data = movie_profile_data.get('address', {})
-        address, _ = Address.objects.get_or_create(user=movie_profile)
+        if address_data is not None:
+            address, _ = Address.objects.get_or_create(user=movie_profile)
 
-        address.street = address_data.get('street', address.street)
-        address.city = address_data.get('city', address.city)
-        address.state = address_data.get('state', address.state)
-        address.postalCode = address_data.get('postalCode', address.postalCode)
-        address.save()
+            address.street = address_data.get('street', address.street)
+            address.city = address_data.get('city', address.city)
+            address.state = address_data.get('state', address.state)
+            address.postalCode = address_data.get('postalCode', address.postalCode)
+            address.save()
 
         return instance
 
