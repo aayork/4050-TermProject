@@ -2,14 +2,14 @@ from dj_rest_auth import serializers
 from django.shortcuts import render
 from django.http import JsonResponse, Http404
 from rest_framework import generics, status, permissions
-from .models import Movie, Address, MovieProfile, Payment, Promotion, ShowTime, Order
+from .models import Movie, Address, MovieProfile, Payment, Promotion, ShowTime, Order, Seat
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from authentication.serializers import (MovieSerializer, PromotionSerializer,
                                         MovieProfileSerializer, PaymentSerializer,
                                         AddressSerializer, GetPaymentSerializer, CustomUserSerializer,
-                                        ShowTimeSerializer, CreateOrderSerializer)
+                                        ShowTimeSerializer, CreateOrderSerializer, GetSeatSerializer)
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -204,3 +204,15 @@ class DeleteShowTimeView (generics.DestroyAPIView):
     # how come queryset doesn't hold .get(pk = self.kwargs.get(lookup_field))
     lookup_field = 'id'
     serializer_class = ShowTimeSerializer
+
+
+class GetSeatsView(APIView):
+    def get(self, request, showtime_id):
+        try:
+            showtime = ShowTime.objects.get(pk=showtime_id)
+            seats = Seat.objects.filter(showTime=showtime)
+            serializer = GetSeatSerializer(seats, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ShowTime.DoesNotExist:
+            return Response({"error": "ShowTime not found"}, status=status.HTTP_404_NOT_FOUND)
+

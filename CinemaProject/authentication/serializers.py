@@ -74,6 +74,12 @@ class SeatSerializer(serializers.ModelSerializer):
         fields = ['id', 'seatID', 'showtime']
 
 
+class GetSeatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Seat
+        fields = ['id', 'seatID', 'is_available']
+
+
 class TicketSerializer(serializers.ModelSerializer):
     seat = serializers.PrimaryKeyRelatedField(queryset=Seat.objects.all())
 
@@ -117,6 +123,8 @@ class CreateOrderSerializer(serializers.ModelSerializer):
                 type=ticket_data['type'],
                 order=order
             )
+            seat.is_available = False
+            seat.save()
         return order
 
 
