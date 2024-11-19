@@ -10,7 +10,7 @@ from django.db import transaction
 def create_seats(sender, instance, created, **kwargs):
     print(f"Creating seats for {instance}")
     if created:
-        seat_ids = {'1A', '1B', '1C', '1D', '1E', '1F', '1G', '1H',
+        seat_ids = ['1A', '1B', '1C', '1D', '1E', '1F', '1G', '1H',
                     '2A', '2B', '2C', '2D', '2E', '2F', '2G', '2H',
                     '3A', '3B', '3C', '3D', '3E', '3F', '3G', '3H',
                     '4A', '4B', '4C', '4D', '4E', '4F', '4G', '4H',
@@ -21,7 +21,7 @@ def create_seats(sender, instance, created, **kwargs):
                     '9A', '9B', '9C', '9D', '9E', '9F', '9G', '9H',
                     '10A', '10B', '10C', '10D', '10E', '10F', '10G', '10H',
                     '11A', '11B', '11C', '11D', '11E', '11F', '11G', '11H',
-                    '12A', '12B', '12C', '12D', '12E', '12F', '12G', '12H'}
+                    '12A', '12B', '12C', '12D', '12E', '12F', '12G', '12H']
 
         seats = [Seat(seatID=s, showTime=instance) for s in seat_ids]
         try:
