@@ -21,7 +21,7 @@ export function Payment() {
 
   const handleConfirm = async () => {
     const tickets = selectedSeats.map((seatId) => ({
-      seatId: 0, // NOT COMPLETE. Use getSeats endpoint to get primary key
+      seatId: 195, // NOT COMPLETE. Use getSeats endpoint to get primary key
       type: (seatTypes[seatId] || "Adult").toLowerCase(),
     }));
 
