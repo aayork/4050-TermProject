@@ -111,7 +111,6 @@ class ShowTime(models.Model):
 class Seat(models.Model):
     seatID = models.CharField(max_length=5, blank=False, null=False)
     showTime = models.ForeignKey(ShowTime, related_name="seats", on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
     is_available = models.BooleanField(default=True)
     # ticket = self.ticket
 

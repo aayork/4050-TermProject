@@ -71,7 +71,7 @@ class SeatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Seat
-        fields = ['id', 'seatID', 'price', 'showtime']
+        fields = ['id', 'seatID', 'showtime']
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -150,6 +150,7 @@ class GenreSerializer(serializers.ModelSerializer):
                 # If it doesn't exist, call the normal validation for creating a new genre
                 return super().to_internal_value(data)
         return super().to_internal_value(data)
+
 
 class MovieSerializer(serializers.ModelSerializer):
     genres = GenreSerializer(many=True, required=False)
