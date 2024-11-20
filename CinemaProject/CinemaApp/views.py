@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
+from datetime import date
 
 
 class MovieListView(generics.ListAPIView):
@@ -175,12 +176,20 @@ class UpdatePromotionView(generics.UpdateAPIView):
 class validatePromotion(generics.RetrieveAPIView):
     queryset = Promotion.objects.all()
     serializer_class = PromotionSerializer
-    lookup_field = 'code'
 
-    def validate(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            instance = Promotion.objects.get(code=self.kwargs.get('code'))
+            serializer = self.get_serializer(instance)
+            # creates a Promotion object based on the 
+            # so I need to retrieve the startDate and endDate for the promotion
+            # retrieve the Promotion object in question
+            if(date.today() >= instance.startDate and date.today() <= instance.endDate):
+                return Response(serializer.data)
+            else:
+                return Response("Promotion date range doesn't apply to current date", status=status.HTTP_200_OK)
+        except Promotion.DoesNotExist: 
+                return Response("Promotion not found", status=status.HTTP_404_NOT_FOUND)
 
 
 class CreateOrderView(generics.CreateAPIView):
