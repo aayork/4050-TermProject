@@ -631,3 +631,17 @@ export const createOrder = async (
 
   return result;
 };
+
+// Get seats by showtime
+export const getSeats = async (id) => {
+  const response = await fetch(`${API_BASEURL}api/info/getSeats/${id}/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await parseResponse(response);
+
+  return result;
+};
