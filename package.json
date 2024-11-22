@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.2",
-    "prop-types": "^15.8.1"
+    "lucide-react": "^0.460.0",
+    "prop-types": "^15.8.1",
+    "react-day-picker": "^9.3.2"
   }
 }
