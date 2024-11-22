@@ -34,6 +34,7 @@ export function UserProfile() {
     postalCode: "",
   });
   const [payments, setPayments] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -78,8 +79,9 @@ export function UserProfile() {
           setUserId(user.id);
           setFormState(fetchedFormState);
           setInitialFormState(fetchedFormState);
-
+          setOrders(user.movie_profile.orders);
           const paymentArray = await getPayments(user.id);
+          console.log(paymentArray);
           setPayments(paymentArray);
         }
       } catch (error) {
@@ -305,7 +307,13 @@ export function UserProfile() {
           <div className="">
             <div className="card">
               <div className="card-title px-2">Past Orders</div>
-              <div className="card-content"></div>
+              <div className="card-content">
+                {orders.map((order) => (
+                  <div className="w-full" key={order.id}>
+                    <OrderCard order={order} />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

@@ -28,7 +28,7 @@ export function MovieCard({ movie }) {
         <p>{truncateDescription(movie.description, 50)}</p>
         <div className="card-actions flex justify-between">
           <button
-            onClick={toggleModal}
+            onClick={() => document.getElementById("trailerModal").showModal()}
             className="group flex h-min items-center disabled:opacity-50 disabled:hover:opacity-50 hover:translate-y-1 transition-transform justify-center ring-none rounded-lg shadow-lg font-semibold py-1 px-2 font-dm focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-violet-500 border-b-violet-700 disabled:border-0 disabled:bg-violet-500 disabled:text-white ring-white text-white border-b-4 hover:border-0 active:border-0 hover:text-gray-100 active:bg-violet-800 active:text-gray-300 focus-visible:outline-monkey-green text-sm sm:text-base dark:bg-green-800 dark:border-gray-700 dark:border-b-green-950"
           >
             <svg
@@ -47,27 +47,29 @@ export function MovieCard({ movie }) {
           </a>
         </div>
       </div>
+      <dialog id="trailerModal" className="modal bg-transparent">
+        <div className="modal-box shadow-none max-w-6xl p-4 rounded-lg aspect-video bg-transparent">
+          <button
+            onClick={() => {
+              const iframe = document.querySelector("#trailerModal iframe");
+              if (iframe) iframe.src = movie.trailer;
 
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex justify-between">
-          <div className="relative bg-white rounded-lg shadow-lg p-2">
-            <button
-              onClick={toggleModal}
-              className="btn btn-sm btn-circle absolute -right-4 -top-4"
-            >
-              ✕
-            </button>
+              document.getElementById("trailerModal").close();
+            }}
+            className="btn btn-sm z-[1000] btn-circle absolute -right-0 -top-0"
+          >
+            ✕
+          </button>
+          <div className="p-2 bg-monkey-white h-full w-full rounded-lg">
             <iframe
-              className="rounded-lg"
-              width="1120"
-              height="630"
+              className="rounded-lg h-full w-full"
               src={movie.trailer}
               title="YouTube video player"
               allowFullScreen
             ></iframe>
           </div>
         </div>
-      )}
+      </dialog>
     </div>
   );
 }

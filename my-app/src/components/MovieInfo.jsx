@@ -15,18 +15,15 @@ export function MovieInfo({ movie }) {
   return (
     <div className="w-full mx-auto">
       {/* Movie Header Section */}
-      <div className="flex flex-col md:flex-row gap-8 mb-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
         {/* Trailer Section */}
-        <div className="mb-12 shadow-lg">
-          <div className="aspect-w-16 aspect-h-9">
-            <iframe
-              src={movie.trailer}
-              title={`${movie.movieName} Trailer`}
-              className="w-[800px] h-[450px] rounded-lg"
-              allowFullScreen
-              frameBorder="0"
-            ></iframe>
-          </div>
+        <div className="mb-12 shadow-lg aspect-video">
+          <iframe
+            src={movie.trailer}
+            title={`${movie.movieName} Trailer`}
+            className="w-full h-full rounded-lg"
+            allowFullScreen
+          ></iframe>
         </div>
 
         {/* Movie Info */}
@@ -53,7 +50,9 @@ export function MovieInfo({ movie }) {
             <div>
               <span className="text-gray-600 text-sm">Critics Score</span>
               <div
-                className={`text-2xl font-bold ${getScoreColor(movie.critics_score)}`}
+                className={`text-2xl font-bold ${getScoreColor(
+                  movie.critics_score
+                )}`}
               >
                 {movie.critics_score}%
               </div>
@@ -61,7 +60,9 @@ export function MovieInfo({ movie }) {
             <div>
               <span className="text-gray-600 text-sm">Audience Score</span>
               <div
-                className={`text-2xl font-bold ${getScoreColor(movie.audience_score)}`}
+                className={`text-2xl font-bold ${getScoreColor(
+                  movie.audience_score
+                )}`}
               >
                 {movie.audience_score}%
               </div>
