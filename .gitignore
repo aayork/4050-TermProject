@@ -24,6 +24,7 @@ dist-ssr
 .idea
 .DS_Store
 .ropeproject
+.mypy_cache
 *.suo
 *.ntvs*
 *.njsproj
