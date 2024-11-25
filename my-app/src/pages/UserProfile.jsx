@@ -3,6 +3,7 @@ import { getUser, updateUser, getPayments, deletePayment } from "../utils/API";
 import { Loading } from "../components/Loading";
 import { PaymentCard } from "../components/PaymentCard";
 import { AddCardModal } from "../components/AddCardModal";
+import { OrderCard } from "../components/OrderCard";
 
 export function UserProfile() {
   const [loggedIn, setLoggedIn] = useState(false);

@@ -20,7 +20,7 @@ export function EditUserModal({ onClose, onSave, onDelete, user }) {
         },
       },
     }),
-    []
+    [],
   );
   const [userDetails, setUserDetails] = useState(initForm);
 
@@ -144,7 +144,7 @@ export function EditUserModal({ onClose, onSave, onDelete, user }) {
         </div>
         <div className="modal-action mt-0">
           <button
-            className="btn btn-secondary btn-sm text-monkey-white text-white"
+            className="btn btn-secondary btn-sm text-monkey-white"
             onClick={close}
           >
             Cancel

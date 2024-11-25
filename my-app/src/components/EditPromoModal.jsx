@@ -17,7 +17,7 @@ export function EditPromoModal({ onClose, onSave, promo }) {
       startDate: formatDate(Date.now()),
       endDate: formatDate(Date.now()),
     }),
-    []
+    [],
   );
   const [promoDetails, setPromoDetails] = useState(initForm);
 
@@ -112,7 +112,7 @@ export function EditPromoModal({ onClose, onSave, promo }) {
         </div>
         <div className="modal-action mt-0">
           <button
-            className="btn btn-secondary btn-sm mx-2 text-monkey-white text-white"
+            className="btn btn-secondary btn-sm mx-2 text-monkey-white"
             onClick={close}
           >
             Cancel
