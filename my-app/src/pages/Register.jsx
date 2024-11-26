@@ -2,7 +2,7 @@ import { useState } from "react";
 import { register } from "../utils/API";
 import { useNavigate } from "react-router-dom";
 
-export function CreateAcc() {
+export function Register() {
   const navigate = useNavigate();
   // set initial form state
   const [formState, setFormState] = useState({
@@ -57,7 +57,7 @@ export function CreateAcc() {
 
   return (
     <div className="flex justify-center align-center h-full">
-      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12 min-w-fit w-1/5">
+      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12 min-w-fit w-1/5 shadow-xl">
         <h1 className="text-lg mb-2 text-white font-semibold ">
           Create Account
         </h1>
@@ -135,7 +135,7 @@ export function CreateAcc() {
               className="bg-monkey-white mt-4 mb-1 rounded-md"
               type="submit"
             >
-              Create
+              Register
             </button>
             <a className="text-xs text-white underline" href="/login">
               Have an account? Login in here!

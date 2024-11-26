@@ -62,7 +62,7 @@ export function Payment() {
         totalPrice,
         userId,
         purchaseDate,
-        tickets,
+        tickets
       );
 
       // Log the response to see what the backend returns
@@ -81,7 +81,7 @@ export function Payment() {
       if (error.response) {
         console.error(
           "Error response from server:",
-          await error.response.json(),
+          await error.response.json()
         );
       } else {
         console.error("Error creating order:", error);

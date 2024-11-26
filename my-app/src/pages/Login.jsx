@@ -53,7 +53,7 @@ export function Login() {
 
   return (
     <div className="flex justify-center align-center h-full">
-      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12 min-w-fit w-1/4">
+      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12 min-w-fit w-1/4 shadow-xl">
         <h1 className="text-lg mb-2 text-white font-semibold ">Login</h1>
         <div className="border"></div>
         <form action="" onSubmit={handleFormSubmit}>
@@ -83,10 +83,7 @@ export function Login() {
               Login
             </button>
             <div className="inline-flex">
-              <a
-                className="text-xs text-white underline m-2"
-                href="/createAccount"
-              >
+              <a className="text-xs text-white underline m-2" href="/register">
                 Create an account!
               </a>
               <a
