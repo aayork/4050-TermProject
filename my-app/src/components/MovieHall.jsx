@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MovieInfo } from "./MovieInfo";
+import { getSeats } from "../utils/API";
 
 // Function to convert row index to letters (e.g., 0 -> A, 25 -> Z, 26 -> AA)
 const getRowLabel = (index) => {
@@ -33,8 +34,22 @@ export function MovieHall({ movie }) {
   const [selectedShowtime, setSelectedShowtime] = useState(null);
   const [seatTypes, setSeatTypes] = useState({});
   const [seatIdMappings, setSeatIdMappings] = useState({});
+  const [firstSeatId, setFirstSeatId] = useState(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchFirstSeatId = async () => {
+      try {
+        const seats = await getSeats(18); // Fetch seats
+        const id = seats[0]?.id || 0; // Extract the first seat ID
+        setFirstSeatId(id); // Update the state
+      } catch (error) {
+        console.error("Error fetching first seat ID:", error);
+      }
+    };
+    fetchFirstSeatId();
+  }, []);
 
   const showTimes = movie.showtimes.map((showtime) => ({
     id: showtime.id,
@@ -134,8 +149,9 @@ export function MovieHall({ movie }) {
                 const rowLabel = getRowLabel(rowIndex);
                 return Array.from({ length: columns }).map((_, colIndex) => {
                   const seatLabel = `${rowLabel}${colIndex + 1}`;
-                  // Calculate the actual seat ID (this logic would depend on your database structure)
-                  const actualSeatId = rowIndex * columns + colIndex + 195;
+
+                  const actualSeatId =
+                    rowIndex * columns + colIndex + (firstSeatId || 0);
 
                   // Update the seatIdMappings
                   if (!seatIdMappings[seatLabel]) {
