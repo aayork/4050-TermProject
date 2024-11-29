@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from .views import MovieListView, MovieDetailView, PromotionDetailView, GetAllProfiles, MovieCreateView, MovieUpdateView, MovieDeleteView
 from .views import (DeletePaymentView, UserPaymentView, AddPaymentView,
                     AddAddressView, DeleteAddressView, UserAddressView, AddPromotionView, UpdatePromotionView, validatePromotion, CreateOrderView
-                    ,DeleteShowTimeView,AddShowtimeView,EditShowtimeView, GetSeatsView)
+                    ,DeleteShowTimeView,AddShowtimeView,EditShowtimeView, GetSeatsView, AvailableRoomsView)
 
 urlpatterns = [
     path('getMovies/', MovieListView.as_view(), name='movie-list'),
