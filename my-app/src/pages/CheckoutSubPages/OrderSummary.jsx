@@ -1,13 +1,24 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export function OrderSummary() {
   const location = useLocation();
+  const navigate = useNavigate();
   const {
     selectedSeats = [],
     seatTypes = {},
     selectedShowtime = "",
   } = location.state || {};
 
+  useEffect(() => {
+    const checkLogin = () => {
+      const authToken = localStorage.getItem("auth");
+      if (!authToken) {
+        navigate("/");
+      }
+    };
+    checkLogin();
+  }, []);
   // Define pricing for each seat type
   const seatPrices = {
     Adult: 12,

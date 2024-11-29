@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { OrderSummary } from "./CheckoutSubPages/OrderSummary.jsx";
 import { Payment } from "./CheckoutSubPages/Payment.jsx";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export function Checkout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const {
     tab: initialTab,
     selectedSeats: initialSelectedSeats,
@@ -13,7 +14,7 @@ export function Checkout() {
   } = location.state || {};
   const [currentTab, setCurrentTab] = useState(initialTab || "summary"); // Default to 'summary' or the passed tab
   const [selectedSeats, setSelectedSeats] = useState(
-    initialSelectedSeats || [],
+    initialSelectedSeats || []
   ); // Initial selected seats
   const [seatTypes, setSeatTypes] = useState(initialSeatTypes || {}); // Initial seat types
 
@@ -28,6 +29,15 @@ export function Checkout() {
     setSeatTypes(updatedSeatTypes);
   };
 
+  useEffect(() => {
+    const checkLogin = () => {
+      const authToken = localStorage.getItem("auth");
+      if (!authToken) {
+        navigate("/");
+      }
+    };
+    checkLogin();
+  }, []);
   return (
     <div>
       <div className="w-full">

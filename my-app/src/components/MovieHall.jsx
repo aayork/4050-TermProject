@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MovieInfo } from "./MovieInfo";
 import { getSeats } from "../utils/API";
+import { LoginPrompt } from "./LoginPrompt";
 
 // Function to convert row index to letters (e.g., 0 -> A, 25 -> Z, 26 -> AA)
 const getColLabel = (index) => {
@@ -35,6 +36,7 @@ export function MovieHall({ movie }) {
   const [seatTypes, setSeatTypes] = useState({});
   const [seatIdMappings, setSeatIdMappings] = useState({});
   const [firstSeatId, setFirstSeatId] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [availableSeats, setAvailableSeats] = useState({});
 
   const navigate = useNavigate();
@@ -56,7 +58,14 @@ export function MovieHall({ movie }) {
         console.error("Error fetching seats:", error);
       }
     };
-    fetchSeats();
+
+    const checkLogin = () => {
+      const authToken = localStorage.getItem("auth");
+      setIsLoggedIn(!!authToken);
+    };
+
+    fetchFirstSeatId();
+    checkLogin();
   }, []);
 
   const showTimes = movie.showtimes.map((showtime) => ({
@@ -113,7 +122,13 @@ export function MovieHall({ movie }) {
               {showTimes.map((showtime) => (
                 <button
                   key={showtime.id}
-                  onClick={() => setSelectedShowtime(showtime)}
+                  onClick={() => {
+                    if (isLoggedIn) {
+                      setSelectedShowtime(showtime);
+                    } else {
+                      document.getElementById("promptLogin").showModal();
+                    }
+                  }}
                   className="text-left border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow hover:bg-gray-50"
                 >
                   <h3 className="text-xl font-semibold mb-2">
@@ -183,8 +198,8 @@ export function MovieHall({ movie }) {
                         isSelected
                           ? "bg-green-500"
                           : isAvailable
-                            ? "bg-monkey-yellow"
-                            : "bg-gray-400 cursor-not-allowed"
+                          ? "bg-monkey-yellow"
+                          : "bg-gray-400 cursor-not-allowed"
                       }`}
                       disabled={!isAvailable}
                     >
@@ -232,6 +247,9 @@ export function MovieHall({ movie }) {
           </div>
         </>
       )}
+      <dialog id="promptLogin" className="modal">
+        <LoginPrompt />
+      </dialog>
     </div>
   );
 }

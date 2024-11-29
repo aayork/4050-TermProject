@@ -20,7 +20,6 @@ export function HomePage() {
 
   return (
     <div className="relative z-10 p-4">
-      {" "}
       {/* Ensure content is above the background */}
       {loading ? (
         <>
@@ -72,7 +71,7 @@ export function HomePage() {
                 (movie) =>
                   movie.movieName
                     .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) && movie.is_active,
+                    .includes(searchTerm.toLowerCase()) && movie.is_active
               )
               .map((movie) => (
                 <MovieCard key={movie.movieName} movie={movie} />
@@ -87,7 +86,7 @@ export function HomePage() {
                 (movie) =>
                   movie.movieName
                     .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) && !movie.is_active,
+                    .includes(searchTerm.toLowerCase()) && !movie.is_active
               )
               .map((movie) => (
                 <MovieCard key={movie.movieName} movie={movie} />
