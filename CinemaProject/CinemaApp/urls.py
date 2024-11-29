@@ -32,6 +32,7 @@ urlpatterns = [
     path('showtime/add/', AddShowtimeView.as_view(), name='AddShowtime'),
     path('showtime/edit/<int:id>/', EditShowtimeView.as_view(), name='EditShowtime'),
     path('showtime/delete/<int:id>/', DeleteShowTimeView.as_view(), name='DeleteShowtime'),
+    path('showtime/available-rooms/', AvailableRoomsView.as_view(), name='AvailableRooms'),
 
     path('getSeats/<int:showtime_id>/', GetSeatsView.as_view(), name='seats-view'),
 ]

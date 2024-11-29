@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import JsonResponse, Http404
 from rest_framework import generics, status, permissions
 from .models import Movie, Address, MovieProfile, Payment, Promotion, ShowTime, Order, Seat
+from .models import MovieRoom
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -10,11 +11,14 @@ from authentication.serializers import (MovieSerializer, PromotionSerializer,
                                         MovieProfileSerializer, PaymentSerializer,
                                         AddressSerializer, GetPaymentSerializer, CustomUserSerializer,
                                         ShowTimeSerializer, CreateOrderSerializer, GetSeatSerializer)
+from authentication.serializers import MovieRoomSerializer
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
+from .utils import get_available_rooms
+from datetime import datetime
 from datetime import date
 
 
@@ -224,4 +228,36 @@ class GetSeatsView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ShowTime.DoesNotExist:
             return Response({"error": "ShowTime not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class AvailableRoomsView(APIView):
+    def get(self, request):
+        movie_id = request.query_params.get('movie_id')
+        date = request.query_params.get('date')
+        time = request.query_params.get('time')
+
+        if not movie_id or not date:
+            return Response({"error": "Movie and date are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            movie = Movie.objects.get(id=movie_id)
+        except Movie.DoesNotExist:
+            return Response({"error": "Movie not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+        except ValueError:
+            return Response({"error": "Invalid date format. Use YYYY-MM-DD."}, status=status.HTTP_404_NOT_FOUND)
+
+        time_obj = None
+        if time:
+            try:
+                time_obj = datetime.strptime(time, '%H:%M').time()
+            except ValueError:
+                return Response({"error": "Invalid time format. Use HH:MM."}, status=status.HTTP_400_BAD_REQUEST)
+
+        available_rooms = get_available_rooms(movie, date_obj, time_obj)
+        serializer = MovieRoomSerializer(available_rooms, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
