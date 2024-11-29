@@ -165,6 +165,7 @@ class Payment(models.Model):
     expirationDate = models.DateField(blank=False, null=False, default=datetime.now)
     firstName = models.CharField(max_length=40, blank=False, null=False, default="Jon")
     lastName = models.CharField(max_length=40, blank=False, null=False, default="Doe")
+    # orders = self.orders
 
     card_number_validator = RegexValidator(
         regex=r'^\d{16}$', message="Card number must be 16 digits."
@@ -205,6 +206,7 @@ class Address(models.Model):
     city = models.CharField(max_length=150, blank=False, null=False)
     state = models.CharField(max_length=40, blank=False, null=False)
     postalCode = models.CharField(max_length=15, blank=False, null=False)
+    # orders = self.orders
 
     def __str__(self):
         return f"{self.user} - {self.street}"
@@ -227,6 +229,8 @@ class Order(models.Model):
     totalPrice = models.FloatField(blank=False, null=False, default=0)
     movieProfile = models.ForeignKey(MovieProfile, related_name="orders", on_delete=models.CASCADE)
     purchaseDate = models.DateField(blank=False, null=False)
+    payment = models.ForeignKey(Payment, related_name="orders", on_delete=models.CASCADE, default=None)
+    billing_address = models.ForeignKey(Address, related_name="orders", on_delete=models.CASCADE, default=None)
     # tickets = self.tickets
 
     def __str__(self):
