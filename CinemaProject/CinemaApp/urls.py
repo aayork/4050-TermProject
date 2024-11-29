@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from .views import MovieListView, MovieDetailView, PromotionDetailView, GetAllProfiles, MovieCreateView, MovieUpdateView, MovieDeleteView
 from .views import (DeletePaymentView, UserPaymentView, AddPaymentView,
                     AddAddressView, DeleteAddressView, UserAddressView, AddPromotionView, UpdatePromotionView, validatePromotion, CreateOrderView
-                    ,DeleteShowTimeView,AddShowtimeView,EditShowtimeView, GetSeatsView)
+                    ,DeleteShowTimeView,AddShowtimeView,EditShowtimeView, GetSeatsView, AvailableRoomsView)
 
 urlpatterns = [
     path('getMovies/', MovieListView.as_view(), name='movie-list'),
@@ -32,6 +32,7 @@ urlpatterns = [
     path('showtime/add/', AddShowtimeView.as_view(), name='AddShowtime'),
     path('showtime/edit/<int:id>/', EditShowtimeView.as_view(), name='EditShowtime'),
     path('showtime/delete/<int:id>/', DeleteShowTimeView.as_view(), name='DeleteShowtime'),
+    path('showtime/available-rooms/', AvailableRoomsView.as_view(), name='AvailableRooms'),
 
     path('getSeats/<int:showtime_id>/', GetSeatsView.as_view(), name='seats-view'),
 ]
