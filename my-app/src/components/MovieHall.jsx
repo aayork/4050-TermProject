@@ -5,7 +5,7 @@ import { getSeats } from "../utils/API";
 import { LoginPrompt } from "./LoginPrompt";
 
 // Function to convert row index to letters (e.g., 0 -> A, 25 -> Z, 26 -> AA)
-const getRowLabel = (index) => {
+const getColLabel = (index) => {
   let label = "";
   while (index >= 0) {
     label = String.fromCharCode((index % 26) + 65) + label;
@@ -28,8 +28,8 @@ const formatTime = (timeString) => {
 };
 
 export function MovieHall({ movie }) {
-  const rows = 8;
-  const columns = 12;
+  const rows = 12;
+  const columns = 8;
 
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [selectedShowtime, setSelectedShowtime] = useState(null);
@@ -37,17 +37,25 @@ export function MovieHall({ movie }) {
   const [seatIdMappings, setSeatIdMappings] = useState({});
   const [firstSeatId, setFirstSeatId] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [availableSeats, setAvailableSeats] = useState({});
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchFirstSeatId = async () => {
+    const fetchSeats = async () => {
       try {
         const seats = await getSeats(18); // Fetch seats
-        const id = seats[0]?.id || 0; // Extract the first seat ID
-        setFirstSeatId(id); // Update the state
+        const id = seats[0]?.id || 0;
+        setFirstSeatId(id);
+
+        // Create availability mapping
+        const availabilityMap = {};
+        seats.forEach((seat) => {
+          availabilityMap[seat.seatID] = seat.is_available;
+        });
+        setAvailableSeats(availabilityMap);
       } catch (error) {
-        console.error("Error fetching first seat ID:", error);
+        console.error("Error fetching seats:", error);
       }
     };
 
@@ -70,6 +78,11 @@ export function MovieHall({ movie }) {
   }));
 
   const toggleSeatSelection = (seatLabel) => {
+    // Don't allow selection if seat is not available
+    if (!availableSeats[seatLabel]) {
+      return;
+    }
+
     if (selectedSeats.includes(seatLabel)) {
       setSelectedSeats(selectedSeats.filter((seat) => seat !== seatLabel));
       const newSeatTypes = { ...seatTypes };
@@ -161,12 +174,13 @@ export function MovieHall({ movie }) {
               }}
             >
               {Array.from({ length: rows }).map((_, rowIndex) => {
-                const rowLabel = getRowLabel(rowIndex);
                 return Array.from({ length: columns }).map((_, colIndex) => {
-                  const seatLabel = `${rowLabel}${colIndex + 1}`;
-
+                  const colLabel = getColLabel(colIndex); // Correctly using colIndex from the inner map
+                  const seatLabel = `${rowIndex + 1}${colLabel}`;
                   const actualSeatId =
                     rowIndex * columns + colIndex + (firstSeatId || 0);
+                  const isSelected = selectedSeats.includes(seatLabel);
+                  const isAvailable = availableSeats[seatLabel];
 
                   // Update the seatIdMappings
                   if (!seatIdMappings[seatLabel]) {
@@ -176,14 +190,18 @@ export function MovieHall({ movie }) {
                     }));
                   }
 
-                  const isSelected = selectedSeats.includes(seatLabel);
                   return (
                     <button
                       key={seatLabel}
                       onClick={() => toggleSeatSelection(seatLabel)}
                       className={`btn btn-square btn-sm ${
-                        isSelected ? "bg-green-500" : "bg-monkey-yellow"
+                        isSelected
+                          ? "bg-green-500"
+                          : isAvailable
+                          ? "bg-monkey-yellow"
+                          : "bg-gray-400 cursor-not-allowed"
                       }`}
+                      disabled={!isAvailable}
                     >
                       {seatLabel}
                     </button>

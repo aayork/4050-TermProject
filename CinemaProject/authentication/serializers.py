@@ -51,11 +51,10 @@ class TheatreSerializer(serializers.ModelSerializer):
 
 
 class MovieRoomSerializer(serializers.ModelSerializer):
-    theatre = TheatreSerializer(read_only=True)
 
     class Meta:
         model = MovieRoom
-        fields = ['theatre', 'number', 'is_active', 'numOfRows', 'seatsPerRow']
+        fields = ['id', 'number', 'is_active']
 
 
 class ShowTimeSerializer(serializers.ModelSerializer):
@@ -63,7 +62,7 @@ class ShowTimeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShowTime
-        fields = ['movie', 'movieRoom', 'date', 'startTime', 'endTime']
+        fields = ['id', 'movie', 'movieRoom', 'date', 'startTime', 'endTime']
 
 
 class SeatSerializer(serializers.ModelSerializer):
@@ -250,13 +249,15 @@ class MovieSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 class ShowTimeSerializer(serializers.ModelSerializer):
     movieRoom = MovieRoomSerializer(many=False)
     movie = MovieSerializer(many=False, read_only=True)
 
     class Meta:
         model = ShowTime
-        fields = ['movie', 'startTime', 'endTime', 'movieRoom']
+        fields = ['id', 'movie', 'startTime', 'endTime', 'movieRoom']
+
 
 class PromotionSerializer(serializers.ModelSerializer):
     # for the foreign keys connected to Promotion, we need to also
