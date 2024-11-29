@@ -92,7 +92,7 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
-        fields = ['id', 'purchaseDate', 'tickets']
+        fields = ['id', 'totalPrice', 'discountPercentage', 'purchaseDate', 'tickets', 'payment', 'billing_address']
 
 
 class CreateOrderSerializer(serializers.ModelSerializer):
@@ -101,7 +101,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['discountPercentage', 'totalPrice', 'userId', 'purchaseDate', 'tickets']
+        fields = ['discountPercentage', 'totalPrice', 'userId', 'purchaseDate', 'tickets', 'payment', 'billing_address']
 
     def create(self, validated_data):
         tickets_data = validated_data.pop('tickets', [])
