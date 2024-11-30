@@ -77,5 +77,40 @@ class validateAdmin(APIView):
                 return Response(False, status=status.HTTP_200_OK)
         except Token.DoesNotExist:
             return Response(f"Token {auth} cannot be found", status=status.HTTP_404_NOT_FOUND)
+        
+class suspendAccount(generics.UpdateAPIView):
+    queryset=MovieProfile.objects.all()
+    lookup_field='id'
+    # clarify with will whether the movie_profileId or the user_id will be passed in 
+    # by the frontend
+
+    def update(self, request, *args, **kwargs):
+        # alter the is_active property on the default django user object
+
+        movieProfile = MovieProfile.objects.get(pk=self.kwargs.get('id'))
+        user = User.objects.get(pk=movieProfile.user_id)
+        user.is_active = False
+        self.perform_update(user)
+
+        return Response(f'suspended movieProfile {self.kwargs.get('id')}', status=status.HTTP_200_OK)
+
+        
+class unSuspendAccount(generics.UpdateAPIView):
+    queryset=MovieProfile.objects.all()
+    lookup_field='id'
+    # clarify with will whether the movie_profileId or the user_id will be passed in 
+    # by the frontend
+
+    def update(self, request, *args, **kwargs):
+        # alter the is_active property on the default django user object
+
+        movieProfile = MovieProfile.objects.get(pk=self.kwargs.get('id'))
+        user = User.objects.get(pk=movieProfile.user_id)
+        user.is_active = True
+        self.perform_update(user)
+
+        return Response(f'un-suspended movieProfile {self.kwargs.get('id')}', status=status.HTTP_200_OK)
+
+        
 
 

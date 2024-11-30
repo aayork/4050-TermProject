@@ -3,7 +3,7 @@ from dj_rest_auth.views import LoginView, LogoutView, UserDetailsView
 from dj_rest_auth.registration.views import RegisterView
 from dj_rest_auth.registration.views import (
     ResendEmailVerificationView,
-    VerifyEmailView,
+    VerifyEmailView,    
 )
 from dj_rest_auth.views import (
     PasswordResetConfirmView,
@@ -11,7 +11,8 @@ from dj_rest_auth.views import (
 )
 from .views import (email_confirm_redirect, password_reset_confirm_redirect,
                     CustomRegisterView, CustomUserDetailsView, GetAllUsers,
-                    UserUpdateView, UserDeleteView, validateAdmin)
+                    UserUpdateView, UserDeleteView, validateAdmin, suspendAccount,
+                    unSuspendAccount)
 
 
 urlpatterns = [
@@ -32,5 +33,7 @@ urlpatterns = [
     path("password/reset/confirm/<str:uidb64>/<str:token>/",
          password_reset_confirm_redirect, name="password_reset_confirm"),
     path("password/reset/confirm/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-    path('user/validateAdmin/<str:auth_token>/', validateAdmin.as_view(), name='validate-admin')
+    path('user/validateAdmin/<str:auth_token>/', validateAdmin.as_view(), name='validate-admin'),
+    path('user/suspend/<int:id>/', suspendAccount.as_view(), name='suspendAccount'),
+    path('user/unSuspend/<int:id>/', unSuspendAccount.as_view(), name='unSuspendAccount')
 ]
