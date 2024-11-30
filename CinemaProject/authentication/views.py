@@ -86,13 +86,17 @@ class suspendAccount(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         # alter the is_active property on the default django user object
+        try:
+            movieProfile = MovieProfile.objects.get(pk=self.kwargs.get('id'))
+            user = User.objects.get(pk=movieProfile.user_id)
+            user.is_active = False
+            self.perform_update(user)
 
-        movieProfile = MovieProfile.objects.get(pk=self.kwargs.get('id'))
-        user = User.objects.get(pk=movieProfile.user_id)
-        user.is_active = False
-        self.perform_update(user)
+            return Response(f'suspended movieProfile {self.kwargs.get('id')}', status=status.HTTP_200_OK)
+        
+        except MovieProfile.DoesNotExist:
+            return Response(f'movie profile {self.kwargs.get('id')} does not exist', status=status.HTTP_404_NOT_FOUND)
 
-        return Response(f'suspended movieProfile {self.kwargs.get('id')}', status=status.HTTP_200_OK)
 
         
 class unSuspendAccount(generics.UpdateAPIView):
@@ -104,12 +108,16 @@ class unSuspendAccount(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         # alter the is_active property on the default django user object
 
-        movieProfile = MovieProfile.objects.get(pk=self.kwargs.get('id'))
-        user = User.objects.get(pk=movieProfile.user_id)
-        user.is_active = True
-        self.perform_update(user)
+        try:
+            movieProfile = MovieProfile.objects.get(pk=self.kwargs.get('id'))
+            user = User.objects.get(pk=movieProfile.user_id)
+            user.is_active = True
+            self.perform_update(user)
 
-        return Response(f'un-suspended movieProfile {self.kwargs.get('id')}', status=status.HTTP_200_OK)
+            return Response(f'un-suspended movieProfile {self.kwargs.get('id')}', status=status.HTTP_200_OK)
+    
+        except MovieProfile.DoesNotExist:
+            return Response(f'movie profile {self.kwargs.get('id')} does not exist', status=status.HTTP_404_NOT_FOUND)
 
         
 
