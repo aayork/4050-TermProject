@@ -7,6 +7,8 @@ import {
   updateUser,
   deleteUser,
   managerCreate,
+  unsuspendAccount,
+  suspendAccount,
 } from "../../utils/API";
 
 export function ManageUsers() {
@@ -80,6 +82,26 @@ export function ManageUsers() {
     fetchUsers();
   }, [shouldUpdate]);
 
+  const suspendUserAccount = async (id) => {
+    try {
+      const result = await suspendAccount(id);
+      console.log(result);
+      //alert(result)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const unsuspendUserAccount = async (id) => {
+    try {
+      const result = await unsuspendAccount(id);
+      console.log(result);
+      //alert(result)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (loading) {
     return <Loading message="Loading Users" />;
   }
@@ -150,6 +172,7 @@ export function ManageUsers() {
                   <UserCard
                     user={user}
                     onEdit={() => openEditUserModal(user)}
+                    onSusAction={() => suspendUserAccount()}
                   />
                 </div>
               ))}
@@ -167,6 +190,7 @@ export function ManageUsers() {
                   <UserCard
                     user={user}
                     onEdit={() => openEditUserModal(user)}
+                    onSusAction={() => unsuspendUserAccount()}
                   />
                 </div>
               ))}
