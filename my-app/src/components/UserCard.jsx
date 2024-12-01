@@ -19,6 +19,12 @@ export function UserCard({ user, onEdit }) {
         <h3>
           <b className="font-semibold">Status:</b> {user.movie_profile.status}
         </h3>
+        {user.movie_profile.customer_state && (
+          <h3>
+            <b className="font-semibold">Account State:</b>{" "}
+            {user.movie_profile.customer_state}
+          </h3>
+        )}
       </div>
       <button
         onClick={onEdit}

@@ -152,6 +152,19 @@ export const managerCreate = async ({
   return message;
 };
 
+export const suspendAccount = async (id) => {
+  const response = await fetch(`${API_BASEURL}api/auth/suspendAccount/${id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = parseResponse(response);
+
+  return result;
+};
+
 // movie API stuff
 export const getMovies = async () => {
   const response = await fetch(`${API_BASEURL}api/info/getMovies/`, {

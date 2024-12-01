@@ -68,9 +68,10 @@ export function ManageUsers() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const users = await getAllUsers();
-        setUsers(users);
+        const userArr = await getAllUsers();
+        setUsers(userArr);
         setLoading(false);
+        console.log(userArr);
       } catch (error) {
         console.log(error);
       }
@@ -120,7 +121,11 @@ export function ManageUsers() {
           <h1 className="font-semibold"> Managers:</h1>
           <div className="grid gap-4 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2">
             {users
-              .filter((user) => user.movie_profile.status == "admin")
+              .filter(
+                (user) =>
+                  user.movie_profile.status == "admin" &&
+                  user.movie_profile.customer_state != "suspended"
+              )
               .map((user) => (
                 <div className="grid-item min-w-fit" key={user.id}>
                   <UserCard
@@ -135,7 +140,28 @@ export function ManageUsers() {
           <h1 className="font-semibold"> Customers:</h1>
           <div className="grid gap-4 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2">
             {users
-              .filter((user) => user.movie_profile.status == "customer")
+              .filter(
+                (user) =>
+                  user.movie_profile.status == "customer" &&
+                  user.movie_profile.customer_state != "suspended"
+              )
+              .map((user) => (
+                <div className="grid-item min-w-fit" key={user.id}>
+                  <UserCard
+                    user={user}
+                    onEdit={() => openEditUserModal(user)}
+                  />
+                </div>
+              ))}
+          </div>
+        </div>
+        <div className="my-4">
+          <h1 className="font-semibold"> Suspended Users:</h1>
+          <div className="grid gap-4 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2">
+            {users
+              .filter(
+                (user) => user.movie_profile.customer_state == "suspended"
+              )
               .map((user) => (
                 <div className="grid-item min-w-fit" key={user.id}>
                   <UserCard
