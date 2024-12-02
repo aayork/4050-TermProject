@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template.loader import render_to_string
 from dj_rest_auth.registration.views import RegisterView
-from .serializers import CustomRegisterSerializer, CustomUserSerializer
+from .serializers import CustomRegisterSerializer, CustomUserSerializer, MovieProfileSerializer
 from django.contrib.auth.models import User
 from CinemaApp.models import MovieProfile
 from rest_framework.views import APIView
@@ -80,6 +80,7 @@ class validateAdmin(APIView):
         
 class suspendAccount(generics.UpdateAPIView):
     queryset=MovieProfile.objects.all()
+    serializer_class = MovieProfileSerializer
     lookup_field='id'
     # clarify with will whether the movie_profileId or the user_id will be passed in 
     # by the frontend
@@ -95,12 +96,13 @@ class suspendAccount(generics.UpdateAPIView):
             return Response(f'suspended movieProfile {self.kwargs.get('id')}', status=status.HTTP_200_OK)
         
         except MovieProfile.DoesNotExist:
-            return Response(f'movie profile {self.kwargs.get('id')} does not exist', status=status.HTTP_404_NOT_FOUND)
+            return Response(f'movie profile #{self.kwargs.get('id')} does not exist', status=status.HTTP_404_NOT_FOUND)
 
 
         
 class unSuspendAccount(generics.UpdateAPIView):
     queryset=MovieProfile.objects.all()
+    serializer_class = MovieProfileSerializer
     lookup_field='id'
     # clarify with will whether the movie_profileId or the user_id will be passed in 
     # by the frontend
@@ -117,7 +119,7 @@ class unSuspendAccount(generics.UpdateAPIView):
             return Response(f'un-suspended movieProfile {self.kwargs.get('id')}', status=status.HTTP_200_OK)
     
         except MovieProfile.DoesNotExist:
-            return Response(f'movie profile {self.kwargs.get('id')} does not exist', status=status.HTTP_404_NOT_FOUND)
+            return Response(f'movie profile #{self.kwargs.get('id')} does not exist', status=status.HTTP_404_NOT_FOUND)
 
         
 
