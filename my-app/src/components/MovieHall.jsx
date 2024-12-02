@@ -42,7 +42,7 @@ export function MovieHall({ movie }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchSeats = async () => {
+    async () => {
       try {
         const seats = await getSeats(18); // Fetch seats
         const id = seats[0]?.id || 0;
@@ -64,7 +64,6 @@ export function MovieHall({ movie }) {
       setIsLoggedIn(!!authToken);
     };
 
-    fetchFirstSeatId();
     checkLogin();
   }, []);
 
@@ -198,8 +197,8 @@ export function MovieHall({ movie }) {
                         isSelected
                           ? "bg-green-500"
                           : isAvailable
-                          ? "bg-monkey-yellow"
-                          : "bg-gray-400 cursor-not-allowed"
+                            ? "bg-monkey-yellow"
+                            : "bg-gray-400 cursor-not-allowed"
                       }`}
                       disabled={!isAvailable}
                     >
