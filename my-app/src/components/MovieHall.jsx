@@ -59,25 +59,29 @@ export function MovieHall({ movie }) {
   useEffect(() => {
     const fetchSeats = async () => {
       try {
-        const seats = await getSeats(18); // Fetch seats
-        const id = seats[0]?.id || 0;
-        setFirstSeatId(id);
-        const availabilityMap = {};
-        seats.forEach((seat) => {
-          availabilityMap[seat.seatID] = seat.is_available;
-        });
-        setAvailableSeats(availabilityMap);
+        if (selectedShowtime) {
+          const seats = await getSeats(selectedShowtime.id); // Use selectedShowtime instead of showtime
+          const id = seats[0]?.id || 0;
+          setFirstSeatId(id);
+          const availabilityMap = {};
+          seats.forEach((seat) => {
+            availabilityMap[seat.seatID] = seat.is_available;
+          });
+          setAvailableSeats(availabilityMap);
+        }
       } catch (error) {
         console.error("Error fetching seats:", error);
       }
     };
+
     fetchSeats();
+
     const checkLogin = () => {
       const authToken = localStorage.getItem("auth");
       setIsLoggedIn(!!authToken);
     };
     checkLogin();
-  }, []);
+  }, [selectedShowtime]);
 
   const showTimes = movie.showtimes.map((showtime) => ({
     id: showtime.id,
