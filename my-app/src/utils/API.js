@@ -152,6 +152,32 @@ export const managerCreate = async ({
   return message;
 };
 
+export const suspendAccount = async (id) => {
+  const response = await fetch(`${API_BASEURL}api/auth/user/suspend/${id}/`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = parseResponse(response);
+
+  return result;
+};
+
+export const unsuspendAccount = async (id) => {
+  const response = await fetch(`${API_BASEURL}api/auth/user/unsuspend/${id}/`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = parseResponse(response);
+
+  return result;
+};
+
 // movie API stuff
 export const getMovies = async () => {
   const response = await fetch(`${API_BASEURL}api/info/getMovies/`, {
@@ -534,24 +560,6 @@ export const deletePayment = async (id) => {
   return response;
 };
 
-// parse response for api
-async function parseResponse(response) {
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let result = "";
-  let done = false;
-
-  while (!done) {
-    const { value, done: streamDone } = await reader.read();
-    done = streamDone;
-    result += decoder.decode(value || new Uint8Array(), { stream: !done });
-  }
-
-  const parsedResult = JSON.parse(result);
-
-  return parsedResult;
-}
-
 // Sends reset pw email
 export const requestPasswordReset = async (email) => {
   const response = await fetch(`${API_BASEURL}api/auth/password/reset/`, {
@@ -649,3 +657,56 @@ export const getSeats = async (id) => {
 
   return result;
 };
+
+// Showtime API's
+export const getAvailableRooms = async (movie_id, date, time) => {
+  const response = await fetch(
+    `${API_BASEURL}api/info/showtime/available-rooms/?movie_id=${movie_id}&date=${date}&time=${time}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  const result = parseResponse(response);
+
+  return result;
+};
+
+export const createShowtime = async (movie_id, date, time, movieRoom_id) => {
+  const response = await fetch(`${API_BASEURL}api/info/showtime/add`, {
+    method: "POST",
+    header: {
+      "Content-Type": "application/json",
+    },
+    body: {
+      movie_id: movie_id,
+      date: date,
+      time: time,
+      movieRoom_id: movieRoom_id,
+    },
+  });
+
+  const result = parseResponse(response);
+  return result;
+};
+
+// parse response for api (keep at bottom)
+async function parseResponse(response) {
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let result = "";
+  let done = false;
+
+  while (!done) {
+    const { value, done: streamDone } = await reader.read();
+    done = streamDone;
+    result += decoder.decode(value || new Uint8Array(), { stream: !done });
+  }
+
+  const parsedResult = JSON.parse(result);
+
+  return parsedResult;
+}
