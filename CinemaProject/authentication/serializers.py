@@ -327,7 +327,7 @@ class MovieProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MovieProfile
-        fields = ['status', 'receive_promotions', 'address', 'payments', 'orders']
+        fields = ['status', 'receive_promotions', 'address', 'payments', 'orders', 'customer_state']
 
 
 class CustomEmailSerializer(serializers.ModelSerializer):

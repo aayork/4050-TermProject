@@ -74,7 +74,7 @@ export const confirmEmail = async (key) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ key: key }),
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -152,6 +152,32 @@ export const managerCreate = async ({
   return message;
 };
 
+export const suspendAccount = async (id) => {
+  const response = await fetch(`${API_BASEURL}api/auth/user/suspend/${id}/`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = parseResponse(response);
+
+  return result;
+};
+
+export const unsuspendAccount = async (id) => {
+  const response = await fetch(`${API_BASEURL}api/auth/user/unsuspend/${id}/`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = parseResponse(response);
+
+  return result;
+};
+
 // movie API stuff
 export const getMovies = async () => {
   const response = await fetch(`${API_BASEURL}api/info/getMovies/`, {
@@ -173,7 +199,7 @@ export const getMovieDetails = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -247,7 +273,7 @@ export const updateMovie = async (movie) => {
         genres: movie.genres,
         showtimes: movie.showtimes,
       }),
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -298,7 +324,7 @@ export const validateAdmin = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -457,7 +483,7 @@ export const updatePromotion = async (promo, ogCode) => {
         startDate: promo.startDate,
         endDate: promo.endDate,
       }),
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -474,7 +500,7 @@ export const validatePromotion = async (code) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(code),
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -528,29 +554,11 @@ export const deletePayment = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   return response;
 };
-
-// parse response for api
-async function parseResponse(response) {
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let result = "";
-  let done = false;
-
-  while (!done) {
-    const { value, done: streamDone } = await reader.read();
-    done = streamDone;
-    result += decoder.decode(value || new Uint8Array(), { stream: !done });
-  }
-
-  const parsedResult = JSON.parse(result);
-
-  return parsedResult;
-}
 
 // Sends reset pw email
 export const requestPasswordReset = async (email) => {
@@ -587,7 +595,7 @@ export const confirmPasswordReset = async (uid, token, newPassword) => {
         uid,
         token,
       }),
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -606,7 +614,7 @@ export const createOrder = async (
   totalPrice,
   userId,
   purchaseDate,
-  tickets,
+  tickets
 ) => {
   const response = await fetch(`${API_BASEURL}api/info/createOrder/`, {
     method: "POST",
@@ -645,3 +653,56 @@ export const getSeats = async (id) => {
 
   return result;
 };
+
+// Showtime API's
+export const getAvailableRooms = async (movie_id, date, time) => {
+  const response = await fetch(
+    `${API_BASEURL}api/info/showtime/available-rooms/?movie_id=${movie_id}&date=${date}&time=${time}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const result = parseResponse(response);
+
+  return result;
+};
+
+export const createShowtime = async (movie_id, date, time, movieRoom_id) => {
+  const response = await fetch(`${API_BASEURL}api/info/showtime/add`, {
+    method: "POST",
+    header: {
+      "Content-Type": "application/json",
+    },
+    body: {
+      movie_id: movie_id,
+      date: date,
+      time: time,
+      movieRoom_id: movieRoom_id,
+    },
+  });
+
+  const result = parseResponse(response);
+  return result;
+};
+
+// parse response for api (keep at bottom)
+async function parseResponse(response) {
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let result = "";
+  let done = false;
+
+  while (!done) {
+    const { value, done: streamDone } = await reader.read();
+    done = streamDone;
+    result += decoder.decode(value || new Uint8Array(), { stream: !done });
+  }
+
+  const parsedResult = JSON.parse(result);
+
+  return parsedResult;
+}

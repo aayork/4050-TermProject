@@ -17,7 +17,7 @@ export function EditPromoModal({ onClose, onSave, promo }) {
       startDate: formatDate(Date.now()),
       endDate: formatDate(Date.now()),
     }),
-    [],
+    []
   );
   const [promoDetails, setPromoDetails] = useState(initForm);
 
