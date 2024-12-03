@@ -74,7 +74,7 @@ export const confirmEmail = async (key) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ key: key }),
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -199,7 +199,7 @@ export const getMovieDetails = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -273,7 +273,7 @@ export const updateMovie = async (movie) => {
         genres: movie.genres,
         showtimes: movie.showtimes,
       }),
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -324,7 +324,7 @@ export const validateAdmin = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -483,7 +483,7 @@ export const updatePromotion = async (promo, ogCode) => {
         startDate: promo.startDate,
         endDate: promo.endDate,
       }),
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -500,7 +500,7 @@ export const validatePromotion = async (code) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(code),
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -554,7 +554,7 @@ export const deletePayment = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   return response;
@@ -595,7 +595,7 @@ export const confirmPasswordReset = async (uid, token, newPassword) => {
         uid,
         token,
       }),
-    }
+    },
   );
 
   const result = await parseResponse(response);
@@ -614,7 +614,9 @@ export const createOrder = async (
   totalPrice,
   userId,
   purchaseDate,
-  tickets
+  tickets,
+  payment,
+  billing_address,
 ) => {
   const response = await fetch(`${API_BASEURL}api/info/createOrder/`, {
     method: "POST",
@@ -627,6 +629,8 @@ export const createOrder = async (
       userId: userId,
       purchaseDate: purchaseDate,
       tickets: tickets,
+      payment: payment,
+      billing_address: billing_address,
     }),
   });
 
@@ -663,7 +667,7 @@ export const getAvailableRooms = async (movie_id, date, time) => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   const result = parseResponse(response);

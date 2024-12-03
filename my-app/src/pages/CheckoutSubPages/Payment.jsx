@@ -1,14 +1,56 @@
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createOrder, getUser } from "../../utils/API";
 
 export function Payment() {
-  // Get the passed state from the previous page
   const location = useLocation();
   const navigate = useNavigate();
   const { selectedSeats, seatTypes, startTime, seatIdMappings } =
     location.state;
 
-  // Define pricing for each seat type
+  const [userId, setUserId] = useState(null);
+  const [payment, setPayment] = useState({
+    user: userId,
+    cardNumber: "",
+    CVV: "",
+    expirationDate: "",
+    firstName: "",
+    lastName: "",
+  });
+
+  const [billingAddress, setBillingAddress] = useState({
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getUser("auth");
+        if (user?.id) {
+          setUserId(user.id);
+        } else {
+          console.error("User not found");
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    if (userId) {
+      setPayment((prevPayment) => ({
+        ...prevPayment,
+        user: userId, // Update the userId in payment state
+      }));
+    }
+  }, [userId]);
+
   const seatPrices = {
     Adult: 12,
     Child: 9,
@@ -20,6 +62,15 @@ export function Payment() {
     return total + seatPrices[type];
   }, 0);
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (["street", "city", "state", "zip"].includes(name)) {
+      setBillingAddress((prev) => ({ ...prev, [name]: value }));
+    } else {
+      setPayment((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
   const handleConfirm = async () => {
     const tickets = selectedSeats.map((seatLabel) => ({
       seat: seatIdMappings[seatLabel],
@@ -27,16 +78,10 @@ export function Payment() {
     }));
 
     const purchaseDate = new Date().toISOString().split("T")[0];
-    const user = await getUser("auth");
-    const userId = user.id;
     const discountPercentage = 0;
 
     if (!userId) {
       console.error("User ID is missing!");
-      return;
-    }
-    if (!totalPrice) {
-      console.error("Total price is missing!");
       return;
     }
     if (tickets.length === 0) {
@@ -44,16 +89,16 @@ export function Payment() {
       return;
     }
 
-    // Create the order object
     const orderData = {
       discountPercentage,
       totalPrice,
       userId,
       purchaseDate,
       tickets,
+      payment,
+      billingAddress,
     };
 
-    // Log the API request data in JSON format
     console.log("Request data:", JSON.stringify(orderData, null, 2));
 
     try {
@@ -62,10 +107,9 @@ export function Payment() {
         totalPrice,
         userId,
         purchaseDate,
-        tickets
+        tickets,
       );
 
-      // Log the response to see what the backend returns
       console.log("Response from backend:", response);
 
       navigate("/summary", {
@@ -77,11 +121,10 @@ export function Payment() {
         },
       });
     } catch (error) {
-      // Log detailed error response
       if (error.response) {
         console.error(
           "Error response from server:",
-          await error.response.json()
+          await error.response.json(),
         );
       } else {
         console.error("Error creating order:", error);
@@ -97,41 +140,105 @@ export function Payment() {
 
       <form className="flex flex-col w-full max-w-md">
         <label className="input input-bordered flex items-center gap-2 mb-4">
-          Name
-          <input type="text" className="grow" placeholder="John Doe" />
-        </label>
-
-        <label className="input input-bordered flex items-center gap-2 mb-4">
-          Email
+          First Name
           <input
-            type="email"
+            type="text"
+            name="firstName"
+            value={payment.firstName}
+            onChange={handleInputChange}
             className="grow"
-            placeholder="john.doe@example.com"
+            placeholder="John"
           />
         </label>
-
+        <label className="input input-bordered flex items-center gap-2 mb-4">
+          Last Name
+          <input
+            type="text"
+            name="lastName"
+            value={payment.lastName}
+            onChange={handleInputChange}
+            className="grow"
+            placeholder="Doe"
+          />
+        </label>
         <label className="input input-bordered flex items-center gap-2 mb-4">
           Card Number
           <input
             type="text"
+            name="cardNumber"
+            value={payment.cardNumber}
+            onChange={handleInputChange}
             className="grow"
             placeholder="1234 5678 9012 3456"
           />
         </label>
-
         <label className="input input-bordered flex items-center gap-2 mb-4">
           Expiration Date
-          <input type="text" className="grow" placeholder="MM/YY" />
+          <input
+            type="text"
+            name="expirationDate"
+            value={payment.expirationDate}
+            onChange={handleInputChange}
+            className="grow"
+            placeholder="MM/YY"
+          />
         </label>
-
         <label className="input input-bordered flex items-center gap-2 mb-4">
           CVV
-          <input type="text" className="grow" placeholder="123" />
+          <input
+            type="text"
+            name="CVV"
+            value={payment.CVV}
+            onChange={handleInputChange}
+            className="grow"
+            placeholder="123"
+          />
         </label>
 
+        <h2 className="text-lg font-semibold mt-4">Billing Address</h2>
         <label className="input input-bordered flex items-center gap-2 mb-4">
-          Promo Code
-          <input type="text" className="grow" placeholder="WELCOME30" />
+          Street
+          <input
+            type="text"
+            name="street"
+            value={billingAddress.street}
+            onChange={handleInputChange}
+            className="grow"
+            placeholder="123 Main St"
+          />
+        </label>
+        <label className="input input-bordered flex items-center gap-2 mb-4">
+          City
+          <input
+            type="text"
+            name="city"
+            value={billingAddress.city}
+            onChange={handleInputChange}
+            className="grow"
+            placeholder="Athens"
+          />
+        </label>
+        <label className="input input-bordered flex items-center gap-2 mb-4">
+          State
+          <input
+            type="text"
+            name="state"
+            value={billingAddress.state}
+            onChange={handleInputChange}
+            className="grow"
+            placeholder="GA"
+          />
+        </label>
+        <label className="input input-bordered flex items-center gap-2 mb-4">
+          ZIP
+          <input
+            type="text"
+            name="zip"
+            value={billingAddress.zip}
+            onChange={handleInputChange}
+            className="grow"
+            placeholder="30605"
+          />
         </label>
 
         <div className="flex flex-row justify-center">

@@ -3,7 +3,6 @@ from allauth.account.utils import setup_user_email
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from rest_framework import serializers
 from CinemaApp.models import (MovieProfile, Payment, Address, Order,
 Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie, Actor, Director, Promotion, Genre)
 from allauth.account.models import EmailAddress
