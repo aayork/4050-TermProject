@@ -64,7 +64,7 @@ export function MovieHall({ movie }) {
       setIsLoggedIn(!!authToken);
     };
 
-    fetchFirstSeatId();
+    fetchSeats();
     checkLogin();
   }, []);
 

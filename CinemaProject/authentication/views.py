@@ -91,11 +91,12 @@ class suspendAccount(generics.UpdateAPIView):
             user = User.objects.get(pk=movieProfile.user_id)
             user.is_active = False
             self.perform_update(user)
+            user_id = self.kwargs.get('id')
 
-            return Response(f'suspended movieProfile {self.kwargs.get('id')}', status=status.HTTP_200_OK)
+            return Response(f'suspended movieProfile {user_id}', status=status.HTTP_200_OK)
         
         except MovieProfile.DoesNotExist:
-            return Response(f'movie profile {self.kwargs.get('id')} does not exist', status=status.HTTP_404_NOT_FOUND)
+            return Response(f'movie profile {user_id} does not exist', status=status.HTTP_404_NOT_FOUND)
 
 
         
@@ -113,11 +114,12 @@ class unSuspendAccount(generics.UpdateAPIView):
             user = User.objects.get(pk=movieProfile.user_id)
             user.is_active = True
             self.perform_update(user)
+            user_id = self.kwargs.get('id')
 
-            return Response(f'un-suspended movieProfile {self.kwargs.get('id')}', status=status.HTTP_200_OK)
+            return Response(f'un-suspended movieProfile {user_id}', status=status.HTTP_200_OK)
     
         except MovieProfile.DoesNotExist:
-            return Response(f'movie profile {self.kwargs.get('id')} does not exist', status=status.HTTP_404_NOT_FOUND)
+            return Response(f'movie profile {user_id} does not exist', status=status.HTTP_404_NOT_FOUND)
 
         
 

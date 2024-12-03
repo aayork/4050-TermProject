@@ -172,7 +172,7 @@ export function ManageUsers() {
                   <UserCard
                     user={user}
                     onEdit={() => openEditUserModal(user)}
-                    onSusAction={() => suspendUserAccount()}
+                    onSusAction={() => suspendUserAccount(user.id)}
                   />
                 </div>
               ))}
@@ -190,7 +190,7 @@ export function ManageUsers() {
                   <UserCard
                     user={user}
                     onEdit={() => openEditUserModal(user)}
-                    onSusAction={() => unsuspendUserAccount()}
+                    onSusAction={() => unsuspendUserAccount(user.id)}
                   />
                 </div>
               ))}

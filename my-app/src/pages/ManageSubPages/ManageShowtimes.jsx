@@ -47,6 +47,7 @@ export function ManageShowtimes() {
         STform.date,
         STform.time
       );
+      console.log(avRoomsArr);
       setAvRooms(avRoomsArr);
       setSearched(true);
     } catch (error) {

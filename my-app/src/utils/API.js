@@ -153,7 +153,7 @@ export const managerCreate = async ({
 };
 
 export const suspendAccount = async (id) => {
-  const response = await fetch(`${API_BASEURL}api/auth/suspend/${id}`, {
+  const response = await fetch(`${API_BASEURL}api/auth/user/suspend/${id}/`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -166,7 +166,7 @@ export const suspendAccount = async (id) => {
 };
 
 export const unsuspendAccount = async (id) => {
-  const response = await fetch(`${API_BASEURL}api/auth/unsuspend/${id}`, {
+  const response = await fetch(`${API_BASEURL}api/auth/user/unsuspend/${id}/`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
