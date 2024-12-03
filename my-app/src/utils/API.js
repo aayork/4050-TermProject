@@ -607,6 +607,8 @@ export const createOrder = async (
   userId,
   purchaseDate,
   tickets,
+  payment,
+  billing_address,
 ) => {
   const response = await fetch(`${API_BASEURL}api/info/createOrder/`, {
     method: "POST",
@@ -619,6 +621,8 @@ export const createOrder = async (
       userId: userId,
       purchaseDate: purchaseDate,
       tickets: tickets,
+      payment: payment,
+      billing_address: billing_address,
     }),
   });
 

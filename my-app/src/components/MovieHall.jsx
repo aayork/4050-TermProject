@@ -42,13 +42,26 @@ export function MovieHall({ movie }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async () => {
+    if (firstSeatId !== null) {
+      const mappings = {};
+      for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+        for (let colIndex = 0; colIndex < columns; colIndex++) {
+          const colLabel = getColLabel(colIndex);
+          const seatLabel = `${rowIndex + 1}${colLabel}`;
+          const actualSeatId = rowIndex * columns + colIndex + firstSeatId;
+          mappings[seatLabel] = actualSeatId;
+        }
+      }
+      setSeatIdMappings(mappings);
+    }
+  }, [firstSeatId, rows, columns]);
+
+  useEffect(() => {
+    const fetchSeats = async () => {
       try {
         const seats = await getSeats(18); // Fetch seats
         const id = seats[0]?.id || 0;
         setFirstSeatId(id);
-
-        // Create availability mapping
         const availabilityMap = {};
         seats.forEach((seat) => {
           availabilityMap[seat.seatID] = seat.is_available;
@@ -58,19 +71,16 @@ export function MovieHall({ movie }) {
         console.error("Error fetching seats:", error);
       }
     };
-
+    fetchSeats();
     const checkLogin = () => {
       const authToken = localStorage.getItem("auth");
       setIsLoggedIn(!!authToken);
     };
-
     checkLogin();
   }, []);
 
   const showTimes = movie.showtimes.map((showtime) => ({
     id: showtime.id,
-    theatre: showtime.movieRoom.theatre.name,
-    address: `${showtime.movieRoom.theatre.street}, ${showtime.movieRoom.theatre.city}, ${showtime.movieRoom.theatre.state} ${showtime.movieRoom.theatre.zipcode}`,
     date: formatDate(showtime.date),
     startTime: formatTime(showtime.startTime),
     endTime: formatTime(showtime.endTime),
@@ -123,6 +133,7 @@ export function MovieHall({ movie }) {
                   key={showtime.id}
                   onClick={() => {
                     if (isLoggedIn) {
+                      console.log("Showtime ID:", showtime.id); // Log the showtime ID
                       setSelectedShowtime(showtime);
                     } else {
                       document.getElementById("promptLogin").showModal();
@@ -130,11 +141,8 @@ export function MovieHall({ movie }) {
                   }}
                   className="text-left border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow hover:bg-gray-50"
                 >
-                  <h3 className="text-xl font-semibold mb-2">
-                    {showtime.theatre}
-                  </h3>
-                  <p className="text-gray-600 mb-3">{showtime.address}</p>
                   <div className="flex gap-4 mb-2">
+                    <span className="font-medium">{showtime.movieRoom}</span>
                     <span className="font-medium">{showtime.date}</span>
                     <span className="font-medium">
                       {showtime.startTime} - {showtime.endTime}
@@ -150,7 +158,7 @@ export function MovieHall({ movie }) {
           <div className="mt-5">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">
-                Selected Showtime: {selectedShowtime?.theatre || "Theatre"}{" "}
+                Selected Showtime:
                 {selectedShowtime?.date || "Date"}
                 {" at "}
                 {selectedShowtime?.startTime || "Time"}
@@ -180,14 +188,6 @@ export function MovieHall({ movie }) {
                     rowIndex * columns + colIndex + (firstSeatId || 0);
                   const isSelected = selectedSeats.includes(seatLabel);
                   const isAvailable = availableSeats[seatLabel];
-
-                  // Update the seatIdMappings
-                  if (!seatIdMappings[seatLabel]) {
-                    setSeatIdMappings((prev) => ({
-                      ...prev,
-                      [seatLabel]: actualSeatId,
-                    }));
-                  }
 
                   return (
                     <button
