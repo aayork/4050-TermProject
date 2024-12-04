@@ -230,7 +230,7 @@ export function Payment() {
             value={payment.expirationDate}
             onChange={handleInputChange}
             className="grow"
-            placeholder="MM/YY"
+            placeholder="MM/YYYY"
           />
         </label>
         <label className="input input-bordered flex items-center gap-2 mb-4">
