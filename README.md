@@ -50,6 +50,9 @@ TODO: Guide users through getting your code up and running on their own system. 
     3. Other dependencies
       pip install dj-rest-auth==4.0.0
       pip install django-environ==0.11.2
+      pip install django-allauth
+      pip install django-cors-headers
+      pip install mysqlclient
   ## Node Packages
     1. Tailwind requires
       npm install autoprefixer --save-dev
