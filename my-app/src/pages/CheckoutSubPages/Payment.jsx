@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { createOrder, getUser } from "../../utils/API";
+import { createOrder, getUser, getPromos } from "../../utils/API";
 
 export function Payment() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [promos, setPromos] = useState([]);
   const { selectedSeats, seatTypes, startTime, seatIdMappings } =
     location.state;
 
@@ -25,6 +26,10 @@ export function Payment() {
     zip: "",
   });
 
+  const [code, setCode] = useState(""); // Store the promo code
+  const [discount, setDiscount] = useState(0); // Store the discount percentage
+  const [promoMessage, setPromoMessage] = useState(""); // Store promo code validation message
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -40,6 +45,18 @@ export function Payment() {
     };
 
     fetchUser();
+  }, []);
+
+  useEffect(() => {
+    const fetchPromos = async () => {
+      try {
+        const promos = await getPromos();
+        setPromos(promos);
+      } catch (error) {
+        console.error("Error fetching promos:", error);
+      }
+    };
+    fetchPromos();
   }, []);
 
   useEffect(() => {
@@ -66,10 +83,39 @@ export function Payment() {
     const { name, value } = e.target;
     if (["street", "city", "state", "zip"].includes(name)) {
       setBillingAddress((prev) => ({ ...prev, [name]: value }));
+    } else if (name === "code") {
+      setCode(value); // Update the promo code
     } else {
       setPayment((prev) => ({ ...prev, [name]: value }));
     }
   };
+
+  // Check the promo code when it changes
+  useEffect(() => {
+    const validatePromoCode = () => {
+      const currentDate = new Date();
+
+      // Find the promo that matches the entered code and is valid based on dates
+      const validPromo = promos.find(
+        (promo) =>
+          promo.code === code &&
+          new Date(promo.startDate) <= currentDate &&
+          new Date(promo.endDate) >= currentDate,
+      );
+
+      if (validPromo) {
+        setDiscount(validPromo.discountPercentage);
+        setPromoMessage(
+          `Promo code "${code}" applied! You get ${validPromo.discountPercentage}% off.`,
+        );
+      } else {
+        setDiscount(0);
+        setPromoMessage(`Invalid promo code or expired.`);
+      }
+    };
+
+    validatePromoCode();
+  }, [code, promos]);
 
   const handleConfirm = async () => {
     const tickets = selectedSeats.map((seatLabel) => ({
@@ -78,7 +124,6 @@ export function Payment() {
     }));
 
     const purchaseDate = new Date().toISOString().split("T")[0];
-    const discountPercentage = 0;
 
     if (!userId) {
       console.error("User ID is missing!");
@@ -89,9 +134,12 @@ export function Payment() {
       return;
     }
 
+    // Apply discount to the total price
+    const finalPrice = totalPrice - (totalPrice * discount) / 100;
+
     const orderData = {
-      discountPercentage,
-      totalPrice,
+      discountPercentage: discount,
+      totalPrice: finalPrice,
       userId,
       purchaseDate,
       tickets,
@@ -103,8 +151,8 @@ export function Payment() {
 
     try {
       const response = await createOrder(
-        discountPercentage,
-        totalPrice,
+        discount,
+        finalPrice,
         userId,
         purchaseDate,
         tickets,
@@ -136,7 +184,9 @@ export function Payment() {
     <div className="flex flex-col items-center p-5">
       <h1 className="text-2xl font-bold mb-4">Checkout</h1>
 
-      <h2 className="text-lg font-semibold mt-4">Total: ${totalPrice}</h2>
+      <h2 className="text-lg font-semibold mt-4">
+        Total: ${totalPrice - (totalPrice * discount) / 100}
+      </h2>
 
       <form className="flex flex-col w-full max-w-md">
         <label className="input input-bordered flex items-center gap-2 mb-4">
@@ -204,7 +254,7 @@ export function Payment() {
             value={billingAddress.street}
             onChange={handleInputChange}
             className="grow"
-            placeholder="123 Main St"
+            placeholder="123 Milledge Ave"
           />
         </label>
         <label className="input input-bordered flex items-center gap-2 mb-4">
@@ -240,6 +290,23 @@ export function Payment() {
             placeholder="30605"
           />
         </label>
+
+        <h2 className="text-lg font-semibold mt-4">Promotions</h2>
+        <label className="input input-bordered flex items-center gap-2 mb-4">
+          Promo Code
+          <input
+            type="text"
+            name="code"
+            value={code}
+            onChange={handleInputChange}
+            className="grow"
+            placeholder="WELCOME30"
+          />
+        </label>
+
+        {promoMessage && (
+          <div className="text-sm text-red-500 mt-2">{promoMessage}</div> // Display promo message
+        )}
 
         <div className="flex flex-row justify-center">
           <button
