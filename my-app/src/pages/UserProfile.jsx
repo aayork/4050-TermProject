@@ -71,10 +71,10 @@ export function UserProfile() {
             email: user.email,
             username: user.username,
             receive_promotions: user.movie_profile.receive_promotions,
-            street: user.movie_profile.address.street,
-            city: user.movie_profile.address.city,
-            state: user.movie_profile.address.state,
-            postalCode: user.movie_profile.address.postalCode,
+            street: user.movie_profile?.address?.street || "",
+            city: user.movie_profile?.address?.city || "",
+            state: user.movie_profile?.address?.state || "",
+            postalCode: user.movie_profile?.address?.postalCode || "",
           };
 
           setUserId(user.id);
