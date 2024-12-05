@@ -87,17 +87,20 @@ class suspendAccount(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         # alter the is_active property on the default django user object
-        try:
-            movieProfile = MovieProfile.objects.get(pk=self.kwargs.get('id'))
-            user = User.objects.get(pk=movieProfile.user_id)
-            user.is_active = False
-            self.perform_update(user)
-            user_id = self.kwargs.get('id')
+        user_id = self.kwargs.get('id')
 
-            return Response(f'suspended movieProfile {user_id}', status=status.HTTP_200_OK)
+        try:
+            user = User.objects.get(pk=user_id)
+            movieProfile = MovieProfile.objects.get(user=user)
+            user.is_active = False
+            movieProfile.customer_state = "suspended"
+            user.save()
+            movieProfile.save()
+
+            return Response(f'Suspended {user.first_name} {user.last_name}', status=status.HTTP_200_OK)
         
         except MovieProfile.DoesNotExist:
-            return Response(f'movie profile {user_id} does not exist', status=status.HTTP_404_NOT_FOUND)
+            return Response(f'User with Id of {user_id} does not exist', status=status.HTTP_404_NOT_FOUND)
 
 
         
@@ -105,23 +108,22 @@ class unSuspendAccount(generics.UpdateAPIView):
     queryset=MovieProfile.objects.all()
     serializer_class = MovieProfileSerializer
     lookup_field='id'
-    # clarify with will whether the movie_profileId or the user_id will be passed in 
-    # by the frontend
 
     def update(self, request, *args, **kwargs):
-        # alter the is_active property on the default django user object
-
+        user_id = self.kwargs.get('id')
+        
         try:
-            movieProfile = MovieProfile.objects.get(pk=self.kwargs.get('id'))
-            user = User.objects.get(pk=movieProfile.user_id)
+            user = User.objects.get(pk=user_id)
+            movieProfile = MovieProfile.objects.get(user=user)
             user.is_active = True
-            self.perform_update(user)
-            user_id = self.kwargs.get('id')
+            movieProfile.customer_state = "active"
+            user.save()
+            movieProfile.save()
 
-            return Response(f'un-suspended movieProfile {user_id}', status=status.HTTP_200_OK)
+            return Response(f'Unsuspended {user.first_name} {user.last_name}', status=status.HTTP_200_OK)
     
         except MovieProfile.DoesNotExist:
-            return Response(f'movie profile {user_id} does not exist', status=status.HTTP_404_NOT_FOUND)
+            return Response(f'User with Id of {user_id} does not exist', status=status.HTTP_404_NOT_FOUND)
 
         
 
