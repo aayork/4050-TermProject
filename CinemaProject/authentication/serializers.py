@@ -146,6 +146,9 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             seat.save()
         return order
 
+    def to_representation(self, instance):
+        return {'id': instance.pk}
+
 
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
