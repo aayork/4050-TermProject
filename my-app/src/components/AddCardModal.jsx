@@ -24,14 +24,25 @@ export function AddCardModal({ onAdd, onClose, userId }) {
     e.preventDefault();
 
     try {
-      if (cardForm.cardNumber.length != 16) {
+      if (cardForm.cardNumber.length !== 16) {
         alert("Card Number must be 16 characters");
         return;
       }
 
+      // Convert the expiration date to proper format
       cardForm.expirationDate = convertToDate(cardForm.expirationDate);
+
+      // Print the data being sent in JSON format
+      console.log(
+        "Payment Data being sent:",
+        JSON.stringify(cardForm, null, 2),
+      );
+
+      // Proceed with payment creation
       const result = await createPayment(cardForm);
       console.log(result);
+
+      // Call onAdd after successful payment creation
       onAdd();
     } catch (exception) {
       console.log(exception);

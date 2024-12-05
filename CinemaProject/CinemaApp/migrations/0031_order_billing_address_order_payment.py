@@ -14,11 +14,24 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='order',
             name='billing_address',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, related_name='orders', to='CinemaApp.address'),
+            field=models.ForeignKey(
+                default=None,
+                null=True,  # Temporarily allow nulls
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='orders',
+                to='CinemaApp.address',
+            ),
         ),
         migrations.AddField(
             model_name='order',
             name='payment',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, related_name='orders', to='CinemaApp.payment'),
+            field=models.ForeignKey(
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='orders',
+                to='CinemaApp.payment',
+            ),
         ),
+
     ]

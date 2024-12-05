@@ -237,6 +237,7 @@ class Order(models.Model):
         return f"{self.id} - {self.movieProfile} - {self.purchaseDate}"
 
 
+
 class Ticket(models.Model):
     class TicketType(models.TextChoices):
         ADULT = 'adult', 'Adult'
@@ -293,6 +294,3 @@ class Prices(models.Model):
 
     def __str__(self):
         return f"Pricing effective from {self.last_updated or 'now'}"
-
-
-
