@@ -35,7 +35,7 @@ export function AddCardModal({ onAdd, onClose, userId }) {
       // Print the data being sent in JSON format
       console.log(
         "Payment Data being sent:",
-        JSON.stringify(cardForm, null, 2),
+        JSON.stringify(cardForm, null, 2)
       );
 
       // Proceed with payment creation

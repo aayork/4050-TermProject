@@ -432,8 +432,6 @@ export const updateUser = async (user, userId) => {
   return result;
 };
 
-//need a get admin api
-
 //promo apis
 export const getPromos = async () => {
   const response = await fetch(`${API_BASEURL}api/info/getPromotions/`, {
@@ -509,6 +507,17 @@ export const validatePromotion = async (code) => {
 };
 
 //delete promotion maybe?
+
+// Manage prices api
+export const updatePrices = async (prices) => {
+  const response = await fetch(`${API_BASEURL}api/info/prices/update`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(prices),
+  });
+};
 
 //Payment Card API's
 export const getPayments = async (id) => {
