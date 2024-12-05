@@ -18,7 +18,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
 from .utils import get_available_rooms
-from datetime import datetime
+from datetime import datetime, timedelta
 from datetime import date
 
 
@@ -30,6 +30,13 @@ class MovieListView(generics.ListAPIView):
 class MovieDetailView(generics.RetrieveAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+    lookup_field = 'pk'
+
+    def retrieve(self, request, *args, **kwargs):
+        movie = Movie.objects.get(pk=self.kwargs.get('pk'))
+        showtime = ShowTime.objects.filter(movie=movie)[0]
+        theatre = showtime.movieRoom.theatre
+        return Response(f"movie theatre: {theatre.name}", status=status.HTTP_200_OK)
 
 
 class MovieCreateView(generics.CreateAPIView):
@@ -203,6 +210,14 @@ class CreateOrderView(generics.CreateAPIView):
 class AddShowtimeView(generics.CreateAPIView):
     queryset = ShowTime.objects.all()
     serializer_class = ShowTimeSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+        self.perform_create(serializer)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class EditShowtimeView(generics.UpdateAPIView):
     lookup_field='id'
