@@ -10,14 +10,7 @@ export function Payment() {
     location.state;
 
   const [userId, setUserId] = useState(null);
-  const [payment, setPayment] = useState({
-    user: userId,
-    cardNumber: "",
-    CVV: "",
-    expirationDate: "",
-    firstName: "",
-    lastName: "",
-  });
+  const [payment, setPayment] = useState(11);
 
   const [billingAddress, setBillingAddress] = useState({
     street: "",
@@ -194,7 +187,7 @@ export function Payment() {
           <input
             type="text"
             name="firstName"
-            value={payment.firstName}
+            // value={payment.firstName}
             onChange={handleInputChange}
             className="grow"
             placeholder="John"
@@ -205,7 +198,7 @@ export function Payment() {
           <input
             type="text"
             name="lastName"
-            value={payment.lastName}
+            // value={payment.lastName}
             onChange={handleInputChange}
             className="grow"
             placeholder="Doe"
@@ -216,7 +209,7 @@ export function Payment() {
           <input
             type="text"
             name="cardNumber"
-            value={payment.cardNumber}
+            // value={payment.cardNumber}
             onChange={handleInputChange}
             className="grow"
             placeholder="1234 5678 9012 3456"
@@ -227,7 +220,7 @@ export function Payment() {
           <input
             type="text"
             name="expirationDate"
-            value={payment.expirationDate}
+            // value={payment.expirationDate}
             onChange={handleInputChange}
             className="grow"
             placeholder="MM/YYYY"
