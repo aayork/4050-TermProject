@@ -34,6 +34,6 @@ urlpatterns = [
          password_reset_confirm_redirect, name="password_reset_confirm"),
     path("password/reset/confirm/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
     path('user/validateAdmin/<str:auth_token>/', validateAdmin.as_view(), name='validate-admin'),
-    path('user/suspend/<int:id>/', suspendAccount.as_view(), name='suspendAccount'),
-    path('user/unSuspend/<int:id>/', unSuspendAccount.as_view(), name='unSuspendAccount')
+    path('user/suspend/<int:user_id>/', suspendAccount.as_view(), name='suspendAccount'),
+    path('user/unSuspend/<int:user_id>/', unSuspendAccount.as_view(), name='unSuspendAccount')
 ]
