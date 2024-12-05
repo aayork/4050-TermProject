@@ -153,11 +153,12 @@ export function Payment() {
 
       console.log("Response from backend:", response);
 
-      navigate("/summary", {
+      navigate("/confirmation", {
         state: {
           selectedSeats,
           seatTypes,
           startTime,
+          totalPrice,
           orderId: response.id,
         },
       });

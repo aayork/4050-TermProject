@@ -8,6 +8,7 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Admin } from "./pages/Admin";
 import { UserProfile } from "./pages/UserProfile";
+import { OrderConfirmation } from "./pages/CheckoutSubPages/OrderConfirmation";
 import { OrderSummary } from "./pages/CheckoutSubPages/OrderSummary";
 import { ResetPassword } from "./pages/ResetPassword";
 import { ResetConfirm } from "./pages/ResetConfirm";
@@ -27,6 +28,7 @@ function App() {
           <Route path="/admin/" element={<Admin />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/summary" element={<OrderSummary />} />
+          <Route path="/confirmation" element={<OrderConfirmation />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route
             path="/password-reset/confirm/:uid/:token"
