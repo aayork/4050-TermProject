@@ -6,6 +6,11 @@ from django.contrib.auth.models import User
 from CinemaApp.models import (MovieProfile, Payment, Address, Order,
 Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie, Actor, Director, Promotion, Genre)
 from allauth.account.models import EmailAddress
+from datetime import timedelta
+from rest_framework.response import Response
+from rest_framework import status
+from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 
 
 class CustomRegisterSerializer(RegisterSerializer):
@@ -50,23 +55,39 @@ class TheatreSerializer(serializers.ModelSerializer):
 
 
 class MovieRoomSerializer(serializers.ModelSerializer):
-
+    theatre = TheatreSerializer(many=False, read_only=True)
     class Meta:
         model = MovieRoom
-        fields = ['id', 'number', 'is_active']
+        fields = ['id', 'number', 'is_active', 'theatre']
 
 
 class ShowTimeSerializer(serializers.ModelSerializer):
-    movieRoom = MovieRoomSerializer(read_only=True)
+    movieRoom = serializers.PrimaryKeyRelatedField(queryset = MovieRoom.objects.all())
 
     class Meta:
         model = ShowTime
-        fields = ['id', 'movie', 'movieRoom', 'date', 'startTime', 'endTime']
+        fields = ['id', 'movie', 'movieRoom', 'date', 'startTime']
+    
+    def create(self, validated_data):
+        try:
+            movie = Movie.objects.get(movieName=validated_data.get('movie').movieName)
+            endTime = validated_data.get('startTime') + timedelta(minutes=movie.runtime+10)
+            showtime = ShowTime.objects.create(endTime=endTime, **validated_data)
+
+            return showtime
+        
+        except Movie.DoesNotExist:
+            raise ValidationError("Movie doesn't exist")
+        
+        except MovieRoom.DoesNotExist:
+            raise ValidationError("MovieRoom doesn't exist")
+
+        except ValueError:
+            raise ValidationError("Date is not valid")
 
 
 class SeatSerializer(serializers.ModelSerializer):
     showtime = ShowTimeSerializer(many=False, read_only=True)
-
     class Meta:
         model = Seat
         fields = ['id', 'seatID', 'showtime']
@@ -124,6 +145,9 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             seat.is_available = False
             seat.save()
         return order
+
+    def to_representation(self, instance):
+        return {'id': instance.pk}
 
 
 class ActorSerializer(serializers.ModelSerializer):
@@ -247,15 +271,6 @@ class MovieSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
-
-
-class ShowTimeSerializer(serializers.ModelSerializer):
-    movieRoom = MovieRoomSerializer(many=False)
-    movie = MovieSerializer(many=False, read_only=True)
-
-    class Meta:
-        model = ShowTime
-        fields = ['id', 'movie', 'startTime', 'endTime', 'movieRoom']
 
 
 class PromotionSerializer(serializers.ModelSerializer):

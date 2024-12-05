@@ -81,7 +81,7 @@ class validateAdmin(APIView):
 class suspendAccount(generics.UpdateAPIView):
     queryset=MovieProfile.objects.all()
     serializer_class = MovieProfileSerializer
-    lookup_field='id'
+    lookup_field='user_id'
     # clarify with will whether the movie_profileId or the user_id will be passed in 
     # by the frontend
 
