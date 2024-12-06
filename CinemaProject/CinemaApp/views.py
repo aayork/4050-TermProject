@@ -2,7 +2,7 @@ from dj_rest_auth import serializers
 from django.shortcuts import render
 from django.http import JsonResponse, Http404
 from rest_framework import generics, status, permissions
-from .models import Movie, Address, MovieProfile, Payment, Promotion, ShowTime, Order, Seat
+from .models import Movie, Address, MovieProfile, Payment, Promotion, ShowTime, Order, Seat, Prices
 from .models import MovieRoom
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from authentication.serializers import (MovieSerializer, PromotionSerializer,
                                         MovieProfileSerializer, PaymentSerializer,
                                         AddressSerializer, GetPaymentSerializer, CustomUserSerializer,
-                                        ShowTimeSerializer, CreateOrderSerializer, GetSeatSerializer)
+                                        ShowTimeSerializer, CreateOrderSerializer, GetSeatSerializer, PricesSerializer)
 from authentication.serializers import MovieRoomSerializer
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
@@ -305,4 +305,17 @@ class PaymentCardInfoAPIView(APIView):
         # For security reasons, you might want to mask or avoid returning the full card number.
         card_number = payment.get_card_number()
         return Response({'card_number': card_number})
+
+
+class PriceListView(generics.ListAPIView):
+    queryset = Prices.objects.all()
+    serializer_class = PricesSerializer
+
+
+class PriceEditView(generics.UpdateAPIView):
+    queryset = Prices.objects.all()
+    serializer_class = PricesSerializer
+
+    def get_object(self):
+        return self.queryset.first()
 

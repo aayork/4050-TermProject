@@ -4,7 +4,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from CinemaApp.models import (MovieProfile, Payment, Address, Order,
-Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie, Actor, Director, Promotion, Genre)
+Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie, Actor, Director, Promotion, Genre, Prices)
 from allauth.account.models import EmailAddress
 from datetime import timedelta
 from rest_framework.response import Response
@@ -402,3 +402,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
             return None
 # need a way to convert promotion python objects into JSON
 
+
+class PricesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Prices
+        fields = ['adult_price', 'senior_price', 'child_price', 'booking_fee', 'sales_tax']

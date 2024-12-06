@@ -276,15 +276,16 @@ class Prices(models.Model):
         CHILD = 'child', 'Child'
 
     # Fields for each ticket type
-    adult_price = models.DecimalField(max_digits=6, decimal_places=2, default=10.00)
-    senior_price = models.DecimalField(max_digits=6, decimal_places=2, default=8.00)
-    child_price = models.DecimalField(max_digits=6, decimal_places=2, default=6.00)
+    adult_price = models.DecimalField(max_digits=6, decimal_places=2, default=12.00)
+    senior_price = models.DecimalField(max_digits=6, decimal_places=2, default=9.00)
+    child_price = models.DecimalField(max_digits=6, decimal_places=2, default=9.00)
 
     # Other fees
-    booking_fee = models.DecimalField(max_digits=6, decimal_places=2, default=2.00)
+    booking_fee = models.DecimalField(max_digits=6, decimal_places=2, default=2.99)
 
     # Optional fields for versioning or applying specific pricing to certain dates
-    last_updated = models.DateField(null=True, blank=True)
+
+    sales_tax = models.FloatField(null=False, blank=False, default=0.06)
 
     def get_ticket_price(self, ticket_type):
         """Helper method to get the price based on ticket type."""
@@ -298,4 +299,4 @@ class Prices(models.Model):
             raise ValueError("Invalid ticket type")
 
     def __str__(self):
-        return f"Pricing effective from {self.last_updated or 'now'}"
+        return f"Prices object"
