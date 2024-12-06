@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAvailableRooms, getMovies } from "../../utils/API";
+import { getAvailableRooms, getMovies, createShowtime } from "../../utils/API";
 import { Loading } from "../../components/Loading";
 
 export function ManageShowtimes() {
@@ -55,9 +55,15 @@ export function ManageShowtimes() {
     }
   };
 
-  const createShowtime = async () => {
+  const createShowtimeForMovie = async () => {
     try {
-      console.log("Creating showtime");
+      const response = await createShowtime(
+        STform.movie_id,
+        STform.date,
+        STform.time,
+        selectedRoom
+      );
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -167,7 +173,7 @@ export function ManageShowtimes() {
           <h1 className="py-2 mt-4">Selected Room : {selectedRoom}</h1>
           <button
             className="btn btn-primary text-white"
-            onClick={() => createShowtime()}
+            onClick={() => createShowtimeForMovie()}
           >
             Create Showtime
           </button>

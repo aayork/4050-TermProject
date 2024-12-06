@@ -3,7 +3,7 @@ import { ManageMovies } from "./ManageSubPages/ManageMovies";
 import { ManageUsers } from "./ManageSubPages/ManageUsers";
 import { ManagePromos } from "./ManageSubPages/ManagePromos";
 import { ManageShowtimes } from "./ManageSubPages/ManageShowtimes";
-import { getUser } from "../utils/API";
+import { validateAdmin } from "../utils/API";
 import { Loading } from "../components/Loading";
 
 export function Admin() {
@@ -20,8 +20,7 @@ export function Admin() {
       const authToken = localStorage.getItem("auth");
       if (authToken) {
         try {
-          const user = await getUser();
-          setAdmin(user.movie_profile.status === "admin");
+          setAdmin(await validateAdmin());
         } catch (error) {
           console.error("Error fetching user:", error);
           setAdmin(false);

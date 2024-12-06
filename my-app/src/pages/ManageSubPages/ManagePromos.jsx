@@ -9,6 +9,13 @@ export function ManagePromos() {
   const [loading, setLoading] = useState(true);
   const [selectedPromo, setSelectedPromo] = useState(null);
   const [shouldUpdate, setShouldUpdate] = useState(false);
+  const [priceForm, setPriceForm] = useState({
+    adult_price: 0.0,
+    senior_price: 0.0,
+    child_price: 0.0,
+    booking_fee: 0.0,
+    sales_tax: 0,
+  });
 
   const openAddPromoModal = () => {
     setSelectedPromo(null);
@@ -41,14 +48,46 @@ export function ManagePromos() {
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    // Parse the value as a float, but handle empty strings gracefully
+    const formattedValue = value === "" ? "" : parseFloat(value).toFixed(2);
+
+    setPriceForm((prevData) => ({
+      ...prevData,
+      [name]: formattedValue,
+    }));
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+
+    // Ensure two decimals on blur
+    if (value !== "") {
+      setPriceForm((prevData) => ({
+        ...prevData,
+        [name]: parseFloat(value).toFixed(2),
+      }));
+    }
+  };
+
   useEffect(() => {
-    const fetchPromos = async () => {
-      const promoList = await getPromos();
-      setPromos(promoList);
-      setLoading(false);
+    const setData = async () => {
+      try {
+        //get set prices
+        const prices = await getPrices();
+        setPriceForm(prices);
+        //get set promos
+        const promoList = await getPromos();
+        setPromos(promoList);
+
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
-    fetchPromos();
+    setData();
   }, [shouldUpdate]);
 
   if (loading) {
@@ -57,28 +96,40 @@ export function ManagePromos() {
 
   return (
     <div>
+      <div className="w-full">
+        <h1 className="text-xl font-medium">Manage Prices</h1>
+        <div className="flex flex-wrap gap-2 flex-row">
+          <form className="w-full">
+            <form className="w-full flex flex-wrap gap-2">
+              {[
+                { label: "Adult Ticket", name: "adult_price" },
+                { label: "Senior Ticket", name: "senior_price" },
+                { label: "Child Ticket", name: "child_price" },
+                { label: "Booking Fee", name: "booking_fee" },
+                { label: "Sales Tax", name: "sales_tax" },
+              ].map(({ label, name }) => (
+                <label
+                  key={name}
+                  className="flex justify-between items-center gap-2 input input-sm input-bordered input-primary bg-white w-64 pr-2"
+                >
+                  {label}:
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="w-24 text-middle"
+                    name={name}
+                    value={priceForm[name]}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </label>
+              ))}
+            </form>
+          </form>
+        </div>
+      </div>
       <div>
-        <button
-          className="btn my-2 flex items-center"
-          onClick={openAddPromoModal}
-        >
-          Add Promotion
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="3"
-            stroke="currentColor"
-            className="w-4 h-4"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 4.75v14.5m7.25-7.25H4.75"
-            />
-          </svg>
-        </button>
-
+        <h1 className="text-xl font-medium">Manage Promotions</h1>
         <dialog id="promoModal" className="modal">
           <EditPromoModal
             onClose={() => document.getElementById("promoModal").close()}
@@ -89,8 +140,8 @@ export function ManagePromos() {
       </div>
       <div className="flex flex-col gap-4">
         <div className="">
-          <h1 className="font-semibold"> Active: </h1>
-          <div className="grid grid gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+          <h1 className=""> Active: </h1>
+          <div className="flex flex-wrap gap-4">
             {promos
               .filter((promo) => {
                 return (
@@ -99,47 +150,113 @@ export function ManagePromos() {
                 );
               })
               .map((promo) => (
-                <div className="grid-item min-w-fit" key={promo.code}>
+                <div className="min-w-60" key={promo.code}>
                   <PromoCard
                     promo={promo}
                     onEdit={() => openEditPromoModal(promo)}
                   />
                 </div>
               ))}
+            <div className="min-w-60">
+              <button
+                className="btn items-center w-full h-full text-lg font-thin"
+                onClick={openAddPromoModal}
+              >
+                Add Promotion
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  className="w-6 w-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.75v14.5m7.25-7.25H4.75"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
         <div className="">
-          <h1 className="font-semibold"> Upcoming: </h1>
-          <div className="grid grid  gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+          <h1 className=""> Upcoming: </h1>
+          <div className="flex flex-wrap gap-4 ">
             {promos
               .filter((promo) => {
                 return new Date(promo.startDate) > Date.now();
               })
               .map((promo) => (
-                <div className="grid-item min-w-fit" key={promo.code}>
+                <div className="min-w-60" key={promo.code}>
                   <PromoCard
                     promo={promo}
                     onEdit={() => openEditPromoModal(promo)}
                   />
                 </div>
               ))}
+            <div className="min-w-60">
+              <button
+                className="btn items-center w-full h-full text-lg font-thin"
+                onClick={openAddPromoModal}
+              >
+                Add Promotion
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  className="w-6 w-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.75v14.5m7.25-7.25H4.75"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
         <div className="">
-          <h1 className="font-semibold"> Expired: </h1>
-          <div className="grid gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+          <h1 className=""> Expired: </h1>
+          <div className="flex flex-wrap gap-4">
             {promos
               .filter((promo) => {
                 return new Date(promo.endDate) < Date.now();
               })
               .map((promo) => (
-                <div className="grid-item min-w-fit" key={promo.code}>
+                <div className="min-w-60" key={promo.code}>
                   <PromoCard
                     promo={promo}
                     onEdit={() => openEditPromoModal(promo)}
                   />
                 </div>
               ))}
+            <div className="min-w-60">
+              <button
+                className="btn items-center w-full h-full text-lg font-thin"
+                onClick={openAddPromoModal}
+              >
+                Add Promotion
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  className="w-6 w-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.75v14.5m7.25-7.25H4.75"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>

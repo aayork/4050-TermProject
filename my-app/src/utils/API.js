@@ -509,14 +509,47 @@ export const validatePromotion = async (code) => {
 //delete promotion maybe?
 
 // Manage prices api
+export const getPrices = async (prices) => {
+  const response = await fetch(`${API_BASEURL}api/info/prices/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await parseResponse(response);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
+  return result;
+};
+
 export const updatePrices = async (prices) => {
-  const response = await fetch(`${API_BASEURL}api/info/prices/update`, {
+  const response = await fetch(`${API_BASEURL}api/info/prices/update/`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(prices),
   });
+
+  const result = await parseResponse(response);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
+  return result;
 };
 
 //Payment Card API's
@@ -691,10 +724,10 @@ export const createShowtime = async (movie_id, date, time, movieRoom_id) => {
       "Content-Type": "application/json",
     },
     body: {
-      movie_id: movie_id,
+      movie: movie_id,
+      movieRoom: movieRoom_id,
       date: date,
       time: time,
-      movieRoom_id: movieRoom_id,
     },
   });
 

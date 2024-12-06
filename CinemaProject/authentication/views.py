@@ -87,7 +87,7 @@ class suspendAccount(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         # alter the is_active property on the default django user object
-        user_id = self.kwargs.get('id')
+        user_id = self.kwargs.get('user_id')
 
         try:
             user = User.objects.get(pk=user_id)
@@ -99,7 +99,7 @@ class suspendAccount(generics.UpdateAPIView):
 
             return Response(f'Suspended {user.first_name} {user.last_name}', status=status.HTTP_200_OK)
         
-        except MovieProfile.DoesNotExist:
+        except User.DoesNotExist:
             return Response(f'User with Id of {user_id} does not exist', status=status.HTTP_404_NOT_FOUND)
 
 
@@ -110,7 +110,7 @@ class unSuspendAccount(generics.UpdateAPIView):
     lookup_field='id'
 
     def update(self, request, *args, **kwargs):
-        user_id = self.kwargs.get('id')
+        user_id = self.kwargs.get('user_id')
         
         try:
             user = User.objects.get(pk=user_id)
