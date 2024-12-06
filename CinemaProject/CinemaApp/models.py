@@ -235,7 +235,7 @@ class Order(models.Model):
     totalPrice = models.FloatField(blank=False, null=False, default=0)
     movieProfile = models.ForeignKey(MovieProfile, related_name="orders", on_delete=models.CASCADE)
     purchaseDate = models.DateField(blank=False, null=False)
-    cardNumber = models.BinaryField(blank=False, null=False, default=0000000000000000)
+    cardNumber = models.BigIntegerField(blank=False, null=False, default=0000000000000000)
     billing_address = models.ForeignKey(Address, related_name="orders", on_delete=models.CASCADE, default=None)
     # tickets = self.tickets
 
