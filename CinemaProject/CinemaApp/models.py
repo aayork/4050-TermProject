@@ -40,7 +40,13 @@ class Genre(models.Model):
         return self.name
 
 
+def default_theatre():
+    return Theatre.objects.first().id
+
+
 class Movie(models.Model):
+    theatre = models.ForeignKey(Theatre, related_name="movies_showing",
+                                on_delete=models.CASCADE, default=default_theatre)
     genres = models.ManyToManyField(Genre, related_name='movies', blank=True)
     movieName = models.CharField(max_length=225, blank=False)
     is_active = models.BooleanField(default=False)
@@ -229,7 +235,7 @@ class Order(models.Model):
     totalPrice = models.FloatField(blank=False, null=False, default=0)
     movieProfile = models.ForeignKey(MovieProfile, related_name="orders", on_delete=models.CASCADE)
     purchaseDate = models.DateField(blank=False, null=False)
-    cardNumber = models.BinaryField(blank=False, null=False, default=0000000000000000)
+    cardNumber = models.BigIntegerField(blank=False, null=False, default=0000000000000000)
     billing_address = models.ForeignKey(Address, related_name="orders", on_delete=models.CASCADE, default=None)
     # tickets = self.tickets
 

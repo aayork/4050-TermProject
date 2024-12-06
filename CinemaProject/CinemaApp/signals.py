@@ -2,7 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Promotion, MovieProfile, ShowTime, Seat
+from .models import Promotion, MovieProfile, ShowTime, Seat, Order
 from allauth.account.models import EmailAddress
 from django.db import transaction
 
@@ -62,3 +62,26 @@ def update_user_profile_state(sender, instance, **kwargs):
         if movie_profile.customer_state == "inactive":
             movie_profile.customer_state = "active"
             movie_profile.save()
+
+
+@receiver(post_save, sender=Order)
+def send_order_confirmation(sender, instance, created, **kwargs):
+    print("Order Signal Received")
+    if created:
+        # Get all users who want to receive promotions
+        user = instance.movieProfile
+        card_number_str = str(instance.cardNumber)
+        masked_card_number = '*' * 12 + card_number_str[-4:]
+
+        print(user)
+        send_mail(
+            subject='Movie Monkey Order Confirmation',
+            message=f'Your order has been placed! \n'
+                    f'Order Confirmation Number: {instance.id}\n'
+                    f'Card Number: {masked_card_number}\n'
+                    f'Billing Address: {instance.billing_address}\n'
+                    f'Purchase Date: {instance.purchaseDate}\n'
+                    f'Total Price: {instance.totalPrice}\n',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.user.email],
+        )

@@ -32,12 +32,6 @@ class MovieDetailView(generics.RetrieveAPIView):
     serializer_class = MovieSerializer
     lookup_field = 'pk'
 
-    def retrieve(self, request, *args, **kwargs):
-        movie = Movie.objects.get(pk=self.kwargs.get('pk'))
-        showtime = ShowTime.objects.filter(movie=movie)[0]
-        theatre = showtime.movieRoom.theatre
-        return Response(f"movie theatre: {theatre.name}", status=status.HTTP_200_OK)
-
 
 class MovieCreateView(generics.CreateAPIView):
     queryset = Movie.objects.all()
@@ -275,4 +269,40 @@ class AvailableRoomsView(APIView):
         serializer = MovieRoomSerializer(available_rooms, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class ShowtimeByDateAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        # Parse the date from query parameters (e.g., ?date=2024-12-05)
+        date_str = request.query_params.get('date', None)
+        if not date_str:
+            return Response({"error": "Date parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Convert the date string to a datetime object
+            date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+        except ValueError:
+            return Response({"error": "Invalid date format. Use YYYY-MM-DD."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Filter showtimes by the provided date
+        showtimes = ShowTime.objects.filter(date=date_obj)
+        if not showtimes.exists():
+            raise NotFound("No showtimes found for this date.")
+
+        # Serialize the queryset and return the response
+        serializer = ShowTimeSerializer(showtimes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PaymentCardInfoAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        id = self.kwargs.get('id')
+        try:
+            payment = Payment.objects.get(id=id)
+        except Payment.DoesNotExist:
+            raise NotFound("Payment with this ID does not exist")
+
+        # Assuming get_card_number() returns the card number, which could be sensitive information.
+        # For security reasons, you might want to mask or avoid returning the full card number.
+        card_number = payment.get_card_number()
+        return Response({'card_number': card_number})
 

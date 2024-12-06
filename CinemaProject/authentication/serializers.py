@@ -64,11 +64,12 @@ class MovieRoomSerializer(serializers.ModelSerializer):
 
 
 class ShowTimeSerializer(serializers.ModelSerializer):
-    movieRoom = serializers.PrimaryKeyRelatedField(queryset = MovieRoom.objects.all())
+    movieRoom = serializers.PrimaryKeyRelatedField(queryset=MovieRoom.objects.all())
+    endTime = serializers.DateTimeField(read_only=True)  # Mark endTime as read-only
 
     class Meta:
         model = ShowTime
-        fields = ['id', 'movie', 'movieRoom', 'date', 'startTime']
+        fields = ['id', 'movie', 'movieRoom', 'date', 'startTime', 'endTime']
     
     def create(self, validated_data):
         try:
@@ -124,7 +125,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['discountPercentage', 'totalPrice', 'userId', 'purchaseDate', 'tickets',
-                  'card_number', 'billing_address']
+                  'cardNumber', 'billing_address']
 
     def create(self, validated_data):
         tickets_data = validated_data.pop('tickets', [])
@@ -190,10 +191,11 @@ class MovieSerializer(serializers.ModelSerializer):
     actors = ActorSerializer(many=True, required=False)
     directors = DirectorSerializer(many=True, required=False)
     showtimes = ShowTimeSerializer(many=True, required=False)
+    theatre = TheatreSerializer(many=False, read_only=True)
 
     class Meta:
         model = Movie
-        fields = ['id', 'movieName', 'year', 'trailer', 'rating',
+        fields = ['id', 'theatre', 'movieName', 'year', 'trailer', 'rating',
                   'runtime', 'critics_score', 'audience_score',
                   'description', 'photo', 'studio', 'is_active',
                   'actors', 'directors', 'genres', 'showtimes']
@@ -399,3 +401,4 @@ class CustomUserSerializer(serializers.ModelSerializer):
         except EmailAddress.DoesNotExist:
             return None
 # need a way to convert promotion python objects into JSON
+
