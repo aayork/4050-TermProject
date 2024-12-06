@@ -125,7 +125,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['discountPercentage', 'totalPrice', 'userId', 'purchaseDate', 'tickets',
-                  'card_number', 'billing_address']
+                  'cardNumber', 'billing_address']
 
     def create(self, validated_data):
         tickets_data = validated_data.pop('tickets', [])

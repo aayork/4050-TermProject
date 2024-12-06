@@ -292,3 +292,17 @@ class ShowtimeByDateAPIView(APIView):
         serializer = ShowTimeSerializer(showtimes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class PaymentCardInfoAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        id = self.kwargs.get('id')
+        try:
+            payment = Payment.objects.get(id=id)
+        except Payment.DoesNotExist:
+            raise NotFound("Payment with this ID does not exist")
+
+        # Assuming get_card_number() returns the card number, which could be sensitive information.
+        # For security reasons, you might want to mask or avoid returning the full card number.
+        card_number = payment.get_card_number()
+        return Response({'card_number': card_number})
+
