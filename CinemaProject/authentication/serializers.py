@@ -190,10 +190,11 @@ class MovieSerializer(serializers.ModelSerializer):
     actors = ActorSerializer(many=True, required=False)
     directors = DirectorSerializer(many=True, required=False)
     showtimes = ShowTimeSerializer(many=True, required=False)
+    theatre = TheatreSerializer(many=False, read_only=True)
 
     class Meta:
         model = Movie
-        fields = ['id', 'movieName', 'year', 'trailer', 'rating',
+        fields = ['id', 'theatre', 'movieName', 'year', 'trailer', 'rating',
                   'runtime', 'critics_score', 'audience_score',
                   'description', 'photo', 'studio', 'is_active',
                   'actors', 'directors', 'genres', 'showtimes']

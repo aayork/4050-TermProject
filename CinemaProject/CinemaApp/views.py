@@ -32,12 +32,6 @@ class MovieDetailView(generics.RetrieveAPIView):
     serializer_class = MovieSerializer
     lookup_field = 'pk'
 
-    def retrieve(self, request, *args, **kwargs):
-        movie = Movie.objects.get(pk=self.kwargs.get('pk'))
-        showtime = ShowTime.objects.filter(movie=movie)[0]
-        theatre = showtime.movieRoom.theatre
-        return Response(f"movie theatre: {theatre.name}", status=status.HTTP_200_OK)
-
 
 class MovieCreateView(generics.CreateAPIView):
     queryset = Movie.objects.all()
