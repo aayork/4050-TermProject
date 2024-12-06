@@ -270,3 +270,25 @@ class AvailableRoomsView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class ShowtimeByDateAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        # Parse the date from query parameters (e.g., ?date=2024-12-05)
+        date_str = request.query_params.get('date', None)
+        if not date_str:
+            return Response({"error": "Date parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Convert the date string to a datetime object
+            date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+        except ValueError:
+            return Response({"error": "Invalid date format. Use YYYY-MM-DD."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Filter showtimes by the provided date
+        showtimes = ShowTime.objects.filter(date=date_obj)
+        if not showtimes.exists():
+            raise NotFound("No showtimes found for this date.")
+
+        # Serialize the queryset and return the response
+        serializer = ShowTimeSerializer(showtimes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
