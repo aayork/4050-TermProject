@@ -41,6 +41,8 @@ class CustomRegisterSerializer(RegisterSerializer):
 
         if created:
             print(f"MovieProfile created for {user} with status {status}")
+            movie_profile.customer_state = "inactive"
+            movie_profile.save()
         else:
             print(f"MovieProfile already exists for {user}")
 
@@ -121,7 +123,8 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['discountPercentage', 'totalPrice', 'userId', 'purchaseDate', 'tickets', 'payment', 'billing_address']
+        fields = ['discountPercentage', 'totalPrice', 'userId', 'purchaseDate', 'tickets',
+                  'card_number', 'billing_address']
 
     def create(self, validated_data):
         tickets_data = validated_data.pop('tickets', [])
@@ -331,7 +334,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'purchaseDate', 'promotion']
+        fields = ['discountPercentage', 'totalPrice', 'userId', 'purchaseDate', 'tickets',
+                  'card_number', 'billing_address']
 
 
 class MovieProfileSerializer(serializers.ModelSerializer):

@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Promotion, MovieProfile, ShowTime, Seat
+from allauth.account.models import EmailAddress
 from django.db import transaction
 
 
@@ -48,3 +49,16 @@ def send_promotion_email(sender, instance, created, **kwargs):
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.user.email],
             )
+
+
+@receiver(post_save, sender=EmailAddress)
+def update_user_profile_state(sender, instance, **kwargs):
+    print("Email signal ...")
+    print(instance.verified)
+    # Check if the 'verified' attribute changed to True
+    if instance.verified:
+        # Get the related UserProfile
+        movie_profile = instance.user.movie_profile
+        if movie_profile.customer_state == "inactive":
+            movie_profile.customer_state = "active"
+            movie_profile.save()
