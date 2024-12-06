@@ -10,14 +10,12 @@ export function Payment() {
     location.state;
 
   const [userId, setUserId] = useState(null);
-  const [payment, setPayment] = useState("");
+  const [cardNumber, setPayment] = useState(null);
 
-  const [billingAddress, setBillingAddress] = useState({
-    street: "",
-    city: "",
-    state: "",
-    zip: "",
-  });
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
 
   const [code, setCode] = useState(""); // Store the promo code
   const [discount, setDiscount] = useState(0); // Store the discount percentage
@@ -65,12 +63,19 @@ export function Payment() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (["street", "city", "state", "zip"].includes(name)) {
-      setBillingAddress((prev) => ({ ...prev, [name]: value }));
+    if (name === "street") {
+      setStreet(value);
+    } else if (name === "city") {
+      setCity(value);
+    } else if (name === "state") {
+      setState(value);
+    } else if (name === "zip") {
+      setZip(value);
     } else if (name === "code") {
       setCode(value); // Update the promo code
     } else if (name === "cardNumber") {
-      setPayment(value); // Update the card number
+      const sanitizedValue = value.replace(/\D/g, ""); // Remove non-numeric characters
+      setPayment(sanitizedValue ? parseInt(sanitizedValue, 10) : 0); // Update the card number
     }
   };
 
@@ -127,8 +132,11 @@ export function Payment() {
       userId,
       purchaseDate,
       tickets,
-      payment,
-      billingAddress,
+      cardNumber: cardNumber,
+      street: street,
+      city: city,
+      state: state,
+      zip: zip,
     };
 
     console.log("Request data:", JSON.stringify(orderData, null, 2));
@@ -139,7 +147,7 @@ export function Payment() {
         finalPrice,
         userId,
         purchaseDate,
-        payment,
+        cardNumber,
         tickets,
       );
 
@@ -200,7 +208,7 @@ export function Payment() {
           <input
             type="text"
             name="cardNumber"
-            value={payment}
+            value={cardNumber}
             onChange={handleInputChange}
             className="grow"
             placeholder="1234 5678 9012 3456"
@@ -233,7 +241,7 @@ export function Payment() {
           <input
             type="text"
             name="street"
-            value={billingAddress.street}
+            value={street}
             onChange={handleInputChange}
             className="grow"
             placeholder="123 Milledge Ave"
@@ -244,7 +252,7 @@ export function Payment() {
           <input
             type="text"
             name="city"
-            value={billingAddress.city}
+            value={city}
             onChange={handleInputChange}
             className="grow"
             placeholder="Athens"
@@ -255,7 +263,7 @@ export function Payment() {
           <input
             type="text"
             name="state"
-            value={billingAddress.state}
+            value={state}
             onChange={handleInputChange}
             className="grow"
             placeholder="GA"
@@ -266,7 +274,7 @@ export function Payment() {
           <input
             type="text"
             name="zip"
-            value={billingAddress.zip}
+            value={zip}
             onChange={handleInputChange}
             className="grow"
             placeholder="30605"
