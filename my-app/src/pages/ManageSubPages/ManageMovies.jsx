@@ -8,12 +8,25 @@ import {
 } from "../../utils/API";
 import { Loading } from "../../components/Loading";
 import { EditMovieModal } from "../../components/EditMovieModal";
+import { ViewTimesModal } from "../../components/ViewTimesModal";
 
 export function ManageMovies() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [shouldUpdate, setShouldUpdate] = useState(false);
+
+  //get movies
+  useEffect(() => {
+    const fetchMovies = async () => {
+      const moviesArr = await getMovies();
+      setMovies(moviesArr);
+      console.log(moviesArr);
+      setLoading(false);
+    };
+
+    fetchMovies();
+  }, [shouldUpdate]);
 
   const openAddMovieModal = () => {
     setSelectedMovie(null);
@@ -23,6 +36,11 @@ export function ManageMovies() {
   const openEditMovieModal = (movie) => {
     setSelectedMovie(movie);
     document.getElementById("movieModal").showModal();
+  };
+
+  const openViewTimesModal = (movie) => {
+    setSelectedMovie(movie);
+    document.getElementById("viewTimesModal").showModal();
   };
 
   const handleSaveMovie = async (movieData) => {
@@ -55,17 +73,6 @@ export function ManageMovies() {
       console.log(error);
     }
   };
-
-  //get movies
-  useEffect(() => {
-    const fetchMovies = async () => {
-      const movies = await getMovies();
-      setMovies(movies);
-      setLoading(false);
-    };
-
-    fetchMovies();
-  }, [shouldUpdate]);
 
   if (loading) {
     return <Loading message="Loading" />;
@@ -102,6 +109,12 @@ export function ManageMovies() {
             movie={selectedMovie}
           />
         </dialog>
+        <dialog id="viewTimesModal" className="modal">
+          <ViewTimesModal
+            onClose={() => document.getElementById("viewTimesModal").close()}
+            movie={selectedMovie}
+          />
+        </dialog>
       </div>
       <div className="flex flex-col">
         <div className="">
@@ -114,6 +127,7 @@ export function ManageMovies() {
                   <ManageMovieCard
                     movie={movie}
                     onEdit={() => openEditMovieModal(movie)}
+                    viewTimes={() => openViewTimesModal(movie)}
                   />
                 </div>
               ))}
@@ -129,6 +143,7 @@ export function ManageMovies() {
                   <ManageMovieCard
                     movie={movie}
                     onEdit={() => openEditMovieModal(movie)}
+                    viewTimes={() => openViewTimesModal(movie)}
                   />
                 </div>
               ))}
