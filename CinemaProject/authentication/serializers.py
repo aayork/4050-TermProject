@@ -4,7 +4,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from CinemaApp.models import (MovieProfile, Payment, Address, Order,
-Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie, Actor, Director, Promotion, Genre)
+Ticket, Seat, ShowTime, MovieRoom, Theatre, Movie, Actor, Director, Promotion, Genre, Prices)
 from allauth.account.models import EmailAddress
 from datetime import timedelta
 from rest_framework.response import Response
@@ -115,7 +115,8 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
-        fields = ['id', 'totalPrice', 'discountPercentage', 'purchaseDate', 'tickets', 'payment', 'billing_address']
+        fields = ['id', 'totalPrice', 'discountPercentage', 'purchaseDate',
+                  'tickets', 'payment', 'street', 'city', 'state', 'zip']
 
 
 class CreateOrderSerializer(serializers.ModelSerializer):
@@ -125,7 +126,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['discountPercentage', 'totalPrice', 'userId', 'purchaseDate', 'tickets',
-                  'cardNumber', 'billing_address']
+                  'cardNumber', 'street', 'city', 'state', 'zip']
 
     def create(self, validated_data):
         tickets_data = validated_data.pop('tickets', [])
@@ -332,12 +333,11 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    promotion = PromotionSerializer(many=False, read_only=True)
 
     class Meta:
         model = Order
-        fields = ['discountPercentage', 'totalPrice', 'userId', 'purchaseDate', 'tickets',
-                  'card_number', 'billing_address']
+        fields = ['discountPercentage', 'totalPrice', 'purchaseDate', 'tickets',
+                  'cardNumber', 'street', 'city', 'state', 'zip']
 
 
 class MovieProfileSerializer(serializers.ModelSerializer):
@@ -402,3 +402,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
             return None
 # need a way to convert promotion python objects into JSON
 
+
+class PricesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Prices
+        fields = ['adult_price', 'senior_price', 'child_price', 'booking_fee', 'sales_tax']

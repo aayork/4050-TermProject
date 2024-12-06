@@ -4,7 +4,7 @@ from .views import MovieListView, MovieDetailView, PromotionDetailView, GetAllPr
 from .views import (DeletePaymentView, UserPaymentView, AddPaymentView,
                     AddAddressView, DeleteAddressView, UserAddressView, AddPromotionView, UpdatePromotionView,
                     validatePromotion, CreateOrderView, DeleteShowTimeView,AddShowtimeView,EditShowtimeView,
-                    GetSeatsView, AvailableRoomsView, ShowtimeByDateAPIView, PaymentCardInfoAPIView)
+                    GetSeatsView, AvailableRoomsView, ShowtimeByDateAPIView, PaymentCardInfoAPIView, PriceListView, PriceEditView)
 
 urlpatterns = [
     path('getMovies/', MovieListView.as_view(), name='movie-list'),
@@ -38,4 +38,7 @@ urlpatterns = [
     path('showtime/date/', ShowtimeByDateAPIView.as_view(), name='showtimes-by-date'), # ex. ../showtime/date/?date=2025-12-03
 
     path('getSeats/<int:showtime_id>/', GetSeatsView.as_view(), name='seats-view'),
+
+    path('prices/', PriceListView.as_view(), name='prices'),
+    path('prices/update/', PriceEditView.as_view(), name='prices-edit'),
 ]

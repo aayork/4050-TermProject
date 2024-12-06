@@ -79,7 +79,7 @@ def send_order_confirmation(sender, instance, created, **kwargs):
             message=f'Your order has been placed! \n'
                     f'Order Confirmation Number: {instance.id}\n'
                     f'Card Number: {masked_card_number}\n'
-                    f'Billing Address: {instance.billing_address}\n'
+                    f'Billing Address: {instance.street} {instance.city}, {instance.state} {instance.zip}\n'
                     f'Purchase Date: {instance.purchaseDate}\n'
                     f'Total Price: {instance.totalPrice}\n',
             from_email=settings.DEFAULT_FROM_EMAIL,

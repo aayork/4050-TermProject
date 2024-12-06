@@ -236,7 +236,10 @@ class Order(models.Model):
     movieProfile = models.ForeignKey(MovieProfile, related_name="orders", on_delete=models.CASCADE)
     purchaseDate = models.DateField(blank=False, null=False)
     cardNumber = models.BigIntegerField(blank=False, null=False, default=0000000000000000)
-    billing_address = models.ForeignKey(Address, related_name="orders", on_delete=models.CASCADE, default=None)
+    street = models.CharField(max_length=150, blank=False, null=False, default='123 Reindeer Ln')
+    city = models.CharField(max_length=150, blank=False, null=False, default='North Pole')
+    state = models.CharField(max_length=40, blank=False, null=False, default='North Artica')
+    zip = models.CharField(max_length=15, blank=False, null=False, default='12345')
     # tickets = self.tickets
 
     def __str__(self):
@@ -276,15 +279,16 @@ class Prices(models.Model):
         CHILD = 'child', 'Child'
 
     # Fields for each ticket type
-    adult_price = models.DecimalField(max_digits=6, decimal_places=2, default=10.00)
-    senior_price = models.DecimalField(max_digits=6, decimal_places=2, default=8.00)
-    child_price = models.DecimalField(max_digits=6, decimal_places=2, default=6.00)
+    adult_price = models.DecimalField(max_digits=6, decimal_places=2, default=12.00)
+    senior_price = models.DecimalField(max_digits=6, decimal_places=2, default=9.00)
+    child_price = models.DecimalField(max_digits=6, decimal_places=2, default=9.00)
 
     # Other fees
-    booking_fee = models.DecimalField(max_digits=6, decimal_places=2, default=2.00)
+    booking_fee = models.DecimalField(max_digits=6, decimal_places=2, default=2.99)
 
     # Optional fields for versioning or applying specific pricing to certain dates
-    last_updated = models.DateField(null=True, blank=True)
+
+    sales_tax = models.FloatField(null=False, blank=False, default=0.06)
 
     def get_ticket_price(self, ticket_type):
         """Helper method to get the price based on ticket type."""
@@ -298,4 +302,4 @@ class Prices(models.Model):
             raise ValueError("Invalid ticket type")
 
     def __str__(self):
-        return f"Pricing effective from {self.last_updated or 'now'}"
+        return f"Prices object"
