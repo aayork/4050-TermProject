@@ -39,6 +39,7 @@ export function ManageMovies() {
   };
 
   const openViewTimesModal = (movie) => {
+    console.log(movie);
     setSelectedMovie(movie);
     document.getElementById("viewTimesModal").showModal();
   };
