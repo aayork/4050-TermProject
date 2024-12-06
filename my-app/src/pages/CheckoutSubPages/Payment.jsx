@@ -229,7 +229,6 @@ export function Payment() {
           <input
             type="text"
             name="CVV"
-            value={payment.CVV}
             onChange={handleInputChange}
             className="grow"
             placeholder="123"
