@@ -147,8 +147,12 @@ export function Payment() {
         finalPrice,
         userId,
         purchaseDate,
-        cardNumber,
         tickets,
+        cardNumber,
+        street,
+        city,
+        state,
+        zip,
       );
 
       console.log("Response from backend:", response);

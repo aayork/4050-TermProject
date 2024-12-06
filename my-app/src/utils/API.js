@@ -621,6 +621,25 @@ export const createOrder = async (
   state,
   zip,
 ) => {
+  console.log(
+    JSON.stringify(
+      {
+        discountPercentage,
+        totalPrice,
+        userId,
+        purchaseDate,
+        tickets,
+        cardNumber,
+        street,
+        city,
+        state,
+        zip,
+      },
+      null,
+      2,
+    ),
+  );
+
   const response = await fetch(`${API_BASEURL}api/info/createOrder/`, {
     method: "POST",
     headers: {
