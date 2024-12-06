@@ -72,7 +72,7 @@ export function Admin() {
               name="my_tabs"
               role="tab"
               className="tab flex-1"
-              aria-label="Manage Promotions"
+              aria-label="Manage Pricing"
               checked={selectedTab === "promos"}
               onChange={() => handleTabChange("promos")}
             />

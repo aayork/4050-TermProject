@@ -308,8 +308,19 @@ class PaymentCardInfoAPIView(APIView):
 
 
 class PriceListView(generics.ListAPIView):
-    queryset = Prices.objects.all()
     serializer_class = PricesSerializer
+
+    def get_queryset(self):
+        return Prices.objects.all()[:1]  
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+
+
+        if response.data:
+            response.data = response.data[0] 
+        return response
+
 
 
 class PriceEditView(generics.UpdateAPIView):

@@ -2,20 +2,48 @@ import { useState, useEffect } from "react";
 import { PromoCard } from "../../components/PromoCard";
 import { EditPromoModal } from "../../components/EditPromoModal";
 import { Loading } from "../../components/Loading";
-import { createPromotion, getPromos, updatePromotion } from "../../utils/API";
+import {
+  createPromotion,
+  getPromos,
+  getPrices,
+  updatePrices,
+  updatePromotion,
+} from "../../utils/API";
 
 export function ManagePromos() {
   const [promos, setPromos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPromo, setSelectedPromo] = useState(null);
   const [shouldUpdate, setShouldUpdate] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
   const [priceForm, setPriceForm] = useState({
-    adult_price: 0.0,
-    senior_price: 0.0,
-    child_price: 0.0,
-    booking_fee: 0.0,
+    adult_price: "",
+    senior_price: "",
+    child_price: "",
+    booking_fee: "",
     sales_tax: 0,
   });
+
+  useEffect(() => {
+    const setData = async () => {
+      try {
+        //get set prices
+        const prices = await getPrices();
+        setPriceForm({
+          ...prices,
+          sales_tax: parseFloat(prices.sales_tax),
+        });
+        //get set promos
+        const promoList = await getPromos();
+        setPromos(promoList);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    setData();
+  }, [shouldUpdate]);
 
   const openAddPromoModal = () => {
     setSelectedPromo(null);
@@ -48,6 +76,20 @@ export function ManagePromos() {
     }
   };
 
+  const handleUpdatePrices = async (e) => {
+    e.preventDefault();
+    if (isEditable) {
+      try {
+        await updatePrices(priceForm);
+        alert("Successfully Update Prices");
+        setIsEditable(false);
+      } catch (error) {
+        console.log(error);
+        alert("Error failed to update prices");
+      }
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     // Parse the value as a float, but handle empty strings gracefully
@@ -71,24 +113,11 @@ export function ManagePromos() {
     }
   };
 
-  useEffect(() => {
-    const setData = async () => {
-      try {
-        //get set prices
-        const prices = await getPrices();
-        setPriceForm(prices);
-        //get set promos
-        const promoList = await getPromos();
-        setPromos(promoList);
-
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    setData();
-  }, [shouldUpdate]);
+  const cancelUpdate = (e) => {
+    e.preventDefault();
+    setIsEditable(false);
+    setShouldUpdate(!shouldUpdate);
+  };
 
   if (loading) {
     return <Loading message="Loading Promos" />;
@@ -99,32 +128,54 @@ export function ManagePromos() {
       <div className="w-full">
         <h1 className="text-xl font-medium">Manage Prices</h1>
         <div className="flex flex-wrap gap-2 flex-row">
-          <form className="w-full">
-            <form className="w-full flex flex-wrap gap-2">
-              {[
-                { label: "Adult Ticket", name: "adult_price" },
-                { label: "Senior Ticket", name: "senior_price" },
-                { label: "Child Ticket", name: "child_price" },
-                { label: "Booking Fee", name: "booking_fee" },
-                { label: "Sales Tax", name: "sales_tax" },
-              ].map(({ label, name }) => (
-                <label
-                  key={name}
-                  className="flex justify-between items-center gap-2 input input-sm input-bordered input-primary bg-white w-64 pr-2"
+          <form className="w-full flex flex-wrap gap-2">
+            {[
+              { label: "Adult Ticket", name: "adult_price" },
+              { label: "Senior Ticket", name: "senior_price" },
+              { label: "Child Ticket", name: "child_price" },
+              { label: "Booking Fee", name: "booking_fee" },
+              { label: "Sales Tax", name: "sales_tax" },
+            ].map(({ label, name }) => (
+              <label
+                key={name}
+                className="flex justify-between items-center gap-2 input input-sm input-bordered input-primary bg-white w-64 pr-2"
+              >
+                {label}:
+                <input
+                  type="number"
+                  step="0.01"
+                  className="w-24 text-middle"
+                  name={name}
+                  value={priceForm[name]}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  readOnly={!isEditable}
+                />
+              </label>
+            ))}
+            {isEditable ? (
+              <div className="w-64 gap-2 flex">
+                <button
+                  className="btn btn-warning btn-sm grow text-white"
+                  onClick={cancelUpdate}
                 >
-                  {label}:
-                  <input
-                    type="number"
-                    step="0.01"
-                    className="w-24 text-middle"
-                    name={name}
-                    value={priceForm[name]}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                </label>
-              ))}
-            </form>
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-primary btn-sm  grow text-white"
+                  onClick={handleUpdatePrices}
+                >
+                  Update
+                </button>
+              </div>
+            ) : (
+              <button
+                className="btn btn-primary btn-sm w-64 text-white"
+                onClick={() => setIsEditable(true)}
+              >
+                Edit
+              </button>
+            )}
           </form>
         </div>
       </div>
