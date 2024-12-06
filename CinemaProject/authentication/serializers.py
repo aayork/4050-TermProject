@@ -64,11 +64,12 @@ class MovieRoomSerializer(serializers.ModelSerializer):
 
 
 class ShowTimeSerializer(serializers.ModelSerializer):
-    movieRoom = serializers.PrimaryKeyRelatedField(queryset = MovieRoom.objects.all())
+    movieRoom = serializers.PrimaryKeyRelatedField(queryset=MovieRoom.objects.all())
+    endTime = serializers.DateTimeField(read_only=True)  # Mark endTime as read-only
 
     class Meta:
         model = ShowTime
-        fields = ['id', 'movie', 'movieRoom', 'date', 'startTime']
+        fields = ['id', 'movie', 'movieRoom', 'date', 'startTime', 'endTime']
     
     def create(self, validated_data):
         try:
@@ -400,3 +401,4 @@ class CustomUserSerializer(serializers.ModelSerializer):
         except EmailAddress.DoesNotExist:
             return None
 # need a way to convert promotion python objects into JSON
+
