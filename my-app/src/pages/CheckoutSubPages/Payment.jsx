@@ -10,7 +10,7 @@ export function Payment() {
     location.state;
 
   const [userId, setUserId] = useState(null);
-  const [cardNumber, setPayment] = useState(null);
+  const [cardNumber, setPayment] = useState(""); // converted to int on handle input
 
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
