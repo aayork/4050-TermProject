@@ -10,7 +10,7 @@ export function Payment() {
     location.state;
 
   const [userId, setUserId] = useState(null);
-  const [payment, setPayment] = useState(null);
+  const [payment, setPayment] = useState("");
 
   const [billingAddress, setBillingAddress] = useState({
     street: "",
@@ -52,15 +52,6 @@ export function Payment() {
     fetchPromos();
   }, []);
 
-  useEffect(() => {
-    if (userId) {
-      setPayment((prevPayment) => ({
-        ...prevPayment,
-        user: userId, // Update the userId in payment state
-      }));
-    }
-  }, [userId]);
-
   const seatPrices = {
     Adult: 12,
     Child: 9,
@@ -78,8 +69,8 @@ export function Payment() {
       setBillingAddress((prev) => ({ ...prev, [name]: value }));
     } else if (name === "code") {
       setCode(value); // Update the promo code
-    } else {
-      setPayment((prev) => ({ ...prev, [name]: value }));
+    } else if (name === "cardNumber") {
+      setPayment(value); // Update the card number
     }
   };
 
@@ -148,6 +139,7 @@ export function Payment() {
         finalPrice,
         userId,
         purchaseDate,
+        payment,
         tickets,
       );
 
