@@ -88,6 +88,7 @@ export function MovieHall({ movie }) {
     date: formatDate(showtime.date),
     startTime: formatTime(showtime.startTime),
     endTime: formatTime(showtime.endTime),
+    movieRoom: showtime.movieRoom,
   }));
 
   const toggleSeatSelection = (seatLabel) => {
@@ -146,7 +147,9 @@ export function MovieHall({ movie }) {
                   className="text-left border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow hover:bg-gray-50"
                 >
                   <div className="flex gap-4 mb-2">
-                    <span className="font-medium">{showtime.movieRoom}</span>
+                    <span className="font-medium">
+                      Movie Room {showtime.movieRoom}:
+                    </span>
                     <span className="font-medium">{showtime.date}</span>
                     <span className="font-medium">
                       {showtime.startTime} - {showtime.endTime}
