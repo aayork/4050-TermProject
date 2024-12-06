@@ -236,7 +236,10 @@ class Order(models.Model):
     movieProfile = models.ForeignKey(MovieProfile, related_name="orders", on_delete=models.CASCADE)
     purchaseDate = models.DateField(blank=False, null=False)
     cardNumber = models.BigIntegerField(blank=False, null=False, default=0000000000000000)
-    billing_address = models.ForeignKey(Address, related_name="orders", on_delete=models.CASCADE, default=None)
+    street = models.CharField(max_length=150, blank=False, null=False, default='123 Reindeer Ln')
+    city = models.CharField(max_length=150, blank=False, null=False, default='North Pole')
+    state = models.CharField(max_length=40, blank=False, null=False, default='North Artica')
+    zip = models.CharField(max_length=15, blank=False, null=False, default='12345')
     # tickets = self.tickets
 
     def __str__(self):
