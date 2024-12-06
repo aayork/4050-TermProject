@@ -58,7 +58,7 @@ export function ManageShowtimes() {
   const createShowtimeForMovie = async () => {
     try {
       const response = await createShowtime(
-        STform.movie_id,
+        parseInt(STform.movie_id),
         STform.date,
         STform.time,
         selectedRoom

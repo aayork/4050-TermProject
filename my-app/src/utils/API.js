@@ -718,17 +718,17 @@ export const getAvailableRooms = async (movie_id, date, time) => {
 };
 
 export const createShowtime = async (movie_id, date, time, movieRoom_id) => {
-  const response = await fetch(`${API_BASEURL}api/info/showtime/add`, {
+  const response = await fetch(`${API_BASEURL}api/info/showtime/add/`, {
     method: "POST",
-    header: {
+    headers: {
       "Content-Type": "application/json",
     },
-    body: {
-      movie: movie_id,
-      movieRoom: movieRoom_id,
+    body: JSON.stringify({
+      movie_id: movie_id,
+      movieRoom_id: movieRoom_id,
       date: date,
-      time: time,
-    },
+      startTime: `${date}T${time}:00`,
+    }),
   });
 
   const result = parseResponse(response);

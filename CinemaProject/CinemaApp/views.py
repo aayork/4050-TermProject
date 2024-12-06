@@ -206,12 +206,37 @@ class AddShowtimeView(generics.CreateAPIView):
     serializer_class = ShowTimeSerializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
-        self.perform_create(serializer)
+        movie_id = request.data.get('movie_id')
+        movieRoom_id = request.data.get('movieRoom_id')
+        start_time = request.data.get('startTime')
+        date = request.data.get('date')
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if not movie_id or not movieRoom_id or not start_time or not date:
+            return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            Movie.objects.get(id=movie_id)
+            MovieRoom.objects.get(id=movieRoom_id)
+        except Movie.DoesNotExist:
+            return Response({"error": "Movie not found"}, status=status.HTTP_404_NOT_FOUND)
+        except MovieRoom.DoesNotExist:
+            return Response({"error": "MovieRoom not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        showtime_data = {
+            "movie": movie_id,
+            "movieRoom": movieRoom_id,
+            "startTime": start_time,
+            "date": date
+        }
+
+        # Pass the validated data to the serializer
+        serializer = self.get_serializer(data=showtime_data)
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class EditShowtimeView(generics.UpdateAPIView):
     lookup_field='id'
