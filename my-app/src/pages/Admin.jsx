@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { ManageMovies } from "./ManageSubPages/ManageMovies";
 import { ManageUsers } from "./ManageSubPages/ManageUsers";
 import { ManagePromos } from "./ManageSubPages/ManagePromos";
-import { ManageShowtimes } from "./ManageSubPages/ManageShowtimes";
-import { getUser } from "../utils/API";
+import { validateAdmin } from "../utils/API";
 import { Loading } from "../components/Loading";
 
 export function Admin() {
@@ -20,8 +19,7 @@ export function Admin() {
       const authToken = localStorage.getItem("auth");
       if (authToken) {
         try {
-          const user = await getUser();
-          setAdmin(user.movie_profile.status === "admin");
+          setAdmin(await validateAdmin());
         } catch (error) {
           console.error("Error fetching user:", error);
           setAdmin(false);
@@ -73,29 +71,15 @@ export function Admin() {
               name="my_tabs"
               role="tab"
               className="tab flex-1"
-              aria-label="Manage Promotions"
+              aria-label="Manage Pricing"
               checked={selectedTab === "promos"}
               onChange={() => handleTabChange("promos")}
-            />
-            <input
-              type="radio"
-              name="my_tabs"
-              role="tab"
-              className="tab flex-1"
-              aria-label="Manage Showtimes"
-              checked={selectedTab === "showtimes"}
-              onChange={() => handleTabChange("showtimes")}
             />
           </div>
 
           {selectedTab === "movies" && (
             <div className="py-2 px-4">
               <ManageMovies />
-            </div>
-          )}
-          {selectedTab === "showtimes" && (
-            <div className="py-2 px-4">
-              <ManageShowtimes />
             </div>
           )}
           {selectedTab === "users" && (

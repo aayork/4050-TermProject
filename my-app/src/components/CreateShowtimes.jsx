@@ -1,33 +1,15 @@
-import { useEffect, useState } from "react";
-import { getAvailableRooms, getMovies } from "../../utils/API";
-import { Loading } from "../../components/Loading";
+import { useState } from "react";
+import { getAvailableRooms, createShowtime } from "../utils/API";
 
-export function ManageShowtimes() {
+export function CreateShowtimes({ movie, onUpdate }) {
   const initForm = {
-    movie_id: 0,
     date: "",
     time: "",
   };
   const [STform, setForm] = useState(initForm);
-  const [movies, setMovies] = useState([]);
   const [avRooms, setAvRooms] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searched, setSearched] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(0);
-
-  useEffect(() => {
-    const getMovieArr = async () => {
-      try {
-        const movieArr = await getMovies();
-        setMovies(movieArr);
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getMovieArr();
-  }, []);
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -40,14 +22,12 @@ export function ManageShowtimes() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const avRoomsArr = await getAvailableRooms(
-        STform.movie_id,
+        movie.id,
         STform.date,
         STform.time
       );
-      console.log(avRoomsArr);
       setAvRooms(avRoomsArr);
       setSearched(true);
     } catch (error) {
@@ -55,54 +35,44 @@ export function ManageShowtimes() {
     }
   };
 
-  const createShowtime = async () => {
+  const createShowtimeForMovie = async () => {
     try {
-      console.log("Creating showtime");
+      const response = await createShowtime(
+        parseInt(movie.id),
+        STform.date,
+        STform.time,
+        selectedRoom
+      );
+      setAvRooms([]);
+      setSearched(false);
+      setSelectedRoom(0);
+      setForm(initForm);
+      onUpdate();
+      alert(
+        `Created showtime for ${movie.movieName}\nAt ${response.startTime}\nIn theater ${response.movieRoom}`
+      );
     } catch (error) {
       console.log(error);
     }
   };
 
-  if (loading) {
-    return <Loading message="Loading" />;
-  }
-
   return (
-    <div className="flex  flex-col items-center p-4 gap-4">
+    <div className="flex flex-col items-center gap-4">
       <form className="w-1/2" onSubmit={handleSubmit}>
-        <div className="flex gap-2 flex-col w-full">
-          <h1>Schedule a showtime </h1>
-          {/* Select Movie */}
-          <select
-            className="select select-bordered select-primary"
-            name="movie_id"
-            value={STform.movie_id}
-            onChange={handleChange}
-          >
-            <option disabled value="0">
-              Pick Movie
-            </option>
-            {movies.map((movie) => (
-              <option value={movie.id} key={movie.id}>
-                {movie.movieName}
-              </option>
-            ))}
-          </select>
-          {STform.movie_id != 0 && (
-            <label className="input input-bordered flex  input-primary items-center gap-2">
-              Date :
-              <input
-                type="date"
-                className="grow"
-                value={STform.date}
-                name="date"
-                onChange={handleChange}
-              />
-            </label>
-          )}
+        <div className="flex gap-2 flex-col w-full items-center">
+          <label className="input input-bordered flex input-sm input-primary items-center gap-2 w-56">
+            Date :
+            <input
+              type="date"
+              className="grow"
+              value={STform.date}
+              name="date"
+              onChange={handleChange}
+            />
+          </label>
           {/* select time */}
           {STform.date && (
-            <label className="input input-bordered flex  input-primary items-center gap-2">
+            <label className="input input-bordered flex input-sm input-primary items-center gap-2 w-56">
               Time :
               <input
                 type="time"
@@ -116,7 +86,7 @@ export function ManageShowtimes() {
           {STform.time && (
             <button
               onClick={handleSubmit}
-              className="btn btn-primary text-white"
+              className="btn btn-primary btn-sm text-white"
             >
               Find Room
             </button>
@@ -136,10 +106,12 @@ export function ManageShowtimes() {
                 .filter((rooms) => rooms.is_active)
                 .map((rooms) => (
                   <div
-                    className="p-4 w-36 rounded-xl border border-monkey-green shadow-xl flex flex-col gap-2 justify-around items-center"
+                    className="p-2 w-32 rounded-xl border border-monkey-green shadow-lg flex flex-col gap-2 justify-around items-center"
                     key={rooms.id}
                   >
-                    <div className="card-content">Theater {rooms.id}</div>
+                    <div className="card-content text-sm">
+                      Theater {rooms.id}
+                    </div>
                     <button
                       className="btn btn-primary text-white btn-xs"
                       onClick={() => setSelectedRoom(rooms.id)}
@@ -164,10 +136,10 @@ export function ManageShowtimes() {
 
       {selectedRoom != 0 && (
         <div>
-          <h1 className="py-2 mt-4">Selected Room : {selectedRoom}</h1>
+          <h1 className="py-2 mt-2">Selected Room : {selectedRoom}</h1>
           <button
             className="btn btn-primary text-white"
-            onClick={() => createShowtime()}
+            onClick={() => createShowtimeForMovie()}
           >
             Create Showtime
           </button>

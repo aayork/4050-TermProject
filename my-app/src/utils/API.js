@@ -74,7 +74,7 @@ export const confirmEmail = async (key) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ key: key }),
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -166,7 +166,7 @@ export const suspendAccount = async (id) => {
 };
 
 export const unsuspendAccount = async (id) => {
-  const response = await fetch(`${API_BASEURL}api/auth/user/unsuspend/${id}/`, {
+  const response = await fetch(`${API_BASEURL}api/auth/user/unSuspend/${id}/`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -199,7 +199,7 @@ export const getMovieDetails = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -273,7 +273,7 @@ export const updateMovie = async (movie) => {
         genres: movie.genres,
         showtimes: movie.showtimes,
       }),
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -324,7 +324,7 @@ export const validateAdmin = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -432,8 +432,6 @@ export const updateUser = async (user, userId) => {
   return result;
 };
 
-//need a get admin api
-
 //promo apis
 export const getPromos = async () => {
   const response = await fetch(`${API_BASEURL}api/info/getPromotions/`, {
@@ -483,7 +481,7 @@ export const updatePromotion = async (promo, ogCode) => {
         startDate: promo.startDate,
         endDate: promo.endDate,
       }),
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -500,7 +498,7 @@ export const validatePromotion = async (code) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(code),
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -509,6 +507,50 @@ export const validatePromotion = async (code) => {
 };
 
 //delete promotion maybe?
+
+// Manage prices api
+export const getPrices = async (prices) => {
+  const response = await fetch(`${API_BASEURL}api/info/prices/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await parseResponse(response);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
+  return result;
+};
+
+export const updatePrices = async (prices) => {
+  const response = await fetch(`${API_BASEURL}api/info/prices/update/`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(prices),
+  });
+
+  const result = await parseResponse(response);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
+  return result;
+};
 
 //Payment Card API's
 export const getPayments = async (id) => {
@@ -554,7 +596,7 @@ export const deletePayment = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   return response;
@@ -595,7 +637,7 @@ export const confirmPasswordReset = async (uid, token, newPassword) => {
         uid,
         token,
       }),
-    },
+    }
   );
 
   const result = await parseResponse(response);
@@ -616,7 +658,7 @@ export const createOrder = async (
   purchaseDate,
   tickets,
   payment,
-  billing_address,
+  billing_address
 ) => {
   const response = await fetch(`${API_BASEURL}api/info/createOrder/`, {
     method: "POST",
@@ -667,7 +709,7 @@ export const getAvailableRooms = async (movie_id, date, time) => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   const result = parseResponse(response);
@@ -676,21 +718,32 @@ export const getAvailableRooms = async (movie_id, date, time) => {
 };
 
 export const createShowtime = async (movie_id, date, time, movieRoom_id) => {
-  const response = await fetch(`${API_BASEURL}api/info/showtime/add`, {
+  const response = await fetch(`${API_BASEURL}api/info/showtime/add/`, {
     method: "POST",
-    header: {
+    headers: {
       "Content-Type": "application/json",
     },
-    body: {
+    body: JSON.stringify({
       movie_id: movie_id,
-      date: date,
-      time: time,
       movieRoom_id: movieRoom_id,
-    },
+      date: date,
+      startTime: `${date}T${time}:00`,
+    }),
   });
 
   const result = parseResponse(response);
   return result;
+};
+
+export const deleteShowtime = async (id) => {
+  await fetch(`${API_BASEURL}api/info/showtime/delete/${id}/`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return `Successfully deleted showtime ${id}`;
 };
 
 // parse response for api (keep at bottom)
