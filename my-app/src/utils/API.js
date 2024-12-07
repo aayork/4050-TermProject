@@ -735,6 +735,17 @@ export const createShowtime = async (movie_id, date, time, movieRoom_id) => {
   return result;
 };
 
+export const deleteShowtime = async (id) => {
+  await fetch(`${API_BASEURL}api/info/showtime/delete/${id}/`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return `Successfully deleted showtime ${id}`;
+};
+
 // parse response for api (keep at bottom)
 async function parseResponse(response) {
   const reader = response.body.getReader();

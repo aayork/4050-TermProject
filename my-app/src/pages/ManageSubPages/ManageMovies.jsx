@@ -23,6 +23,17 @@ export function ManageMovies() {
       setMovies(moviesArr);
       console.log(moviesArr);
       setLoading(false);
+
+      if (selectedMovie) {
+        const matchedMovie = moviesArr.find(
+          (movie) => movie.id === selectedMovie.id
+        );
+        if (matchedMovie) {
+          setSelectedMovie(matchedMovie);
+        } else {
+          console.warn("Selected movie not found in fetched movies array.");
+        }
+      }
     };
 
     fetchMovies();
@@ -113,6 +124,7 @@ export function ManageMovies() {
         <dialog id="viewTimesModal" className="modal">
           <ViewTimesModal
             onClose={() => document.getElementById("viewTimesModal").close()}
+            onUpdate={() => setShouldUpdate(!shouldUpdate)}
             movie={selectedMovie}
           />
         </dialog>
