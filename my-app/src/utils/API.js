@@ -718,6 +718,22 @@ export const createShowtime = async (movie_id, date, time, movieRoom_id) => {
   return result;
 };
 
+export const getPaymentInfo = async (id) => {
+  const response = await fetch(
+    `${API_BASEURL}api/info/user/payment/card_info/${id}/`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  const result = await parseResponse(response);
+
+  return result;
+};
+
 // parse response for api (keep at bottom)
 async function parseResponse(response) {
   const reader = response.body.getReader();

@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { createOrder, getUser, getPromos } from "../../utils/API";
+import {
+  createOrder,
+  getUser,
+  getPromos,
+  getPayments,
+  deletePayment,
+  getPaymentInfo,
+} from "../../utils/API";
+import { PaymentCard } from "../../components/PaymentCard";
 
 export function Payment() {
   const location = useLocation();
@@ -11,6 +19,10 @@ export function Payment() {
 
   const [userId, setUserId] = useState(null);
   const [cardNumber, setPayment] = useState(""); // converted to int on handle input
+
+  const [payments, setPayments] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
 
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
@@ -39,6 +51,27 @@ export function Payment() {
   }, []);
 
   useEffect(() => {
+    const getPaymentInfo = async () => {
+      try {
+        const user = await getUser();
+        setLoggedIn(true);
+
+        console.log(user);
+        if (user) {
+          setUserId(user.id);
+          const paymentArray = await getPayments(user.id);
+          console.log(paymentArray);
+          setPayments(paymentArray);
+        }
+      } catch (error) {
+        alert(error);
+      }
+    };
+
+    getPaymentInfo();
+  }, [shouldUpdate]);
+
+  useEffect(() => {
     const fetchPromos = async () => {
       try {
         const promos = await getPromos();
@@ -60,6 +93,16 @@ export function Payment() {
     const type = seatTypes[seat] || "Adult";
     return total + seatPrices[type];
   }, 0);
+
+  const deletePaymentCard = async (cardId) => {
+    try {
+      const result = await deletePayment(cardId);
+      console.log(result);
+      setShouldUpdate(!shouldUpdate);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -185,6 +228,20 @@ export function Payment() {
       <h2 className="text-lg font-semibold mt-4">
         Total: ${totalPrice - (totalPrice * discount) / 100}
       </h2>
+
+      <div className="card">
+        <div className="card-title">Saved Cards</div>
+        <div className="card-content">
+          {payments.map((card) => (
+            <div className="w-full" key={card.id}>
+              <PaymentCard
+                card={card}
+                onDelete={() => deletePaymentCard(card.id)}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
 
       <form className="flex flex-col w-full max-w-md">
         <label className="input input-bordered flex items-center gap-2 mb-4">
