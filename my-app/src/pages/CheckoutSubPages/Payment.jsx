@@ -51,7 +51,7 @@ export function Payment() {
   }, []);
 
   useEffect(() => {
-    const getPaymentInfo = async () => {
+    const getPaymentList = async () => {
       try {
         const user = await getUser();
         setLoggedIn(true);
@@ -68,7 +68,7 @@ export function Payment() {
       }
     };
 
-    getPaymentInfo();
+    getPaymentList();
   }, [shouldUpdate]);
 
   useEffect(() => {
@@ -97,6 +97,16 @@ export function Payment() {
   const deletePaymentCard = async (cardId) => {
     try {
       const result = await deletePayment(cardId);
+      console.log(result);
+      setShouldUpdate(!shouldUpdate);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getCardInfo = async (cardId) => {
+    try {
+      const result = await getPaymentInfo(cardId);
       console.log(result);
       setShouldUpdate(!shouldUpdate);
     } catch (error) {
