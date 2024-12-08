@@ -191,6 +191,21 @@ export const getMovies = async () => {
   return result;
 };
 
+export const getMoviesByShowday = async (date) => {
+  const response = await fetch(
+    `${API_BASEURL}api/info/showtime/date/?date=${date}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const result = await parseResponse(response);
+  return result;
+};
+
 export const getMovieDetails = async (id) => {
   const response = await fetch(
     `${API_BASEURL}api/info/getMovieDetails/${id}/`,
@@ -509,7 +524,7 @@ export const validatePromotion = async (code) => {
 //delete promotion maybe?
 
 // Manage prices api
-export const getPrices = async (prices) => {
+export const getPrices = async () => {
   const response = await fetch(`${API_BASEURL}api/info/prices/`, {
     method: "GET",
     headers: {
