@@ -5,11 +5,7 @@ export function OrderSummary() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const {
-    selectedSeats = [],
-    seatTypes = {},
-    selectedShowtime = "",
-  } = location.state || {};
+  const { selectedSeats = [], seatTypes = {} } = location.state || {};
 
   // Create a local state to manage selected seats
   const [seats, setSeats] = useState(selectedSeats);

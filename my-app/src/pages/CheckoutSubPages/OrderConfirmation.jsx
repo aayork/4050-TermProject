@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 
 export function OrderConfirmation() {
   const location = useLocation();
-  const { selectedSeats, seatTypes, totalPrice, startTime, orderId } =
+  const { selectedSeats, totalPrice, startTime, orderId } =
     location.state || {};
 
   return (
