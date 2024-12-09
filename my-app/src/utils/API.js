@@ -304,6 +304,18 @@ export const updateMovie = async (movie) => {
   return result;
 };
 
+export const getGenres = async () => {
+  const response = await fetch(`${API_BASEURL}api/info/getGenres/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = parseResponse(response);
+  return result;
+};
+
 // user API
 export const getUser = async () => {
   const token = localStorage.getItem("auth");
@@ -447,6 +459,37 @@ export const updateUser = async (user, userId) => {
   return result;
 };
 
+export const managerUpdateUser = async (user, userId) => {
+  const response = await fetch(`${API_BASEURL}api/auth/updateUser/${userId}/`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: user.email,
+      username: user.username,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      movie_profile: {
+        status: user.movie_profile.status,
+        receive_promotions: user.movie_profile.receive_promotions,
+      },
+    }),
+  });
+
+  const result = await parseResponse(response);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
+  return result;
+};
+
 //promo apis
 export const getPromos = async () => {
   const response = await fetch(`${API_BASEURL}api/info/getPromotions/`, {
@@ -506,17 +549,20 @@ export const updatePromotion = async (promo, ogCode) => {
 
 export const validatePromotion = async (code) => {
   const response = await fetch(
-    `${API_BASEURL}api/info/promotion/update/${code}/`,
+    `${API_BASEURL}api/info/promotion/validate/${code}/`,
     {
-      method: "PUT",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(code),
     }
   );
 
   const result = await parseResponse(response);
+
+  if (!response.ok) {
+    throw new Error(result.error);
+  }
 
   return result;
 };
@@ -672,16 +718,11 @@ export const createOrder = async (
   userId,
   purchaseDate,
   tickets,
-<<<<<<< HEAD
   cardNumber,
   street,
   city,
   state,
-  zip,
-=======
-  payment,
-  billing_address
->>>>>>> 93af1a9ce52ad3b7b1c7dbd94718ef8f7e795e30
+  zip
 ) => {
   console.log(
     JSON.stringify(
@@ -698,8 +739,8 @@ export const createOrder = async (
         zip,
       },
       null,
-      2,
-    ),
+      2
+    )
   );
 
   const response = await fetch(`${API_BASEURL}api/info/createOrder/`, {
@@ -788,7 +829,7 @@ export const getPaymentInfo = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   const result = await parseResponse(response);

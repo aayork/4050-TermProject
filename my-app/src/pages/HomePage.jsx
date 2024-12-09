@@ -9,13 +9,17 @@ export function HomePage() {
 
   useEffect(() => {
     const fetchMovies = async () => {
-      const movies = await getMovies();
-      setMovies(movies);
-      setLoading(false);
+      try {
+        const moviesArr = await getMovies();
+        setMovies(moviesArr);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchMovies();
-  });
+  }, []);
 
   return (
     <div className="relative z-10 p-4">

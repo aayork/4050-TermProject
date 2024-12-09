@@ -20,7 +20,7 @@ export function EditUserModal({ onClose, onSave, onDelete, user }) {
         },
       },
     }),
-    [],
+    []
   );
   const [userDetails, setUserDetails] = useState(initForm);
 
@@ -105,6 +105,7 @@ export function EditUserModal({ onClose, onSave, onDelete, user }) {
               name="email"
               onChange={handleChange}
               value={userDetails.email}
+              readOnly
             />
           </label>
           <label className="input input-bordered input-primary flex items-center gap-2">

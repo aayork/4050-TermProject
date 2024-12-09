@@ -12,17 +12,19 @@ export function MovieDetails() {
 
   useEffect(() => {
     const fetchMovie = async () => {
-      const movie = await getMovieDetails(id);
-
-      if (movie) {
-        setMovie(movie);
+      try {
+        const movie = await getMovieDetails(id);
+        if (movie) {
+          setMovie(movie);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
       }
-
-      setLoading(false);
     };
 
     fetchMovie();
-  });
+  }, [id]);
 
   if (loading) {
     return <Loading message={`Loading Movie`} />;

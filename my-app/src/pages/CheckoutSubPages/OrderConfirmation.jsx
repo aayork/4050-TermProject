@@ -29,6 +29,9 @@ export function OrderConfirmation() {
       ) : (
         <p>No seats selected.</p>
       )}
+      <a className="btn btn-primary text-lg text-white mt-6" href="/">
+        Return Home
+      </a>
     </div>
   );
 }

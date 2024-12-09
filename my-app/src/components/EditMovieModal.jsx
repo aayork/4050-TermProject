@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { getGenres } from "../utils/API";
 
 export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
   const initForm = useMemo(
@@ -15,17 +16,29 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
       photo: "",
       description: "",
       is_active: false,
+      genres: [],
     }),
     []
   );
   const [movieDetails, setMovieDetails] = useState(initForm);
+  const [genreList, setGenreList] = useState([]);
 
   useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const genreArr = await getGenres();
+        setGenreList(genreArr);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     if (movie) {
       setMovieDetails(movie);
     } else {
       setMovieDetails(initForm);
     }
+    fetchGenres();
   }, [movie, initForm]);
 
   const handleChange = (e) => {
@@ -40,6 +53,7 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
 
   const close = (e) => {
     e.preventDefault();
+    setMovieDetails(movie);
     onClose();
   };
 
@@ -163,6 +177,30 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
             name="description"
             value={movieDetails.description}
           ></textarea>
+          <h2 className="text-lg">Genres</h2>
+          <div className="flex flex-wrap gap-2">
+            {genreList.map((genre) => (
+              <div key={genre.id} className="w-32">
+                <label className="cursor-pointer flex items-center gap-1">
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-primary"
+                    checked={movieDetails.genres.some((g) => g.id === genre.id)}
+                    onChange={(e) => {
+                      const genreObject = { id: genre.id, name: genre.name };
+                      setMovieDetails((prevData) => {
+                        const newGenres = e.target.checked
+                          ? [...prevData.genres, genreObject]
+                          : prevData.genres.filter((g) => g.id !== genre.id);
+                        return { ...prevData, genres: newGenres };
+                      });
+                    }}
+                  />
+                  <span className="">{genre.name}</span>
+                </label>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="flex justify-between items-center mt-2">
@@ -185,7 +223,7 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
           </div>
           <div className="modal-action mt-0">
             <button
-              className="btn btn-secondary btn-sm text-monkey-white text-white"
+              className="btn btn-secondary btn-sm text-white"
               onClick={close}
             >
               Cancel

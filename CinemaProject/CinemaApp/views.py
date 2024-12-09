@@ -193,9 +193,9 @@ class validatePromotion(generics.RetrieveAPIView):
             if(date.today() >= instance.startDate and date.today() <= instance.endDate):
                 return Response(serializer.data)
             else:
-                return Response("Promotion date range doesn't apply to current date", status=status.HTTP_200_OK)
+                return Response({"error": "Promotion date range doesn't apply to current date"}, status=status.HTTP_400_BAD_REQUEST)
         except Promotion.DoesNotExist: 
-                return Response("Promotion not found", status=status.HTTP_404_NOT_FOUND)
+                return Response({"error": "Promotion not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class CreateOrderView(generics.CreateAPIView):

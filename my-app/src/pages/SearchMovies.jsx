@@ -2,6 +2,7 @@ import { MovieCard } from "../components/MovieCard";
 import { useEffect, useState } from "react";
 import { getMovies, getMoviesByShowday } from "../utils/API";
 import { Loading } from "../components/Loading";
+import { SetGenres } from "../components/SetGenres";
 
 export function SearchMovies() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,24 +11,25 @@ export function SearchMovies() {
   const [movieList, setMovieList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [genres, setGenres] = useState([]);
-  const [genreList, setGenreList] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => {
     const fetchMovies = async () => {
       const moviesArr = await getMovies();
       setMovies(moviesArr);
       setMovieList(moviesArr);
-      setGenreList(["Fantasy", "Sci-fi", "Horror"]);
       setLoading(false);
     };
 
     fetchMovies();
   }, []);
 
-  const searchMovies = async () => {
+  const searchMovies = async (updatedGenres = genres) => {
     setLoading(true);
+
     let filteredMovies = movieList;
-    if (searchTerm != "") {
+
+    if (searchTerm.trim() !== "") {
       if (searchBy === "title") {
         filteredMovies = filteredMovies.filter((movie) =>
           movie.movieName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -37,40 +39,39 @@ export function SearchMovies() {
       if (searchBy === "showDay") {
         try {
           filteredMovies = await getMoviesByShowday(searchTerm);
-          console.log("By showtime:", filteredMovies);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
     }
 
-    // if (genres.length > 0) {
-    //   filteredMovies = filteredMovies.filter((movie) =>
-    //     genres.some((genre) => movie.genres.includes(genre))
-    //   );
-    // }
+    if (updatedGenres.length > 0) {
+      filteredMovies = filteredMovies.filter((movie) =>
+        movie.genres.some((movieGenre) =>
+          updatedGenres.includes(movieGenre.name)
+        )
+      );
+    }
 
     setMovies(filteredMovies);
     setLoading(false);
   };
 
-  const applyGenres = () => {
-    const checkedGenres = Array.from(
-      document.querySelectorAll('#genreFilter input[type="checkbox"]:checked'),
-      (checkbox) => checkbox.value
-    );
-    setGenres(checkedGenres);
-
-    document.getElementById("genreFilter").close();
+  const filterMoviesByGenre = (genresActive) => {
+    setGenres(genresActive);
+    searchMovies(genresActive);
   };
 
-  const cancelGenres = () => {
+  const clearFilters = () => {
+    setGenres([]);
+    setShowMenu(false);
+    searchMovies([]);
+    // Select all checked checkboxes and uncheck them
     document
-      .querySelectorAll('#genreFilter input[type="checkbox"]')
+      .querySelectorAll('#genreFilter input[type="checkbox"]:checked')
       .forEach((checkbox) => {
-        checkbox.checked = genres.includes(checkbox.value);
+        checkbox.checked = false;
       });
-    document.getElementById("genreFilter").close();
   };
 
   return (
@@ -108,51 +109,48 @@ export function SearchMovies() {
         )}
 
         <button
-          className="text-lg text-white btn-accent btn"
-          onClick={() => document.getElementById("genreFilter").showModal()}
-        >
-          Filter Genres
-        </button>
-        <dialog id="genreFilter" className="modal">
-          <div className="modal-box">
-            <h1 className="text-xl font-semibold">Select Genres</h1>
-            <div className="flex flex-wrap gap-4 ">
-              {genreList.map((genre) => (
-                <div key={genre}>
-                  <label className="label cursor-pointer">
-                    <span className="">{genre}</span>
-                    <input
-                      type="checkbox"
-                      className="checkbox checkbox-primary mx-2"
-                      value={genre}
-                    />
-                  </label>
-                </div>
-              ))}
-            </div>
-            <div className="w-full flex justify-between mt-2">
-              <button
-                className="btn btn-sm btn-warning"
-                onClick={() => cancelGenres()}
-              >
-                Cancel
-              </button>
-              <button
-                className="btn btn-sm btn-primary text-white"
-                onClick={() => applyGenres()}
-              >
-                Apply
-              </button>
-            </div>
-          </div>
-        </dialog>
-
-        <button
-          className="btn btn-primary text-white text-lg"
+          className="btn btn-primary text-white text-lg font-medium"
           onClick={() => searchMovies()}
         >
           Search
         </button>
+
+        <button
+          className="text-lg text-black font-medium btn-accent btn"
+          onClick={() => document.getElementById("genreFilter").showModal()}
+        >
+          Filter Genres
+        </button>
+
+        {genres.length > 0 && (
+          <div className="relative inline-block">
+            {/* Main Button */}
+            <button
+              className="btn btn-outline btn-primary rounded-full w-12 text-lg font-thin "
+              onClick={() => setShowMenu(!showMenu)}
+            >
+              {genres.length}
+            </button>
+
+            {/* Dropdown Menu */}
+            {showMenu && (
+              <div className="absolute left-0 mt-1 w-32 bg-white border border-monkey-green rounded-lg shadow-lg z-10 ">
+                <button
+                  className="block w-full text-center px-2 py-2 text-sm "
+                  onClick={clearFilters}
+                >
+                  Clear Filters
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+        <dialog id="genreFilter" className="modal">
+          <SetGenres
+            genres={genres}
+            returnGenres={(genres) => filterMoviesByGenre(genres)}
+          />
+        </dialog>
       </div>
 
       {loading ? (

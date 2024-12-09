@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { MovieInfo } from "./MovieInfo";
 import { getSeats } from "../utils/API";
 import { LoginPrompt } from "./LoginPrompt";
+import { getPrices } from "../utils/API.js";
 
 // Function to convert row index to letters (e.g., 0 -> A, 25 -> Z, 26 -> AA)
 const getColLabel = (index) => {
@@ -38,6 +39,7 @@ export function MovieHall({ movie }) {
   const [firstSeatId, setFirstSeatId] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [availableSeats, setAvailableSeats] = useState({});
+  const [prices, setPrices] = useState(null);
 
   const navigate = useNavigate();
 
@@ -54,6 +56,17 @@ export function MovieHall({ movie }) {
       }
       setSeatIdMappings(mappings);
     }
+
+    const getPricesObj = async () => {
+      try {
+        const priceObj = await getPrices();
+        setPrices(priceObj);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getPricesObj();
   }, [firstSeatId, rows, columns]);
 
   useEffect(() => {
@@ -120,6 +133,7 @@ export function MovieHall({ movie }) {
         seatTypes,
         startTime,
         seatIdMappings, // Pass the mappings to the checkout page
+        prices,
       },
     });
   };
@@ -204,8 +218,8 @@ export function MovieHall({ movie }) {
                         isSelected
                           ? "bg-green-500"
                           : isAvailable
-                            ? "bg-monkey-yellow"
-                            : "bg-gray-400 cursor-not-allowed"
+                          ? "bg-monkey-yellow"
+                          : "bg-gray-400 cursor-not-allowed"
                       }`}
                       disabled={!isAvailable}
                     >
