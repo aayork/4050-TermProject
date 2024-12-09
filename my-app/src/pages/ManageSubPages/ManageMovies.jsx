@@ -156,7 +156,7 @@ export function ManageMovies() {
                   <ManageMovieCard
                     movie={movie}
                     onEdit={() => openEditMovieModal(movie)}
-                    viewTimes={() => openViewTimesModal(movie)}
+                    viewTimes={() => null}
                   />
                 </div>
               ))}

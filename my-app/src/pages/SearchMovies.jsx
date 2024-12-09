@@ -2,6 +2,7 @@ import { MovieCard } from "../components/MovieCard";
 import { useEffect, useState } from "react";
 import { getMovies, getMoviesByShowday } from "../utils/API";
 import { Loading } from "../components/Loading";
+import { SetGenres } from "../components/SetGenres";
 
 export function SearchMovies() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,14 +11,12 @@ export function SearchMovies() {
   const [movieList, setMovieList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [genres, setGenres] = useState([]);
-  const [genreList, setGenreList] = useState([]);
 
   useEffect(() => {
     const fetchMovies = async () => {
       const moviesArr = await getMovies();
       setMovies(moviesArr);
       setMovieList(moviesArr);
-      setGenreList(["Fantasy", "Sci-fi", "Horror"]);
       setLoading(false);
     };
 
@@ -52,25 +51,6 @@ export function SearchMovies() {
 
     setMovies(filteredMovies);
     setLoading(false);
-  };
-
-  const applyGenres = () => {
-    const checkedGenres = Array.from(
-      document.querySelectorAll('#genreFilter input[type="checkbox"]:checked'),
-      (checkbox) => checkbox.value
-    );
-    setGenres(checkedGenres);
-
-    document.getElementById("genreFilter").close();
-  };
-
-  const cancelGenres = () => {
-    document
-      .querySelectorAll('#genreFilter input[type="checkbox"]')
-      .forEach((checkbox) => {
-        checkbox.checked = genres.includes(checkbox.value);
-      });
-    document.getElementById("genreFilter").close();
   };
 
   return (
@@ -114,37 +94,10 @@ export function SearchMovies() {
           Filter Genres
         </button>
         <dialog id="genreFilter" className="modal">
-          <div className="modal-box">
-            <h1 className="text-xl font-semibold">Select Genres</h1>
-            <div className="flex flex-wrap gap-4 ">
-              {genreList.map((genre) => (
-                <div key={genre}>
-                  <label className="label cursor-pointer">
-                    <span className="">{genre}</span>
-                    <input
-                      type="checkbox"
-                      className="checkbox checkbox-primary mx-2"
-                      value={genre}
-                    />
-                  </label>
-                </div>
-              ))}
-            </div>
-            <div className="w-full flex justify-between mt-2">
-              <button
-                className="btn btn-sm btn-warning"
-                onClick={() => cancelGenres()}
-              >
-                Cancel
-              </button>
-              <button
-                className="btn btn-sm btn-primary text-white"
-                onClick={() => applyGenres()}
-              >
-                Apply
-              </button>
-            </div>
-          </div>
+          <SetGenres
+            genres={genres}
+            returnGenres={(genres) => setGenres(genres)}
+          />
         </dialog>
 
         <button

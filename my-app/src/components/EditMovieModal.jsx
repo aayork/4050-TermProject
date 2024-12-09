@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+//import { getGenres } from "../utils/API";
 
 export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
   const initForm = useMemo(
@@ -19,13 +20,33 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
     []
   );
   const [movieDetails, setMovieDetails] = useState(initForm);
+  const [genreList, setGenreList] = useState([]);
+  //const [genres, setGenres] = useState([]);
 
   useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        //const genreArr = await getGenres();
+        // setGenreList(genreArr);
+        setGenreList([
+          "Action",
+          "Adventure",
+          "Sci-fi",
+          "Horror",
+          "Family",
+          "Animation",
+        ]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     if (movie) {
       setMovieDetails(movie);
     } else {
       setMovieDetails(initForm);
     }
+    fetchGenres();
   }, [movie, initForm]);
 
   const handleChange = (e) => {
@@ -163,6 +184,21 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
             name="description"
             value={movieDetails.description}
           ></textarea>
+          <h2 className="text-lg">Genres</h2>
+          <div className="flex flex-wrap gap-2">
+            {genreList.map((genre) => (
+              <div key={genre} className="w-32">
+                <label className="cursor-pointer flex items-center gap-1">
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-primary"
+                    value={genre}
+                  />
+                  <span className="">{genre}</span>
+                </label>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="flex justify-between items-center mt-2">

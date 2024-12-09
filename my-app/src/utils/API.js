@@ -304,6 +304,18 @@ export const updateMovie = async (movie) => {
   return result;
 };
 
+export const getGenres = async () => {
+  const response = await fetch(`${API_BASEURL}api/info/getGenres/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = parseResponse(response);
+  return result;
+};
+
 // user API
 export const getUser = async () => {
   const token = localStorage.getItem("auth");
@@ -672,16 +684,11 @@ export const createOrder = async (
   userId,
   purchaseDate,
   tickets,
-<<<<<<< HEAD
   cardNumber,
   street,
   city,
   state,
-  zip,
-=======
-  payment,
-  billing_address
->>>>>>> 93af1a9ce52ad3b7b1c7dbd94718ef8f7e795e30
+  zip
 ) => {
   console.log(
     JSON.stringify(
@@ -698,8 +705,8 @@ export const createOrder = async (
         zip,
       },
       null,
-      2,
-    ),
+      2
+    )
   );
 
   const response = await fetch(`${API_BASEURL}api/info/createOrder/`, {
@@ -788,7 +795,7 @@ export const getPaymentInfo = async (id) => {
       headers: {
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   const result = await parseResponse(response);

@@ -10,12 +10,14 @@ export function ManageMovieCard({ movie, onEdit, viewTimes }) {
         </h2>
       </div>
       <div>
-        <button
-          onClick={viewTimes}
-          className="btn btn-xs btn-secondary w-full mt-2 text-white"
-        >
-          View Showtimes
-        </button>
+        {movie.is_active && (
+          <button
+            onClick={viewTimes}
+            className="btn btn-xs btn-secondary w-full mt-2 text-white"
+          >
+            View Showtimes
+          </button>
+        )}
         <button
           onClick={onEdit}
           className="btn btn-xs btn-primary w-full mt-2 text-white"
