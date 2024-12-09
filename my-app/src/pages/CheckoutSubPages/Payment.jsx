@@ -1,27 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   createOrder,
   getUser,
-  getPromos,
   getPayments,
   deletePayment,
   getPaymentInfo,
+  validatePromotion,
 } from "../../utils/API";
 import { PaymentCard } from "../../components/PaymentCard";
 
 export function Payment() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [promos, setPromos] = useState([]);
-  const { selectedSeats, seatTypes, startTime, seatIdMappings } =
+  const { selectedSeats, seatTypes, startTime, seatIdMappings, prices } =
     location.state;
 
   const [userId, setUserId] = useState(null);
   const [cardNumber, setPayment] = useState(""); // converted to int on handle input
 
   const [payments, setPayments] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(false);
   const [shouldUpdate, setShouldUpdate] = useState(false);
 
   const [street, setStreet] = useState("");
@@ -56,8 +54,6 @@ export function Payment() {
     const getPaymentList = async () => {
       try {
         const user = await getUser();
-        setLoggedIn(true);
-
         console.log(user);
         if (user) {
           setUserId(user.id);
@@ -73,28 +69,32 @@ export function Payment() {
     getPaymentList();
   }, [shouldUpdate]);
 
-  useEffect(() => {
-    const fetchPromos = async () => {
-      try {
-        const promos = await getPromos();
-        setPromos(promos);
-      } catch (error) {
-        console.error("Error fetching promos:", error);
-      }
+  const seatPrices = useMemo(() => {
+    return {
+      Adult: prices.adult_price,
+      Child: prices.child_price,
+      Senior: prices.senior_price,
     };
-    fetchPromos();
-  }, []);
+  }, [prices]);
 
-  const seatPrices = {
-    Adult: 12,
-    Child: 9,
-    Senior: 9,
-  };
+  const totalPrice = useMemo(() => {
+    return selectedSeats.reduce((total, seat) => {
+      const seatType = seatTypes[seat] || "Adult";
+      return total + parseFloat(seatPrices[seatType]) || 0;
+    }, 0);
+  }, [selectedSeats, seatPrices, seatTypes]);
 
-  const totalPrice = selectedSeats.reduce((total, seat) => {
-    const type = seatTypes[seat] || "Adult";
-    return total + seatPrices[type];
-  }, 0);
+  const finalPrice = useMemo(() => {
+    const discountAm = (totalPrice * (discount / 100)).toFixed(2);
+    const taxToAdd = parseFloat(totalPrice * prices.sales_tax);
+    const priceWithExtra =
+      totalPrice -
+      parseFloat(discountAm) +
+      parseFloat(prices.booking_fee) +
+      parseFloat(taxToAdd);
+
+    return priceWithExtra.toFixed(2);
+  }, [totalPrice, prices, discount]);
 
   const deletePaymentCard = async (cardId) => {
     try {
@@ -137,31 +137,23 @@ export function Payment() {
   };
 
   // Check the promo code when it changes
-  useEffect(() => {
-    const validatePromoCode = () => {
-      const currentDate = new Date();
-
-      // Find the promo that matches the entered code and is valid based on dates
-      const validPromo = promos.find(
-        (promo) =>
-          promo.code === code &&
-          new Date(promo.startDate) <= currentDate &&
-          new Date(promo.endDate) >= currentDate,
-      );
-
-      if (validPromo) {
+  const validatePromoCode = async (e) => {
+    e.preventDefault();
+    if (code == "") {
+      setPromoMessage("");
+    } else {
+      try {
+        const validPromo = await validatePromotion(code);
         setDiscount(validPromo.discountPercentage);
         setPromoMessage(
-          `Promo code "${code}" applied! You get ${validPromo.discountPercentage}% off.`,
+          `Promo code "${code}" applied! You get ${validPromo.discountPercentage}% off.`
         );
-      } else {
+      } catch (error) {
+        setPromoMessage(error.message);
         setDiscount(0);
-        setPromoMessage(`Invalid promo code or expired.`);
       }
-    };
-
-    validatePromoCode();
-  }, [code, promos]);
+    }
+  };
 
   const handleConfirm = async () => {
     const tickets = selectedSeats.map((seatLabel) => ({
@@ -179,9 +171,6 @@ export function Payment() {
       console.error("Tickets cannot be empty!");
       return;
     }
-
-    // Apply discount to the total price
-    const finalPrice = totalPrice - (totalPrice * discount) / 100;
 
     const orderData = {
       discountPercentage: discount,
@@ -209,7 +198,7 @@ export function Payment() {
         street,
         city,
         state,
-        zip,
+        zip
       );
 
       console.log("Response from backend:", response);
@@ -219,7 +208,7 @@ export function Payment() {
           selectedSeats,
           seatTypes,
           startTime,
-          totalPrice,
+          totalPrice: finalPrice,
           orderId: response.id,
         },
       });
@@ -227,7 +216,7 @@ export function Payment() {
       if (error.response) {
         console.error(
           "Error response from server:",
-          await error.response.json(),
+          await error.response.json()
         );
       } else {
         console.error("Error creating order:", error);
@@ -239,9 +228,40 @@ export function Payment() {
     <div className="flex flex-col items-center p-5">
       <h1 className="text-2xl font-bold mb-4">Checkout</h1>
 
-      <h2 className="text-lg font-semibold mt-4">
-        Total: ${totalPrice - (totalPrice * discount) / 100}
-      </h2>
+      <div className="w-64">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-semibold">Subtotal: </h2>
+          <span>{totalPrice}</span>
+        </div>
+
+        {discount != 0 && (
+          <div className="flex justify-between items-center ">
+            <h2 className="text-lg font-semibold">Discount: </h2>
+            <span className="text-red-600">
+              -{(totalPrice * (discount / 100)).toFixed(2)}
+            </span>
+          </div>
+        )}
+
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-semibold">Booking fee: </h2>
+          <span>{prices.booking_fee}</span>
+        </div>
+
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-semibold">
+            Sales Tax ({prices.sales_tax * 100}%):
+          </h2>
+          <span>{parseFloat(totalPrice * prices.sales_tax).toFixed(2)}</span>
+        </div>
+
+        <div className="border"></div>
+
+        <div className="flex justify-between items-center text-xl">
+          <h2 className="font-semibold">Final Total:</h2>
+          <span>{finalPrice}</span>
+        </div>
+      </div>
 
       <div className="card">
         <div className="card-title">Saved Cards</div>
@@ -364,17 +384,25 @@ export function Payment() {
         </label>
 
         <h2 className="text-lg font-semibold mt-4">Promotions</h2>
-        <label className="input input-bordered flex items-center gap-2 mb-4">
-          Promo Code
-          <input
-            type="text"
-            name="code"
-            value={code}
-            onChange={handleInputChange}
-            className="grow"
-            placeholder="WELCOME30"
-          />
-        </label>
+        <div className="flex gap-1">
+          <label className="input input-bordered flex items-center gap-2 mb-4 grow">
+            Promo Code
+            <input
+              type="text"
+              name="code"
+              value={code}
+              onChange={handleInputChange}
+              className="grow"
+              placeholder="WELCOME30"
+            />
+          </label>
+          <button
+            className=" btn btn-primary text-white"
+            onClick={(e) => validatePromoCode(e)}
+          >
+            Apply
+          </button>
+        </div>
 
         {promoMessage && (
           <div className="text-sm text-red-500 mt-2">{promoMessage}</div> // Display promo message

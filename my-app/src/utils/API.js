@@ -549,17 +549,20 @@ export const updatePromotion = async (promo, ogCode) => {
 
 export const validatePromotion = async (code) => {
   const response = await fetch(
-    `${API_BASEURL}api/info/promotion/update/${code}/`,
+    `${API_BASEURL}api/info/promotion/validate/${code}/`,
     {
-      method: "PUT",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(code),
     }
   );
 
   const result = await parseResponse(response);
+
+  if (!response.ok) {
+    throw new Error(result.error);
+  }
 
   return result;
 };

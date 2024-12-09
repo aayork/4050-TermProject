@@ -11,6 +11,7 @@ export function Checkout() {
     selectedSeats: initialSelectedSeats,
     seatTypes: initialSeatTypes,
     selectedShowtime,
+    prices,
   } = location.state || {};
   const [currentTab, setCurrentTab] = useState(initialTab || "summary"); // Default to 'summary' or the passed tab
   const [selectedSeats, setSelectedSeats] = useState(
@@ -36,6 +37,7 @@ export function Checkout() {
         navigate("/");
       }
     };
+
     checkLogin();
   }, []);
   return (
@@ -68,6 +70,7 @@ export function Checkout() {
               seatTypes={seatTypes}
               selectedShowtime={selectedShowtime}
               onDeleteSeat={deleteSeat} // Pass down delete function
+              prices={prices}
             />
             <div className="flex flex-row justify-center">
               <Link to="/" className="btn mt-5 p-2 m-2">
@@ -88,6 +91,7 @@ export function Checkout() {
               selectedSeats={selectedSeats}
               seatTypes={seatTypes}
               selectedShowtime={selectedShowtime}
+              prices={prices}
             />
           </div>
         )}
