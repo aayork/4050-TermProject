@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { createOrder, getUser, getPromos } from "../../utils/API";
+import {
+  createOrder,
+  getUser,
+  getPromos,
+  getPayments,
+  deletePayment,
+  getPaymentInfo,
+} from "../../utils/API";
+import { PaymentCard } from "../../components/PaymentCard";
 
 export function Payment() {
   const location = useLocation();
@@ -10,18 +18,22 @@ export function Payment() {
     location.state;
 
   const [userId, setUserId] = useState(null);
-  const [payment, setPayment] = useState("");
+  const [cardNumber, setPayment] = useState(""); // converted to int on handle input
 
-  const [billingAddress, setBillingAddress] = useState({
-    street: "",
-    city: "",
-    state: "",
-    zip: "",
-  });
+  const [payments, setPayments] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
+
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
 
   const [code, setCode] = useState(""); // Store the promo code
   const [discount, setDiscount] = useState(0); // Store the discount percentage
   const [promoMessage, setPromoMessage] = useState(""); // Store promo code validation message
+
+  const [useSavedCard, setUseSavedCard] = useState(false); // Track if a saved card is being used
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -39,6 +51,27 @@ export function Payment() {
 
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    const getPaymentList = async () => {
+      try {
+        const user = await getUser();
+        setLoggedIn(true);
+
+        console.log(user);
+        if (user) {
+          setUserId(user.id);
+          const paymentArray = await getPayments(user.id);
+          console.log(paymentArray);
+          setPayments(paymentArray);
+        }
+      } catch (error) {
+        alert(error);
+      }
+    };
+
+    getPaymentList();
+  }, [shouldUpdate]);
 
   useEffect(() => {
     const fetchPromos = async () => {
@@ -63,14 +96,43 @@ export function Payment() {
     return total + seatPrices[type];
   }, 0);
 
+  const deletePaymentCard = async (cardId) => {
+    try {
+      const result = await deletePayment(cardId);
+      console.log(result);
+      setShouldUpdate(!shouldUpdate);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getCardInfo = async (cardId) => {
+    try {
+      const result = await getPaymentInfo(cardId);
+      console.log("payment info", result);
+      setShouldUpdate(!shouldUpdate);
+      setPayment(result.card_number);
+      setUseSavedCard(true); // Disable input fields when a saved card is used
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (["street", "city", "state", "zip"].includes(name)) {
-      setBillingAddress((prev) => ({ ...prev, [name]: value }));
+    if (name === "street") {
+      setStreet(value);
+    } else if (name === "city") {
+      setCity(value);
+    } else if (name === "state") {
+      setState(value);
+    } else if (name === "zip") {
+      setZip(value);
     } else if (name === "code") {
       setCode(value); // Update the promo code
     } else if (name === "cardNumber") {
-      setPayment(value); // Update the card number
+      const sanitizedValue = value.replace(/\D/g, ""); // Remove non-numeric characters
+      setPayment(sanitizedValue ? parseInt(sanitizedValue, 10) : 0); // Update the card number
     }
   };
 
@@ -127,8 +189,11 @@ export function Payment() {
       userId,
       purchaseDate,
       tickets,
-      payment,
-      billingAddress,
+      cardNumber: cardNumber,
+      street: street,
+      city: city,
+      state: state,
+      zip: zip,
     };
 
     console.log("Request data:", JSON.stringify(orderData, null, 2));
@@ -139,8 +204,12 @@ export function Payment() {
         finalPrice,
         userId,
         purchaseDate,
-        payment,
         tickets,
+        cardNumber,
+        street,
+        city,
+        state,
+        zip,
       );
 
       console.log("Response from backend:", response);
@@ -174,6 +243,22 @@ export function Payment() {
         Total: ${totalPrice - (totalPrice * discount) / 100}
       </h2>
 
+      <div className="card">
+        <div className="card-title">Saved Cards</div>
+        <div className="card-content">
+          {payments.map((card) => (
+            <div className="w-full" key={card.id}>
+              <PaymentCard
+                card={card}
+                onDelete={() => deletePaymentCard(card.id)}
+                usable={true}
+                getPaymentInfo={() => getCardInfo(card.id)}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
       <form className="flex flex-col w-full max-w-md">
         <label className="input input-bordered flex items-center gap-2 mb-4">
           First Name
@@ -183,6 +268,7 @@ export function Payment() {
             onChange={handleInputChange}
             className="grow"
             placeholder="John"
+            disabled={useSavedCard} // Disable if a saved card is used
           />
         </label>
         <label className="input input-bordered flex items-center gap-2 mb-4">
@@ -193,6 +279,7 @@ export function Payment() {
             onChange={handleInputChange}
             className="grow"
             placeholder="Doe"
+            disabled={useSavedCard} // Disable if a saved card is used
           />
         </label>
         <label className="input input-bordered flex items-center gap-2 mb-4">
@@ -200,10 +287,11 @@ export function Payment() {
           <input
             type="text"
             name="cardNumber"
-            value={payment}
+            value={cardNumber}
             onChange={handleInputChange}
             className="grow"
             placeholder="1234 5678 9012 3456"
+            disabled={useSavedCard} // Disable if a saved card is used
           />
         </label>
         <label className="input input-bordered flex items-center gap-2 mb-4">
@@ -214,6 +302,7 @@ export function Payment() {
             onChange={handleInputChange}
             className="grow"
             placeholder="MM/YYYY"
+            disabled={useSavedCard} // Disable if a saved card is used
           />
         </label>
         <label className="input input-bordered flex items-center gap-2 mb-4">
@@ -224,6 +313,7 @@ export function Payment() {
             onChange={handleInputChange}
             className="grow"
             placeholder="123"
+            disabled={useSavedCard} // Disable if a saved card is used
           />
         </label>
 
@@ -233,7 +323,7 @@ export function Payment() {
           <input
             type="text"
             name="street"
-            value={billingAddress.street}
+            value={street}
             onChange={handleInputChange}
             className="grow"
             placeholder="123 Milledge Ave"
@@ -244,7 +334,7 @@ export function Payment() {
           <input
             type="text"
             name="city"
-            value={billingAddress.city}
+            value={city}
             onChange={handleInputChange}
             className="grow"
             placeholder="Athens"
@@ -255,7 +345,7 @@ export function Payment() {
           <input
             type="text"
             name="state"
-            value={billingAddress.state}
+            value={state}
             onChange={handleInputChange}
             className="grow"
             placeholder="GA"
@@ -266,7 +356,7 @@ export function Payment() {
           <input
             type="text"
             name="zip"
-            value={billingAddress.zip}
+            value={zip}
             onChange={handleInputChange}
             className="grow"
             placeholder="30605"

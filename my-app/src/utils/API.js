@@ -672,9 +672,36 @@ export const createOrder = async (
   userId,
   purchaseDate,
   tickets,
+<<<<<<< HEAD
+  cardNumber,
+  street,
+  city,
+  state,
+  zip,
+=======
   payment,
   billing_address
+>>>>>>> 93af1a9ce52ad3b7b1c7dbd94718ef8f7e795e30
 ) => {
+  console.log(
+    JSON.stringify(
+      {
+        discountPercentage,
+        totalPrice,
+        userId,
+        purchaseDate,
+        tickets,
+        cardNumber,
+        street,
+        city,
+        state,
+        zip,
+      },
+      null,
+      2,
+    ),
+  );
+
   const response = await fetch(`${API_BASEURL}api/info/createOrder/`, {
     method: "POST",
     headers: {
@@ -686,8 +713,11 @@ export const createOrder = async (
       userId: userId,
       purchaseDate: purchaseDate,
       tickets: tickets,
-      payment: payment,
-      billing_address: billing_address,
+      cardNumber: cardNumber,
+      street: street,
+      city: city,
+      state: state,
+      zip: zip,
     }),
   });
 
@@ -747,6 +777,22 @@ export const createShowtime = async (movie_id, date, time, movieRoom_id) => {
   });
 
   const result = parseResponse(response);
+  return result;
+};
+
+export const getPaymentInfo = async (id) => {
+  const response = await fetch(
+    `${API_BASEURL}api/info/user/payment/card_info/${id}/`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  const result = await parseResponse(response);
+
   return result;
 };
 

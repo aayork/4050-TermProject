@@ -37,6 +37,14 @@ export function UserProfile() {
   const [payments, setPayments] = useState([]);
   const [orders, setOrders] = useState([]);
 
+  const getCardInfo = async (cardId) => {
+    try {
+      console.log("dont use this function");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormState((prevData) => ({ ...prevData, [name]: value }));
@@ -286,6 +294,8 @@ export function UserProfile() {
                       <PaymentCard
                         card={card}
                         onDelete={() => deletePaymentCard(card.id)}
+                        usable={false}
+                        getPaymentInfo={() => getCardInfo(card.id)}
                       />
                     </div>
                   ))}
