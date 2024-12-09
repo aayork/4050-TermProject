@@ -17,7 +17,8 @@ export function UserCard({ user, onEdit, onSusAction }) {
           {user.username}
         </h3>
         <h3>
-          <b className="font-semibold">Status:</b> {user.movie_profile.status}
+          <b className="font-semibold">Status:</b>
+          {user.movie_profile.status}
         </h3>
         {user.movie_profile.customer_state && (
           <h3>
@@ -38,30 +39,29 @@ export function UserCard({ user, onEdit, onSusAction }) {
             </button>
           </div>
         ) : user.movie_profile.customer_state === "suspended" ? (
-          <div className="w-1/2 ">
+          <div className="w-full">
             <button
               onClick={onSusAction}
-              className="btn btn-xs btn-warning text-white w-full"
+              className="btn btn-xs btn-secondary text-white w-full"
             >
               Unsuspend Account
             </button>
           </div>
         ) : null}
-        <div
-          className={
-            user.movie_profile.customer_state !== "suspended" &&
-            user.movie_profile.status !== "admin"
-              ? "w-1/2"
-              : "w-full"
-          }
-        >
-          <button
-            onClick={onEdit}
-            className="btn btn-xs btn-primary text-white w-full"
+        {user.movie_profile.customer_state !== "suspended" && (
+          <div
+            className={
+              user.movie_profile.status !== "admin" ? "w-1/2" : "w-full"
+            }
           >
-            Edit User
-          </button>
-        </div>
+            <button
+              onClick={onEdit}
+              className="btn btn-xs btn-primary text-white w-full"
+            >
+              Edit User
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

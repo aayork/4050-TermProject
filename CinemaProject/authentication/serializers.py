@@ -64,6 +64,7 @@ class MovieRoomSerializer(serializers.ModelSerializer):
 
 
 class ShowTimeSerializer(serializers.ModelSerializer):
+    movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all())
     movieRoom = serializers.PrimaryKeyRelatedField(queryset=MovieRoom.objects.all())
     endTime = serializers.DateTimeField(read_only=True)  # Mark endTime as read-only
 
@@ -72,21 +73,17 @@ class ShowTimeSerializer(serializers.ModelSerializer):
         fields = ['id', 'movie', 'movieRoom', 'date', 'startTime', 'endTime']
     
     def create(self, validated_data):
-        try:
-            movie = Movie.objects.get(movieName=validated_data.get('movie').movieName)
-            endTime = validated_data.get('startTime') + timedelta(minutes=movie.runtime+10)
-            showtime = ShowTime.objects.create(endTime=endTime, **validated_data)
+        movie = validated_data.get('movie')
+        start_time = validated_data.get('startTime')
 
+        # Calculate the end time
+        try:
+            end_time = start_time + timedelta(minutes=movie.runtime + 10)  # Adding 10 minutes after runtime
+            showtime = ShowTime.objects.create(endTime=end_time, **validated_data)
             return showtime
-        
-        except Movie.DoesNotExist:
-            raise ValidationError("Movie doesn't exist")
-        
-        except MovieRoom.DoesNotExist:
-            raise ValidationError("MovieRoom doesn't exist")
 
         except ValueError:
-            raise ValidationError("Date is not valid")
+            raise ValidationError("Date or start time is not valid")
 
 
 class SeatSerializer(serializers.ModelSerializer):

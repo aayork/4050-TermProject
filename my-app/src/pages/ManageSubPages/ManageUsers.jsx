@@ -85,8 +85,8 @@ export function ManageUsers() {
   const suspendUserAccount = async (id) => {
     try {
       const result = await suspendAccount(id);
-      console.log(result);
-      //alert(result)
+      setShouldUpdate(!shouldUpdate);
+      alert(result);
     } catch (error) {
       console.log(error);
     }
@@ -95,8 +95,8 @@ export function ManageUsers() {
   const unsuspendUserAccount = async (id) => {
     try {
       const result = await unsuspendAccount(id);
-      console.log(result);
-      //alert(result)
+      setShouldUpdate(!shouldUpdate);
+      alert(result);
     } catch (error) {
       console.log(error);
     }
