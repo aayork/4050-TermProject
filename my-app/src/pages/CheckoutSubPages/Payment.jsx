@@ -107,8 +107,9 @@ export function Payment() {
   const getCardInfo = async (cardId) => {
     try {
       const result = await getPaymentInfo(cardId);
-      console.log(result);
+      console.log("payment info", result);
       setShouldUpdate(!shouldUpdate);
+      setPayment(result.card_number);
     } catch (error) {
       console.log(error);
     }
@@ -247,6 +248,8 @@ export function Payment() {
               <PaymentCard
                 card={card}
                 onDelete={() => deletePaymentCard(card.id)}
+                usable={true}
+                getPaymentInfo={() => getCardInfo(card.id)}
               />
             </div>
           ))}
