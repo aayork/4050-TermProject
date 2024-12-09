@@ -240,6 +240,7 @@ class Order(models.Model):
     city = models.CharField(max_length=150, blank=False, null=False, default='North Pole')
     state = models.CharField(max_length=40, blank=False, null=False, default='North Artica')
     zip = models.CharField(max_length=15, blank=False, null=False, default='12345')
+    is_refunded = models.BooleanField(default=False)
     # tickets = self.tickets
 
     def __str__(self):
@@ -252,7 +253,7 @@ class Ticket(models.Model):
         SENIOR = 'senior', 'Senior'
         CHILD = 'child', 'Child'
 
-    seat = models.OneToOneField(Seat, related_name="ticket", on_delete=models.CASCADE)
+    seat = models.OneToOneField(Seat, related_name="ticket", on_delete=models.CASCADE, null=True)
     order = models.ForeignKey(Order, related_name="tickets", on_delete=models.CASCADE)
     type = models.CharField(
         choices=TicketType.choices, max_length=10, blank=False, null=False, default=TicketType.ADULT

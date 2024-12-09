@@ -5,7 +5,7 @@ from .views import (DeletePaymentView, UserPaymentView, AddPaymentView,
                     AddAddressView, DeleteAddressView, UserAddressView, AddPromotionView, UpdatePromotionView,
                     validatePromotion, CreateOrderView, DeleteShowTimeView,AddShowtimeView,EditShowtimeView,
                     GetSeatsView, AvailableRoomsView, ShowtimeByDateAPIView, PaymentCardInfoAPIView, PriceListView,
-                    PriceEditView, GetGenresView)
+                    PriceEditView, GetGenresView, RefundOrderView)
 
 urlpatterns = [
     path('getMovies/', MovieListView.as_view(), name='movie-list'),
@@ -30,6 +30,7 @@ urlpatterns = [
     path('promotion/validate/<str:code>/', validatePromotion.as_view(), name="validate-promotion"),
 
     path('createOrder/', CreateOrderView.as_view(), name='create-order'),
+    path('refundOrder/<int:id>/', RefundOrderView.as_view(), name='refund-order'),
 
     # showtime
     path('showtime/add/', AddShowtimeView.as_view(), name='AddShowtime'),

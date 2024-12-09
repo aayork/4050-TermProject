@@ -354,7 +354,6 @@ class PriceListView(generics.ListAPIView):
         return response
 
 
-
 class PriceEditView(generics.UpdateAPIView):
     queryset = Prices.objects.all()
     serializer_class = PricesSerializer
@@ -366,4 +365,22 @@ class PriceEditView(generics.UpdateAPIView):
 class GetGenresView(generics.ListAPIView):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+
+
+class RefundOrderView(APIView):
+    def post(self, request, id, *args, **kwargs):
+        try:
+            order = Order.objects.get(id=id)
+
+            for ticket in order.tickets.all():
+                ticket.seat = None
+                ticket.save()
+
+            order.is_refunded = True
+            order.save()
+
+            return Response({'message': f'Order {id} has been refunded'}, status=status.HTTP_200_OK)
+
+        except Order.DoesNotExist:
+            return Response({'message': f'Order {id} does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
