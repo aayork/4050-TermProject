@@ -29,10 +29,12 @@ export function OrderSummary() {
   };
 
   const subtotal = useMemo(() => {
-    return seats.reduce((total, seat) => {
+    const subTotal = seats.reduce((total, seat) => {
       const seatType = seatTypes[seat] || "Adult";
       return total + parseFloat(seatPrices[seatType]) || 0;
     }, 0);
+
+    return parseFloat(subTotal).toFixed(2);
   }, [seats, seatPrices, seatTypes]);
 
   return (
