@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { getGenres } from "../utils/API";
 
 export function SetGenres({ genres, returnGenres }) {
   const [genreList, setGenreList] = useState([]);
