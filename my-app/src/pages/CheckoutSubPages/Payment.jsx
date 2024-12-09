@@ -33,6 +33,8 @@ export function Payment() {
   const [discount, setDiscount] = useState(0); // Store the discount percentage
   const [promoMessage, setPromoMessage] = useState(""); // Store promo code validation message
 
+  const [useSavedCard, setUseSavedCard] = useState(false); // Track if a saved card is being used
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -110,6 +112,7 @@ export function Payment() {
       console.log("payment info", result);
       setShouldUpdate(!shouldUpdate);
       setPayment(result.card_number);
+      setUseSavedCard(true); // Disable input fields when a saved card is used
     } catch (error) {
       console.log(error);
     }
@@ -265,6 +268,7 @@ export function Payment() {
             onChange={handleInputChange}
             className="grow"
             placeholder="John"
+            disabled={useSavedCard} // Disable if a saved card is used
           />
         </label>
         <label className="input input-bordered flex items-center gap-2 mb-4">
@@ -275,6 +279,7 @@ export function Payment() {
             onChange={handleInputChange}
             className="grow"
             placeholder="Doe"
+            disabled={useSavedCard} // Disable if a saved card is used
           />
         </label>
         <label className="input input-bordered flex items-center gap-2 mb-4">
@@ -286,6 +291,7 @@ export function Payment() {
             onChange={handleInputChange}
             className="grow"
             placeholder="1234 5678 9012 3456"
+            disabled={useSavedCard} // Disable if a saved card is used
           />
         </label>
         <label className="input input-bordered flex items-center gap-2 mb-4">
@@ -296,6 +302,7 @@ export function Payment() {
             onChange={handleInputChange}
             className="grow"
             placeholder="MM/YYYY"
+            disabled={useSavedCard} // Disable if a saved card is used
           />
         </label>
         <label className="input input-bordered flex items-center gap-2 mb-4">
@@ -306,6 +313,7 @@ export function Payment() {
             onChange={handleInputChange}
             className="grow"
             placeholder="123"
+            disabled={useSavedCard} // Disable if a saved card is used
           />
         </label>
 
