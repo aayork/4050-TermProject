@@ -848,6 +848,19 @@ export const deleteShowtime = async (id) => {
   return `Successfully deleted showtime ${id}`;
 };
 
+export const refundOrder = async (id) => {
+  const response = await fetch(`${API_BASEURL}api/info/refundOrder/${id}/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = parseResponse(response);
+
+  return result;
+};
+
 // parse response for api (keep at bottom)
 async function parseResponse(response) {
   const reader = response.body.getReader();
