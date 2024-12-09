@@ -126,7 +126,7 @@ export function SearchMovies() {
           <div className="relative inline-block">
             {/* Main Button */}
             <button
-              className="btn btn-outline btn-primary rounded-full text-lg font-thin "
+              className="btn btn-outline btn-primary rounded-full w-12 text-lg font-thin "
               onClick={() => setShowMenu(!showMenu)}
             >
               {genres.length}
