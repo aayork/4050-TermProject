@@ -1,11 +1,23 @@
 from django.core.management.base import BaseCommand
-from CinemaApp.models import Movie, Genre
+from CinemaApp.models import Movie, Genre, Order
 
 
 class Command(BaseCommand):
     help = 'Add a movie to the database'
 
     def handle(self, *args, **kwargs):
+
+        for order in Order.objects.all():
+            try:
+                ticket = order.tickets.all()[0]
+                start_time = ticket.seat.showTime.startTime
+                order.showStartTime = start_time
+                order.save()
+            except IndexError:
+                print("No tickets")
+
+
+        """
         comedy = Genre.objects.get(name='Comedy')
         drama = Genre.objects.get(name='Drama')
         epic = Genre.objects.get(name='Epic')
@@ -15,7 +27,7 @@ class Command(BaseCommand):
         thriller = Genre.objects.get(name='Thriller')
         action = Genre.objects.get(name='Action')
         movie_name = 'Avengers: Endgame'
-        """rating = 'R'
+        rating = 'R'
         runtime = 181  # Integer
         year = 2019  # Integer
         critics_score = 94  # Integer
@@ -39,6 +51,8 @@ class Command(BaseCommand):
 
         else:
             self.stdout.write(self.style.WARNING(f'Movie {movie_name} already exists in the database'))
-"""
+
         movie = Movie.objects.get(movieName=movie_name)
         movie.genres.add(action, comedy, drama, epic, scifi, thriller)
+
+        """
