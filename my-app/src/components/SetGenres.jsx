@@ -63,7 +63,7 @@ export function SetGenres({ genres, returnGenres }) {
       </div>
       <div className="w-full flex justify-between mt-2">
         <button
-          className="btn btn-sm btn-warning"
+          className="btn btn-sm btn-accent"
           onClick={() => cancelGenres()}
         >
           Cancel

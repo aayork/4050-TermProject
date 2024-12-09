@@ -87,7 +87,7 @@ export default {
 
           success: "#00ff00",
 
-          warning: "#f59e0b",
+          warning: "#FCCD2A",
 
           error: "#ff0000",
         },

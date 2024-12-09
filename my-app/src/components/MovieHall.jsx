@@ -61,7 +61,6 @@ export function MovieHall({ movie }) {
       try {
         const priceObj = await getPrices();
         setPrices(priceObj);
-        console.log(priceObj);
       } catch (error) {
         console.log(error);
       }

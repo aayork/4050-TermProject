@@ -88,7 +88,7 @@ export function SearchMovies() {
         )}
 
         <button
-          className="text-lg text-white btn-accent btn"
+          className="text-lg text-black font-medium btn-accent btn"
           onClick={() => document.getElementById("genreFilter").showModal()}
         >
           Filter Genres
@@ -101,7 +101,7 @@ export function SearchMovies() {
         </dialog>
 
         <button
-          className="btn btn-primary text-white text-lg"
+          className="btn btn-primary text-white text-lg font-medium"
           onClick={() => searchMovies()}
         >
           Search
