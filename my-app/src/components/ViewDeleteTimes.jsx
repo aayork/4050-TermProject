@@ -7,6 +7,7 @@ export function ViewDeleteTimes({ movie, onUpdate }) {
   useEffect(() => {
     if (movie) {
       setShowtimes(movie.showtimes);
+      console.log(movie.showtimes);
     }
   }, [movie]);
 
@@ -22,7 +23,7 @@ export function ViewDeleteTimes({ movie, onUpdate }) {
 
   const formatTime = (time) => {
     const options = {
-      timeZone: "America/New_York",
+      timeZone: "UTC",
       year: "numeric",
       month: "2-digit",
       day: "2-digit",

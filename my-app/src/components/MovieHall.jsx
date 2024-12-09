@@ -17,15 +17,26 @@ const getColLabel = (index) => {
 
 // Helper function to format date
 const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString();
+  const options = {
+    timeZone: "UTC",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  };
+
+  return new Date(dateString).toLocaleDateString("en-US", options);
 };
 
 // Helper function to format time
-const formatTime = (timeString) => {
-  return new Date(timeString).toLocaleTimeString([], {
+const formatTime = (time) => {
+  const options = {
+    timeZone: "UTC",
     hour: "2-digit",
     minute: "2-digit",
-  });
+    hour12: true,
+  };
+
+  return new Date(time).toLocaleString("en-US", options);
 };
 
 export function MovieHall({ movie }) {
@@ -146,7 +157,7 @@ export function MovieHall({ movie }) {
         <div>
           <div>
             <h2 className="text-2xl font-bold mb-6">Upcoming Showtimes</h2>
-            <div className="grid gap-6">
+            <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
               {showTimes.map((showtime) => (
                 <button
                   key={showtime.id}
@@ -158,7 +169,7 @@ export function MovieHall({ movie }) {
                       document.getElementById("promptLogin").showModal();
                     }
                   }}
-                  className="text-left border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow hover:bg-gray-50"
+                  className="text-left border border-monkey-green bg-white rounded-lg p-6 hover:shadow-md transition-shadow hover:bg-gray-50"
                 >
                   <div className="flex gap-4 mb-2">
                     <span className="font-medium">
