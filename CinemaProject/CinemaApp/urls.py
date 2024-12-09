@@ -4,7 +4,8 @@ from .views import MovieListView, MovieDetailView, PromotionDetailView, GetAllPr
 from .views import (DeletePaymentView, UserPaymentView, AddPaymentView,
                     AddAddressView, DeleteAddressView, UserAddressView, AddPromotionView, UpdatePromotionView,
                     validatePromotion, CreateOrderView, DeleteShowTimeView,AddShowtimeView,EditShowtimeView,
-                    GetSeatsView, AvailableRoomsView, ShowtimeByDateAPIView, PaymentCardInfoAPIView, PriceListView, PriceEditView)
+                    GetSeatsView, AvailableRoomsView, ShowtimeByDateAPIView, PaymentCardInfoAPIView, PriceListView,
+                    PriceEditView, GetGenresView)
 
 urlpatterns = [
     path('getMovies/', MovieListView.as_view(), name='movie-list'),
@@ -41,4 +42,6 @@ urlpatterns = [
 
     path('prices/', PriceListView.as_view(), name='prices'),
     path('prices/update/', PriceEditView.as_view(), name='prices-edit'),
+
+    path('getGenres/', GetGenresView.as_view(), name='genres-list'),
 ]

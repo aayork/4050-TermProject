@@ -6,9 +6,16 @@ class Command(BaseCommand):
     help = 'Add a movie to the database'
 
     def handle(self, *args, **kwargs):
-        genre1 = Genre.objects.get(name='Drama')
-        movie_name = 'Psycho'
-        rating = 'R'
+        comedy = Genre.objects.get(name='Comedy')
+        drama = Genre.objects.get(name='Drama')
+        epic = Genre.objects.get(name='Epic')
+        fantasy = Genre.objects.get(name='Fantasy')
+        historical = Genre.objects.get(name='Historical')
+        scifi = Genre.objects.get(name='Sci-Fi')
+        thriller = Genre.objects.get(name='Thriller')
+        action = Genre.objects.get(name='Action')
+        movie_name = 'Avengers: Endgame'
+        """rating = 'R'
         runtime = 181  # Integer
         year = 2019  # Integer
         critics_score = 94  # Integer
@@ -18,7 +25,7 @@ class Command(BaseCommand):
         photo = ('https://resizing.flixster.com/2yTtbYaljlzWgEhOCUTrH55jjfM=/206x305/v2/https://resizing.flixster.com/fC7nU6iTRQk02tS0SDS1ylx-G34=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzL2QxZjE5ZDgzLTRiY2MtNDFkYS04NWQ4LTRkYzc1ZTAwNWE2NC53ZWJw')
         studio = 'Marvel Studio Pictures'
         trailer = 'https://www.youtube.com/watch?v=TcMBFSGVi1c'
-
+        
         # Check if the movie already exists to avoid duplicates
         if not Movie.objects.filter(movieName=movie_name, year=year).exists():
             movie = Movie.objects.create(
@@ -32,3 +39,6 @@ class Command(BaseCommand):
 
         else:
             self.stdout.write(self.style.WARNING(f'Movie {movie_name} already exists in the database'))
+"""
+        movie = Movie.objects.get(movieName=movie_name)
+        movie.genres.add(action, comedy, drama, epic, scifi, thriller)

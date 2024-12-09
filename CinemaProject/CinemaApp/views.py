@@ -2,7 +2,7 @@ from dj_rest_auth import serializers
 from django.shortcuts import render
 from django.http import JsonResponse, Http404
 from rest_framework import generics, status, permissions
-from .models import Movie, Address, MovieProfile, Payment, Promotion, ShowTime, Order, Seat, Prices
+from .models import Movie, Address, MovieProfile, Payment, Promotion, ShowTime, Order, Seat, Prices, Genre
 from .models import MovieRoom
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -10,7 +10,8 @@ from rest_framework.response import Response
 from authentication.serializers import (MovieSerializer, PromotionSerializer,
                                         MovieProfileSerializer, PaymentSerializer,
                                         AddressSerializer, GetPaymentSerializer, CustomUserSerializer,
-                                        ShowTimeSerializer, CreateOrderSerializer, GetSeatSerializer, PricesSerializer)
+                                        ShowTimeSerializer, CreateOrderSerializer, GetSeatSerializer, PricesSerializer,
+                                        GenreSerializer)
 from authentication.serializers import MovieRoomSerializer
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
@@ -360,4 +361,9 @@ class PriceEditView(generics.UpdateAPIView):
 
     def get_object(self):
         return self.queryset.first()
+
+
+class GetGenresView(generics.ListAPIView):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
 
