@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-//import { getGenres } from "../utils/API";
+import { getGenres } from "../utils/API";
 
 export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
   const initForm = useMemo(
@@ -16,26 +16,18 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
       photo: "",
       description: "",
       is_active: false,
+      genres: [],
     }),
     []
   );
   const [movieDetails, setMovieDetails] = useState(initForm);
   const [genreList, setGenreList] = useState([]);
-  //const [genres, setGenres] = useState([]);
 
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        //const genreArr = await getGenres();
-        // setGenreList(genreArr);
-        setGenreList([
-          "Action",
-          "Adventure",
-          "Sci-fi",
-          "Horror",
-          "Family",
-          "Animation",
-        ]);
+        const genreArr = await getGenres();
+        setGenreList(genreArr);
       } catch (error) {
         console.log(error);
       }
@@ -61,6 +53,7 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
 
   const close = (e) => {
     e.preventDefault();
+    setMovieDetails(movie);
     onClose();
   };
 
@@ -187,14 +180,23 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
           <h2 className="text-lg">Genres</h2>
           <div className="flex flex-wrap gap-2">
             {genreList.map((genre) => (
-              <div key={genre} className="w-32">
+              <div key={genre.id} className="w-32">
                 <label className="cursor-pointer flex items-center gap-1">
                   <input
                     type="checkbox"
                     className="checkbox checkbox-primary"
-                    value={genre}
+                    checked={movieDetails.genres.some((g) => g.id === genre.id)}
+                    onChange={(e) => {
+                      const genreObject = { id: genre.id, name: genre.name };
+                      setMovieDetails((prevData) => {
+                        const newGenres = e.target.checked
+                          ? [...prevData.genres, genreObject]
+                          : prevData.genres.filter((g) => g.id !== genre.id);
+                        return { ...prevData, genres: newGenres };
+                      });
+                    }}
                   />
-                  <span className="">{genre}</span>
+                  <span className="">{genre.name}</span>
                 </label>
               </div>
             ))}

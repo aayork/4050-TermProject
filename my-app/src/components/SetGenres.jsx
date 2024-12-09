@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getGenres } from "../utils/API";
 
 export function SetGenres({ genres, returnGenres }) {
   const [genreList, setGenreList] = useState([]);
@@ -6,30 +7,21 @@ export function SetGenres({ genres, returnGenres }) {
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        //const genreArr = await getGenres();
-        // setGenreList(genreArr);
-        setGenreList([
-          "Action",
-          "Adventure",
-          "Sci-fi",
-          "Horror",
-          "Family",
-          "Animation",
-        ]);
+        const genreArr = await getGenres();
+        setGenreList(genreArr);
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchGenres();
-  });
+  }, []);
 
   const applyGenres = () => {
     const checkedGenres = Array.from(
       document.querySelectorAll('#genreFilter input[type="checkbox"]:checked'),
       (checkbox) => checkbox.value
     );
-    console.log(checkedGenres);
     returnGenres(checkedGenres);
     document.getElementById("genreFilter").close();
   };
@@ -46,16 +38,16 @@ export function SetGenres({ genres, returnGenres }) {
   return (
     <div className="modal-box">
       <h1 className="text-xl font-semibold">Select Genres</h1>
-      <div className="flex flex-wrap gap-4 ">
+      <div className="flex flex-wrap gap-2 py-2">
         {genreList.map((genre) => (
-          <div key={genre}>
-            <label className="label cursor-pointer">
-              <span className="">{genre}</span>
+          <div key={genre.id} className="w-32">
+            <label className="cursor-pointer flex items-center gap-1">
               <input
                 type="checkbox"
-                className="checkbox checkbox-primary mx-2"
-                value={genre}
+                className="checkbox checkbox-primary"
+                value={genre.name}
               />
+              <span className="">{genre.name}</span>
             </label>
           </div>
         ))}

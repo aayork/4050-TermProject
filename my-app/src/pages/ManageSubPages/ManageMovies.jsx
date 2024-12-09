@@ -21,19 +21,7 @@ export function ManageMovies() {
     const fetchMovies = async () => {
       const moviesArr = await getMovies();
       setMovies(moviesArr);
-      console.log(moviesArr);
       setLoading(false);
-
-      if (selectedMovie) {
-        const matchedMovie = moviesArr.find(
-          (movie) => movie.id === selectedMovie.id
-        );
-        if (matchedMovie) {
-          setSelectedMovie(matchedMovie);
-        } else {
-          console.warn("Selected movie not found in fetched movies array.");
-        }
-      }
     };
 
     fetchMovies();
@@ -50,29 +38,24 @@ export function ManageMovies() {
   };
 
   const openViewTimesModal = (movie) => {
-    console.log(movie);
     setSelectedMovie(movie);
     document.getElementById("viewTimesModal").showModal();
   };
 
   const handleSaveMovie = async (movieData) => {
-    if (selectedMovie) {
-      try {
+    try {
+      if (selectedMovie) {
         const result = await updateMovie(movieData);
-        console.log(result);
-        setShouldUpdate(!shouldUpdate);
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
+        setShouldUpdate((prev) => !prev); // Trigger fetchMovies indirectly
+        console.log("Updated", result);
+      } else {
         const result = await createMovie(movieData);
         console.log(result);
-        setShouldUpdate(!shouldUpdate);
-      } catch (error) {
-        console.log(error);
-        alert(error);
+        setShouldUpdate((prev) => !prev); // Trigger fetchMovies indirectly
       }
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
     }
   };
 

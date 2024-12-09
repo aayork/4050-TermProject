@@ -11,6 +11,7 @@ export function SearchMovies() {
   const [movieList, setMovieList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [genres, setGenres] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -23,10 +24,12 @@ export function SearchMovies() {
     fetchMovies();
   }, []);
 
-  const searchMovies = async () => {
+  const searchMovies = async (updatedGenres = genres) => {
     setLoading(true);
+
     let filteredMovies = movieList;
-    if (searchTerm != "") {
+
+    if (searchTerm.trim() !== "") {
       if (searchBy === "title") {
         filteredMovies = filteredMovies.filter((movie) =>
           movie.movieName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -36,21 +39,39 @@ export function SearchMovies() {
       if (searchBy === "showDay") {
         try {
           filteredMovies = await getMoviesByShowday(searchTerm);
-          console.log("By showtime:", filteredMovies);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
     }
 
-    // if (genres.length > 0) {
-    //   filteredMovies = filteredMovies.filter((movie) =>
-    //     genres.some((genre) => movie.genres.includes(genre))
-    //   );
-    // }
+    if (updatedGenres.length > 0) {
+      filteredMovies = filteredMovies.filter((movie) =>
+        movie.genres.some((movieGenre) =>
+          updatedGenres.includes(movieGenre.name)
+        )
+      );
+    }
 
     setMovies(filteredMovies);
     setLoading(false);
+  };
+
+  const filterMoviesByGenre = (genresActive) => {
+    setGenres(genresActive);
+    searchMovies(genresActive);
+  };
+
+  const clearFilters = () => {
+    setGenres([]);
+    setShowMenu(false);
+    searchMovies([]);
+    // Select all checked checkboxes and uncheck them
+    document
+      .querySelectorAll('#genreFilter input[type="checkbox"]:checked')
+      .forEach((checkbox) => {
+        checkbox.checked = false;
+      });
   };
 
   return (
@@ -88,24 +109,48 @@ export function SearchMovies() {
         )}
 
         <button
-          className="text-lg text-black font-medium btn-accent btn"
-          onClick={() => document.getElementById("genreFilter").showModal()}
-        >
-          Filter Genres
-        </button>
-        <dialog id="genreFilter" className="modal">
-          <SetGenres
-            genres={genres}
-            returnGenres={(genres) => setGenres(genres)}
-          />
-        </dialog>
-
-        <button
           className="btn btn-primary text-white text-lg font-medium"
           onClick={() => searchMovies()}
         >
           Search
         </button>
+
+        <button
+          className="text-lg text-black font-medium btn-accent btn"
+          onClick={() => document.getElementById("genreFilter").showModal()}
+        >
+          Filter Genres
+        </button>
+
+        {genres.length > 0 && (
+          <div className="relative inline-block">
+            {/* Main Button */}
+            <button
+              className="btn btn-outline btn-primary rounded-full text-lg font-thin "
+              onClick={() => setShowMenu(!showMenu)}
+            >
+              {genres.length}
+            </button>
+
+            {/* Dropdown Menu */}
+            {showMenu && (
+              <div className="absolute left-0 mt-1 w-32 bg-white border border-monkey-green rounded-lg shadow-lg z-10 ">
+                <button
+                  className="block w-full text-center px-2 py-2 text-sm "
+                  onClick={clearFilters}
+                >
+                  Clear Filters
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+        <dialog id="genreFilter" className="modal">
+          <SetGenres
+            genres={genres}
+            returnGenres={(genres) => filterMoviesByGenre(genres)}
+          />
+        </dialog>
       </div>
 
       {loading ? (
