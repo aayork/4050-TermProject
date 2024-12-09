@@ -146,6 +146,9 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             )
             seat.is_available = False
             seat.save()
+        start_time = order.tickets.all()[0].seat.showTime.startTime
+        order.showStartTime = start_time
+        order.save()
         return order
 
     def to_representation(self, instance):
