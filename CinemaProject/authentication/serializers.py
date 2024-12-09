@@ -107,15 +107,13 @@ class TicketSerializer(serializers.ModelSerializer):
         fields = ['seat', 'type']
 
 
-
 class OrderDetailsSerializer(serializers.ModelSerializer):
     tickets = TicketSerializer(many=True, read_only=True)
 
     class Meta:
         model = Payment
         fields = ['id', 'totalPrice', 'discountPercentage', 'purchaseDate',
-                  'tickets', 'payment', 'street', 'city', 'state', 'zip']
-
+                  'tickets', 'payment', 'street', 'city', 'state', 'zip', 'is_refunded']
 
 
 class CreateOrderSerializer(serializers.ModelSerializer):
@@ -338,7 +336,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'discountPercentage', 'totalPrice', 'purchaseDate', 'tickets',
-                  'cardNumber', 'street', 'city', 'state', 'zip', 'movie']
+                  'cardNumber', 'street', 'city', 'state', 'zip', 'movie', 'is_refunded']
 
     def get_movie(self, obj):
         # Get the movie from the first ticket's seat's showtime
