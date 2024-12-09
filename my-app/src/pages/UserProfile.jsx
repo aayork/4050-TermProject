@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { getUser, updateUser, getPayments, deletePayment } from "../utils/API";
+import {
+  getUser,
+  updateUser,
+  getPayments,
+  deletePayment,
+  refundOrder,
+} from "../utils/API";
 import { Loading } from "../components/Loading";
 import { PaymentCard } from "../components/PaymentCard";
 import { AddCardModal } from "../components/AddCardModal";
@@ -130,6 +136,17 @@ export function UserProfile() {
   const cancelEdit = () => {
     setFormState(initialFormState);
     setIsEditable(false);
+  };
+
+  const refundTicket = async (id) => {
+    try {
+      const message = await refundOrder(id);
+      setShouldUpdate(!shouldUpdate);
+      console.log(message);
+      //alert(message);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   if (loading) {
@@ -314,7 +331,10 @@ export function UserProfile() {
                 <div className="card-content">
                   {orders.map((order) => (
                     <div className="w-full" key={order.id}>
-                      <OrderCard order={order} />
+                      <OrderCard
+                        order={order}
+                        refundTicket={() => refundTicket(order.id)}
+                      />
                     </div>
                   ))}
                 </div>
