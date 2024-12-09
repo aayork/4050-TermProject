@@ -4,7 +4,7 @@ import { EditUserModal } from "../../components/EditUserModal";
 import { Loading } from "../../components/Loading";
 import {
   getAllUsers,
-  updateUser,
+  managerUpdateUser,
   deleteUser,
   managerCreate,
   unsuspendAccount,
@@ -30,7 +30,7 @@ export function ManageUsers() {
   const handleSaveUser = async (userData) => {
     if (selectedUser) {
       try {
-        const result = await updateUser(userData, selectedUser.id);
+        const result = await managerUpdateUser(userData, selectedUser.id);
         setShouldUpdate(!shouldUpdate);
         alert("Updated " + result.username);
       } catch (error) {

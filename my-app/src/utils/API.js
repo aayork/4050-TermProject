@@ -459,6 +459,37 @@ export const updateUser = async (user, userId) => {
   return result;
 };
 
+export const managerUpdateUser = async (user, userId) => {
+  const response = await fetch(`${API_BASEURL}api/auth/updateUser/${userId}/`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: user.email,
+      username: user.username,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      movie_profile: {
+        status: user.movie_profile.status,
+        receive_promotions: user.movie_profile.receive_promotions,
+      },
+    }),
+  });
+
+  const result = await parseResponse(response);
+
+  if (!response.ok) {
+    let errorMessage = "";
+    for (let i = 0; i < result.length; i++) {
+      errorMessage += result[i] + "\n";
+    }
+    throw new Error(errorMessage);
+  }
+
+  return result;
+};
+
 //promo apis
 export const getPromos = async () => {
   const response = await fetch(`${API_BASEURL}api/info/getPromotions/`, {
