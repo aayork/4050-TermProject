@@ -43,6 +43,7 @@ export function ManageMovies() {
   };
 
   const handleSaveMovie = async (movieData) => {
+    setLoading(true);
     try {
       if (selectedMovie) {
         const result = await updateMovie(movieData);
@@ -57,9 +58,11 @@ export function ManageMovies() {
       console.error(error);
       alert(error.message);
     }
+    setLoading(false);
   };
 
   const handleDeleteMovie = async () => {
+    setLoading(true);
     try {
       const result = await deleteMovie(selectedMovie.id);
       setShouldUpdate(!shouldUpdate);
@@ -67,6 +70,7 @@ export function ManageMovies() {
     } catch (error) {
       console.log(error);
     }
+    setLoading(false);
   };
 
   if (loading) {
