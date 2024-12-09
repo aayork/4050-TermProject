@@ -241,6 +241,8 @@ class Order(models.Model):
     state = models.CharField(max_length=40, blank=False, null=False, default='North Artica')
     zip = models.CharField(max_length=15, blank=False, null=False, default='12345')
     is_refunded = models.BooleanField(default=False)
+    movie_name_refunded = models.CharField(max_length=150, blank=True, null=True, default=None)
+    showStartTime = models.DateTimeField(blank=True, null=True, default=None)
     # tickets = self.tickets
 
     def __str__(self):

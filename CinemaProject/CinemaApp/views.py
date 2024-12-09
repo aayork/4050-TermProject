@@ -371,6 +371,7 @@ class RefundOrderView(APIView):
     def post(self, request, id, *args, **kwargs):
         try:
             order = Order.objects.get(id=id)
+            order.movie_name_refunded = order.tickets.all()[0].seat.showTime.movie.movieName
 
             for ticket in order.tickets.all():
                 ticket.seat = None
