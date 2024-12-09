@@ -12,6 +12,7 @@ import { OrderConfirmation } from "./pages/CheckoutSubPages/OrderConfirmation";
 import { OrderSummary } from "./pages/CheckoutSubPages/OrderSummary";
 import { ResetPassword } from "./pages/ResetPassword";
 import { ResetConfirm } from "./pages/ResetConfirm";
+import { SearchMovies } from "./pages/SearchMovies";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/summary" element={<OrderSummary />} />
           <Route path="/confirmation" element={<OrderConfirmation />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/search" element={<SearchMovies />} />
           <Route
             path="/password-reset/confirm/:uid/:token"
             element={<ResetConfirm />}

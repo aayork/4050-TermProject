@@ -311,10 +311,16 @@ class ShowtimeByDateAPIView(APIView):
         # Filter showtimes by the provided date
         showtimes = ShowTime.objects.filter(date=date_obj)
         if not showtimes.exists():
-            raise NotFound("No showtimes found for this date.")
+            return Response([], status=status.HTTP_200_OK)
+
+
+        # Get the movies associated with the filtered showtimes
+        movies = set() 
+        for showtime in showtimes:
+            movies.add(showtime.movie) 
 
         # Serialize the queryset and return the response
-        serializer = ShowTimeSerializer(showtimes, many=True)
+        serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
