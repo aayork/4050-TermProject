@@ -1,8 +1,9 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
 
 export function OrderSummary() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { selectedSeats = [], seatTypes = {}, prices } = location.state || {};
 
   // Create a local state to manage selected seats
@@ -19,7 +20,12 @@ export function OrderSummary() {
 
   // Function to handle seat deletion
   const handleDeleteSeat = (seatToRemove) => {
-    setSeats(seats.filter((seat) => seat !== seatToRemove));
+    const updatedSeats = seats.filter((seat) => seat !== seatToRemove);
+    setSeats(updatedSeats);
+
+    navigate(".", {
+      state: { ...location.state, selectedSeats: updatedSeats },
+    });
   };
 
   const subtotal = useMemo(() => {
