@@ -28,6 +28,7 @@ export function ManageUsers() {
   };
 
   const handleSaveUser = async (userData) => {
+    setLoading(true);
     if (selectedUser) {
       try {
         const result = await managerUpdateUser(userData, selectedUser.id);
@@ -54,6 +55,7 @@ export function ManageUsers() {
         alert("Failed to update user information.");
       }
     }
+    setLoading(false);
   };
 
   const handleDeleteUser = async (userId) => {
