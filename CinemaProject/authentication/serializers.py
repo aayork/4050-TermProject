@@ -340,13 +340,16 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def get_movie(self, obj):
         # Get the movie from the first ticket's seat's showtime
-        ticket = obj.tickets.first()  # Get the first ticket (you can adjust if necessary)
-        if ticket:
-            seat = ticket.seat 
-            if seat:
-                showtime = seat.showTime 
-                if showtime:
-                    return showtime.movie.movieName  
+        if obj.is_refunded is False:
+            ticket = obj.tickets.first()  # Get the first ticket (you can adjust if necessary)
+            if ticket:
+                seat = ticket.seat
+                if seat:
+                    showtime = seat.showTime
+                    if showtime:
+                        return showtime.movie.movieName
+        else:
+            return obj.movie_name_refunded
         return None   
 
 

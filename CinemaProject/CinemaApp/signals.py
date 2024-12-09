@@ -85,3 +85,4 @@ def send_order_confirmation(sender, instance, created, **kwargs):
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[user.user.email],
         )
+
