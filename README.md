@@ -1,6 +1,8 @@
 # Introduction
 This project is a Movie Cinema Booking app for 4050 Software Engineering
 
+![Screenshot](movie-screenshot.png?raw=true "Screenshot")
+
 # Getting Started
 TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
 1.	Installation process
