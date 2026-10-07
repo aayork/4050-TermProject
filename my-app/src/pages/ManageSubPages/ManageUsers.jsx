@@ -1,0 +1,204 @@
+import { UserCard } from "../../components/UserCard";
+import { useState, useEffect } from "react";
+import { EditUserModal } from "../../components/EditUserModal";
+import { Loading } from "../../components/Loading";
+import {
+  getAllUsers,
+  managerUpdateUser,
+  deleteUser,
+  managerCreate,
+  unsuspendAccount,
+  suspendAccount,
+} from "../../utils/API";
+
+export function ManageUsers() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
+
+  const openAddUserModal = () => {
+    setSelectedUser(null);
+    document.getElementById("userModal").showModal();
+  };
+
+  const openEditUserModal = (user) => {
+    setSelectedUser(user);
+    document.getElementById("userModal").showModal();
+  };
+
+  const handleSaveUser = async (userData) => {
+    setLoading(true);
+    if (selectedUser) {
+      try {
+        const result = await managerUpdateUser(userData, selectedUser.id);
+        setShouldUpdate(!shouldUpdate);
+        alert("Updated " + result.username);
+      } catch (error) {
+        console.error("Error updating user:", error);
+        alert("Failed to update user information.");
+      }
+    } else {
+      try {
+        const result = await managerCreate({
+          firstName: userData.first_name,
+          lastName: userData.last_name,
+          email: userData.email,
+          username: userData.username,
+          password: userData.password,
+          status: userData.movie_profile.status,
+        });
+        setShouldUpdate(!shouldUpdate);
+        console.log(result);
+      } catch (error) {
+        console.error("Error creating user:", error);
+        alert("Failed to update user information.");
+      }
+    }
+    setLoading(false);
+  };
+
+  const handleDeleteUser = async (userId) => {
+    try {
+      const result = await deleteUser(userId);
+      setShouldUpdate(!shouldUpdate);
+      alert(result.message);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //get users
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const userArr = await getAllUsers();
+        setUsers(userArr);
+        setLoading(false);
+        console.log(userArr);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchUsers();
+  }, [shouldUpdate]);
+
+  const suspendUserAccount = async (id) => {
+    try {
+      const result = await suspendAccount(id);
+      setShouldUpdate(!shouldUpdate);
+      alert(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const unsuspendUserAccount = async (id) => {
+    try {
+      const result = await unsuspendAccount(id);
+      setShouldUpdate(!shouldUpdate);
+      alert(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  if (loading) {
+    return <Loading message="Loading Users" />;
+  }
+
+  return (
+    <div>
+      <div>
+        <button
+          className="btn my-2 flex items-center"
+          onClick={openAddUserModal}
+        >
+          Add User
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="3"
+            stroke="currentColor"
+            className="w-4 h-4"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.75v14.5m7.25-7.25H4.75"
+            />
+          </svg>
+        </button>
+        <dialog id="userModal" className="modal">
+          <EditUserModal
+            onClose={() => document.getElementById("userModal").close()}
+            onSave={handleSaveUser}
+            onDelete={handleDeleteUser}
+            user={selectedUser}
+          />
+        </dialog>
+      </div>
+      <div className="flex flex-col">
+        <div className="">
+          <h1 className="font-semibold"> Managers:</h1>
+          <div className="grid gap-4 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2">
+            {users
+              .filter(
+                (user) =>
+                  user.movie_profile.status == "admin" &&
+                  user.movie_profile.customer_state != "suspended"
+              )
+              .map((user) => (
+                <div className="grid-item min-w-fit" key={user.id}>
+                  <UserCard
+                    user={user}
+                    onEdit={() => openEditUserModal(user)}
+                  />
+                </div>
+              ))}
+          </div>
+        </div>
+        <div className="my-4">
+          <h1 className="font-semibold"> Customers:</h1>
+          <div className="grid gap-4 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2">
+            {users
+              .filter(
+                (user) =>
+                  user.movie_profile.status == "customer" &&
+                  user.movie_profile.customer_state != "suspended"
+              )
+              .map((user) => (
+                <div className="grid-item min-w-fit" key={user.id}>
+                  <UserCard
+                    user={user}
+                    onEdit={() => openEditUserModal(user)}
+                    onSusAction={() => suspendUserAccount(user.id)}
+                  />
+                </div>
+              ))}
+          </div>
+        </div>
+        <div className="my-4">
+          <h1 className="font-semibold"> Suspended Users:</h1>
+          <div className="grid gap-4 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2">
+            {users
+              .filter(
+                (user) => user.movie_profile.customer_state == "suspended"
+              )
+              .map((user) => (
+                <div className="grid-item min-w-fit" key={user.id}>
+                  <UserCard
+                    user={user}
+                    onEdit={() => openEditUserModal(user)}
+                    onSusAction={() => unsuspendUserAccount(user.id)}
+                  />
+                </div>
+              ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

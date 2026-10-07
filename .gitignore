@@ -1,3 +1,9 @@
+*.pyc
+**/__pycache__/
+db.sqlite3
+node_modules/
+
+
 # Logs
 logs
 *.log
@@ -7,7 +13,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
+#
 dist
 dist-ssr
 *.local
@@ -17,8 +23,12 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
+.ropeproject
+.mypy_cache
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+.venv/

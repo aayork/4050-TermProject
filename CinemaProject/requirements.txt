@@ -1,0 +1,9 @@
+Django>=5.1,<5.2
+djangorestframework>=3.15,<3.16
+dj-rest-auth==4.0.0
+# dj-rest-auth 4.0.0 imports allauth.utils.email_address_exists (removed in 0.55)
+django-allauth==0.54.0
+django-cors-headers>=4.4,<5
+django-environ==0.11.2
+cryptography>=43
+mysqlclient>=2.2,<3

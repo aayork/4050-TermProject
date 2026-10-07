@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { NavBar } from "./components/NavBar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { MovieDetails } from "./pages/MovieDetails";
+import { Checkout } from "./pages/Checkout";
+import { HomePage } from "./pages/HomePage";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
+import { Admin } from "./pages/Admin";
+import { UserProfile } from "./pages/UserProfile";
+import { OrderConfirmation } from "./pages/CheckoutSubPages/OrderConfirmation";
+import { OrderSummary } from "./pages/CheckoutSubPages/OrderSummary";
+import { ResetPassword } from "./pages/ResetPassword";
+import { ResetConfirm } from "./pages/ResetConfirm";
+import { SearchMovies } from "./pages/SearchMovies";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="min-h-screen">
+      <NavBar />
+      <Router>
+        <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/details/:id" element={<MovieDetails />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/login/:key" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/admin/" element={<Admin />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/summary" element={<OrderSummary />} />
+          <Route path="/confirmation" element={<OrderConfirmation />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/search" element={<SearchMovies />} />
+          <Route
+            path="/password-reset/confirm/:uid/:token"
+            element={<ResetConfirm />}
+          />
+        </Routes>
+        </main>
+      </Router>
+    </div>
+  );
 }
 
-export default App
+export default App;

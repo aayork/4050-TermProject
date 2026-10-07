@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,21 +27,34 @@ SECRET_KEY = 'django-insecure-pyy3t_go-ui^1$=pf+1isymgcjpie+mar$c60ryu15u27=p@#x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['movie-monkey.c7k2ok6mc24d.us-east-1.rds.amazonaws.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'rest_framework',
+    'corsheaders',
+    'CinemaApp',
+    'authentication.apps.AuthenticationConfig',
+    'rest_framework.authtoken',
+
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -47,9 +62,49 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'CinemaProject.urls'
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',      # need react app url!!!!
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
+REST_AUTH = {
+    'LOGIN_SERIALIZER': 'authentication.serializers.CustomLoginSerializer',
+}
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp-relay.brevo.com"
+EMAIL_USE_TLS = False
+EMAIL_PORT = "587"
+EMAIL_HOST_USER = "7bbf75001@smtp-brevo.com"
+EMAIL_HOST_PASSWORD = "PtYmFfqEBJvCjQ8A"
+DEFAULT_FROM_EMAIL = "movie.monkey.email@gmail.com"
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
+EMAIL_CONFIRM_REDIRECT_BASE_URL = "http://localhost:5173/login/"
+# make sure this is set in the front end
+PASSWORD_RESET_CONFIRM_BASE_URL = "http://localhost:5173/password-reset/confirm/"
+# make sure this is set in the front end
+
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+ENCRYPTION_KEY = env("ENCRYPTION_KEY")
+if not ENCRYPTION_KEY:
+    raise ValueError("No ENCRYPTION_KEY found in environment variables")
+
+SITE_ID = 1
 
 TEMPLATES = [
     {
@@ -79,7 +134,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
