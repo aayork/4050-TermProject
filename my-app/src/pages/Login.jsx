@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { login, confirmEmail } from "../utils/API";
+import { AuthCard, AuthField } from "../components/AuthCard";
 
 export function Login() {
   const navigate = useNavigate();
@@ -52,51 +53,43 @@ export function Login() {
   };
 
   return (
-    <div className="flex justify-center align-center h-full">
-      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12 min-w-fit w-1/4 shadow-xl">
-        <h1 className="text-lg mb-2 text-white font-semibold ">Login</h1>
-        <div className="border"></div>
-        <form action="" onSubmit={handleFormSubmit}>
-          <div className="text-white flex flex-col my-2">
-            <label className="text-sm">Username</label>
-            <input
-              className="userName text-black px-1 rounded"
-              name="username"
-              type="text"
-              onChange={handleChange}
-            ></input>
-          </div>
-          <div className=" text-white flex flex-col my-2">
-            <label className="text-sm">Password</label>
-            <input
-              className="password text-black px-1 rounded"
-              name="password"
-              type="password"
-              onChange={handleChange}
-            ></input>
-          </div>
-          <div className="flex flex-col">
-            <button
-              className="bg-monkey-white mt-4 mb-1 rounded-md"
-              type="submit"
-            >
-              Login
-            </button>
-            <div className="inline-flex">
-              <a className="text-xs text-white underline m-2" href="/register">
-                Create an account!
-              </a>
-              <a
-                href="/reset-password"
-                className="text-xs text-white underline m-2"
-                aria-current="page"
-              >
-                Forgot Password?
-              </a>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+    <AuthCard
+      title="Welcome back"
+      subtitle="Log in to book seats and manage your orders."
+      footer={
+        <>
+          New to Movie Monkey?{" "}
+          <a className="link link-primary font-medium" href="/register">
+            Create an account
+          </a>
+        </>
+      }
+    >
+      <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
+        <AuthField
+          label="Username"
+          name="username"
+          type="text"
+          autoComplete="username"
+          onChange={handleChange}
+        />
+        <AuthField
+          label="Password"
+          name="password"
+          type="password"
+          autoComplete="current-password"
+          onChange={handleChange}
+        />
+        <a
+          href="/reset-password"
+          className="link link-hover -mt-1 self-end font-sans text-sm text-monkey-ink/70"
+        >
+          Forgot password?
+        </a>
+        <button className="btn btn-primary mt-2 w-full" type="submit">
+          Log in
+        </button>
+      </form>
+    </AuthCard>
   );
 }

@@ -41,7 +41,8 @@ class Genre(models.Model):
 
 
 def default_theatre():
-    return Theatre.objects.first().id
+    theatre = Theatre.objects.first()
+    return theatre.id if theatre else None
 
 
 class Movie(models.Model):
@@ -166,8 +167,8 @@ class MovieProfile(models.Model):
 
 class Payment(models.Model):
     user = models.ForeignKey(MovieProfile, related_name="payments", on_delete=models.CASCADE)
-    cardNumber = models.BinaryField(blank=False, null=False, default=0000000000000000)
-    CVV = models.BinaryField(blank=False, null=False, default=000)
+    cardNumber = models.BinaryField(blank=False, null=False, default=b"")
+    CVV = models.BinaryField(blank=False, null=False, default=b"")
     expirationDate = models.DateField(blank=False, null=False, default=datetime.now)
     firstName = models.CharField(max_length=40, blank=False, null=False, default="Jon")
     lastName = models.CharField(max_length=40, blank=False, null=False, default="Doe")

@@ -263,7 +263,7 @@ export function Payment() {
         </div>
       </div>
 
-      <div className="card">
+      <div className="card p-6">
         <div className="card-title">Saved Cards</div>
         <div className="card-content">
           {payments.map((card) => (

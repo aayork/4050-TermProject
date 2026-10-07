@@ -16,9 +16,10 @@ import { SearchMovies } from "./pages/SearchMovies";
 
 function App() {
   return (
-    <div>
+    <div className="min-h-screen">
       <NavBar />
       <Router>
+        <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/details/:id" element={<MovieDetails />} />
@@ -37,6 +38,7 @@ function App() {
             element={<ResetConfirm />}
           />
         </Routes>
+        </main>
       </Router>
     </div>
   );

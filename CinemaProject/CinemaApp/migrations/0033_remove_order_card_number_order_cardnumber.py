@@ -17,6 +17,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='order',
             name='cardNumber',
-            field=models.BinaryField(default=0),
+            field=models.BinaryField(default=b""),
         ),
     ]

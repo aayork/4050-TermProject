@@ -7,95 +7,80 @@ export function MovieInfo({ movie }) {
   };
 
   function getScoreColor(score) {
-    if (score >= 80) return "text-green-600";
-    if (score >= 60) return "text-yellow-600";
-    return "text-red-600";
+    if (score >= 80) return "text-success";
+    if (score >= 60) return "text-warning";
+    return "text-error";
   }
 
   return (
     <div className="w-full mx-auto">
       {/* Movie Header Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 lg:items-center gap-6 lg:gap-10 mb-10">
         {/* Trailer Section */}
-        <div className="mb-12 shadow-lg aspect-video">
+        <div className="aspect-video overflow-hidden rounded-2xl bg-black shadow-lg">
           <iframe
             src={movie.trailer}
             title={`${movie.movieName} Trailer`}
-            className="w-full h-full rounded-lg"
+            className="w-full h-full"
             allowFullScreen
           ></iframe>
         </div>
 
         {/* Movie Info */}
-        <div className="flex-1">
-          <h1 className="text-4xl font-bold mb-4">
-            {movie.movieName} ({movie.year})
-          </h1>
-
-          {/* Movie Meta Info */}
-          <div className="flex flex-wrap gap-4 mb-6">
-            <span className="px-3 py-1 bg-gray-100 rounded-md text-sm">
-              {movie.rating}
-            </span>
-            <span className="px-3 py-1 bg-gray-100 rounded-md text-sm">
-              {formatRuntime(movie.runtime)}
-            </span>
-            <span className="px-3 py-1 bg-gray-100 rounded-md text-sm">
+        <div className="flex flex-col gap-4">
+          <div>
+            <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
+              {movie.movieName}
+            </h1>
+            {/* Movie Meta Info */}
+            <p className="mt-1.5 font-sans text-sm text-monkey-ink/60">
+              {movie.year} · {movie.rating} · {formatRuntime(movie.runtime)} ·{" "}
               {movie.studio}
+            </p>
+          </div>
+
+          {/* Scores and genres */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-sans text-sm">
+            <span>
+              🍅 <b className={`font-semibold`}>{movie.critics_score}%</b>{" "}
+              <span className="text-monkey-ink/60">Critics</span>
             </span>
-          </div>
-
-          {/* Scores */}
-          <div className="flex gap-8 mb-6">
-            <div>
-              <span className="text-gray-600 text-sm">Critics Score</span>
-              <div
-                className={`text-2xl font-bold ${getScoreColor(
-                  movie.critics_score
-                )}`}
-              >
-                {movie.critics_score}%
-              </div>
-            </div>
-            <div>
-              <span className="text-gray-600 text-sm">Audience Score</span>
-              <div
-                className={`text-2xl font-bold ${getScoreColor(
-                  movie.audience_score
-                )}`}
-              >
-                {movie.audience_score}%
-              </div>
-            </div>
-          </div>
-
-          {/* Genres */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {movie.genres.map((genre) => (
-              <span
-                key={genre.id}
-                className="px-3 py-1 bg-gray-200 rounded-full text-sm"
-              >
-                {genre.name}
-              </span>
-            ))}
-          </div>
-
-          {/* Cast */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-2">Cast:</h3>
-            <div className="flex flex-wrap gap-4">
-              {movie.actors.map((actor, index) => (
-                <span key={actor.id} className="text-gray-700 font-medium">
-                  {actor.first_name} {actor.last_name}
-                  {index < movie.actors.length - 1 && ","}
+            <span>
+              🍿 <b className={`font-semibold`}>{movie.audience_score}%</b>{" "}
+              <span className="text-monkey-ink/60">Audience</span>
+            </span>
+            <span className="flex flex-wrap gap-1.5">
+              {movie.genres.map((genre) => (
+                <span
+                  key={genre.id}
+                  className="rounded-full bg-monkey-beige px-2.5 py-0.5 text-xs font-medium text-monkey-green"
+                >
+                  {genre.name}
                 </span>
               ))}
-            </div>
+            </span>
           </div>
 
           {/* Description */}
-          <p className="text-gray-700 leading-relaxed">{movie.description}</p>
+          <p className="leading-relaxed text-monkey-ink/80">
+            {movie.description}
+          </p>
+
+          {/* Cast */}
+          {movie.actors.length > 0 && (
+            <p className="text-sm text-monkey-ink/80 flex flex-col">
+              <span className="font-sans text-xs font-semibold uppercase tracking-wider text-monkey-ink/60">
+                Cast
+              </span>{" "}
+              <p>
+                {movie.actors
+                  .map((actor) =>
+                    `${actor.first_name} ${actor.last_name}`.trim(),
+                  )
+                  .join(", ")}
+              </p>
+            </p>
+          )}
         </div>
       </div>
     </div>

@@ -47,67 +47,56 @@ export function Admin() {
     <div>
       {isAdmin ? (
         <div className="w-full">
-          <div role="tablist" className="tabs tabs-bordered w-full flex">
-            <input
-              type="radio"
-              name="my_tabs"
-              role="tab"
-              className="tab flex-1"
-              aria-label="Manage Movies"
-              checked={selectedTab === "movies"}
-              onChange={() => handleTabChange("movies")}
-            />
-            <input
-              type="radio"
-              name="my_tabs"
-              role="tab"
-              className="tab flex-1"
-              aria-label="Manage Users"
-              checked={selectedTab === "users"}
-              onChange={() => handleTabChange("users")}
-            />
-            <input
-              type="radio"
-              name="my_tabs"
-              role="tab"
-              className="tab flex-1"
-              aria-label="Manage Pricing"
-              checked={selectedTab === "promos"}
-              onChange={() => handleTabChange("promos")}
-            />
+          <h1 className="text-3xl font-semibold mb-6">Admin dashboard</h1>
+          <div
+            role="tablist"
+            className="flex w-full gap-1 rounded-2xl border border-base-300 bg-white p-1.5 font-sans"
+          >
+            {[
+              ["movies", "Manage Movies"],
+              ["users", "Manage Users"],
+              ["promos", "Manage Pricing"],
+            ].map(([tab, label]) => (
+              <button
+                key={tab}
+                role="tab"
+                aria-selected={selectedTab === tab}
+                onClick={() => handleTabChange(tab)}
+                className={`flex-1 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+                  selectedTab === tab
+                    ? "bg-monkey-green text-monkey-white shadow-sm"
+                    : "text-monkey-ink/70 hover:bg-base-200 hover:text-monkey-ink"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
 
           {selectedTab === "movies" && (
-            <div className="py-2 px-4">
+            <div className="pt-6">
               <ManageMovies />
             </div>
           )}
           {selectedTab === "users" && (
-            <div className="py-2 px-4">
+            <div className="pt-6">
               <ManageUsers />
             </div>
           )}
           {selectedTab === "promos" && (
-            <div className="py-2 px-4">
+            <div className="pt-6">
               <ManagePromos />
             </div>
           )}
         </div>
       ) : (
-        <div className="flex justify-center">
-          <div className="card flex justify-center">
-            <div className="font-semibold text-xl">
-              You do not have access to this page
-            </div>
-            <br />
-            <div className="self-center">
-              Click{" "}
-              <a className="text-blue-700 underline" href="/">
-                here
-              </a>{" "}
-              to return home
-            </div>
-          </div>
+        <div className="mx-auto max-w-md rounded-3xl border border-base-300 bg-white p-10 text-center">
+          <h1 className="text-2xl font-semibold">
+            You do not have access to this page
+          </h1>
+          <a className="btn btn-primary mt-6" href="/">
+            Return home
+          </a>
         </div>
       )}
     </div>

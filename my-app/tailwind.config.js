@@ -7,11 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        "monkey-white": "#FFFFF2",
-        "monkey-beige": "#C0EBA6",
-        "monkey-brown": "#c6a969",
-        "monkey-green": "#166434",
-        "monkey-yellow": "#FCCD2A",
+        "monkey-white": "#FAF9F6",
+        "monkey-beige": "#E3EDD9",
+        "monkey-brown": "#B8975A",
+        "monkey-green": "#1F4D36",
+        "monkey-yellow": "#F2C14E",
+        "monkey-ink": "#1B231E",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -56,6 +57,10 @@ export default {
           5: "hsl(var(--chart-5))",
         },
       },
+      fontFamily: {
+        serif: ["Lora", "Georgia", "serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+      },
       screens: {
         xs: "490px",
       },
@@ -73,23 +78,27 @@ export default {
     themes: [
       {
         mytheme: {
-          primary: "#166434",
-
-          secondary: "#222222",
-
-          accent: "#FCCD2A",
-
+          primary: "#1F4D36",
+          "primary-content": "#FAF9F6",
+          secondary: "#1B231E",
+          "secondary-content": "#FAF9F6",
+          accent: "#F2C14E",
+          "accent-content": "#1B231E",
           neutral: "#FFFFFF",
-
-          "base-100": "#FFFFF2",
-
-          info: "#0000ff",
-
-          success: "#00ff00",
-
-          warning: "#FCCD2A",
-
-          error: "#ff0000",
+          "neutral-content": "#1B231E",
+          "base-100": "#FAF9F6",
+          "base-200": "#F1EDE0",
+          "base-300": "#E6E1D3",
+          "base-content": "#1B231E",
+          info: "#3B6E9E",
+          success: "#2F7D4F",
+          warning: "#E0A526",
+          error: "#B42318",
+          "--rounded-box": "1rem",
+          "--rounded-btn": "0.6rem",
+          "--rounded-badge": "999px",
+          "--btn-focus-scale": "0.98",
+          "--tab-radius": "0.6rem",
         },
       },
     ],

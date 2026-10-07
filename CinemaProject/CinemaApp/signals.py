@@ -5,6 +5,14 @@ from django.conf import settings
 from .models import Promotion, MovieProfile, ShowTime, Seat, Order
 from allauth.account.models import EmailAddress
 from django.db import transaction
+from django.contrib.auth.models import User
+
+
+@receiver(post_save, sender=User)
+def create_admin_profile(sender, instance, **kwargs):
+    # Superusers from createsuperuser skip registration, so give them the admin profile the frontend expects
+    if instance.is_superuser and not MovieProfile.objects.filter(user=instance).exists():
+        MovieProfile.objects.create(user=instance, status=MovieProfile.StatusChoices.ADMIN)
 
 
 @receiver(post_save, sender=ShowTime)

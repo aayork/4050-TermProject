@@ -1,49 +1,50 @@
-export function MovieCard({ movie }) {
-  const truncateDescription = (description, maxLength) => {
-    return description.length > maxLength
-      ? description.substring(0, maxLength) + "..."
-      : description;
-  };
+import { Play } from "lucide-react";
 
+export function MovieCard({ movie }) {
   // Generate a unique modal ID based on the movie ID
   const modalId = `trailerModal-${movie.id}`;
 
   return (
-    <div className="card card-compact bg-neutral text-black p-0 shadow-2xl">
-      <figure>
-        <img src={movie.photo} className="w-full" alt={movie.movieName} />
-      </figure>
-      <div className="card-body space-y-1">
-        <h2 className="font-bold">{movie.movieName}</h2>
-        <div className="flex items-center justify-between gap-2">
-          <div className="badge badge-accent size-fit my-0">{movie.rating}</div>
-          <p>🍅 {movie.critics_score}%</p>
-        </div>
-        <p>{truncateDescription(movie.description, 50)}</p>
-        <div className="card-actions flex justify-between">
-          <button
-            onClick={() => document.getElementById(modalId).showModal()}
-            className="group flex h-min items-center disabled:opacity-50 disabled:hover:opacity-50 hover:translate-y-1 transition-transform justify-center ring-none rounded-lg shadow-lg font-semibold py-1 px-2 font-dm focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-800 border-b-green-950 disabled:border-0 disabled:bg-violet-500 disabled:text-white ring-white text-white border-b-4 hover:border-0 active:border-0 hover:text-gray-100 active:bg-violet-800 active:text-gray-300 focus-visible:outline-monkey-green text-sm sm:text-base dark:bg-green-800 dark:border-gray-700 dark:border-b-green-950"
-          >
-            <svg
-              aria-hidden="true"
-              className="h-3 w-3 flex-none fill-white group-active:fill-current"
-            >
-              <path d="m9.997 6.91-7.583 3.447A1 1 0 0 1 1 9.447V2.553a1 1 0 0 1 1.414-.91L9.997 5.09c.782.355.782 1.465 0 1.82Z"></path>
-            </svg>
-            <span className="ml-1">Trailer</span>
-          </button>
-          <a
-            className="group flex h-min items-center disabled:opacity-50 disabled:hover:opacity-50 hover:translate-y-1 transition-transform justify-center ring-none rounded-lg shadow-lg font-semibold py-1 px-2 font-dm focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-800 border-b-green-950 disabled:border-0 disabled:bg-violet-500 disabled:text-white ring-white text-white border-b-4 hover:border-0 active:border-0 hover:text-gray-100 active:bg-violet-800 active:text-gray-300 focus-visible:outline-monkey-green text-sm sm:text-base dark:bg-green-800 dark:border-gray-700 dark:border-b-green-950"
-            href={`/details/${movie.id}`}
-          >
-            Book Now!
-          </a>
-        </div>
+    <div className="group relative aspect-[2/3] overflow-hidden rounded-2xl bg-monkey-ink shadow-md ring-1 ring-black/5 transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+      <a href={`/details/${movie.id}`} className="absolute inset-0">
+        <img
+          src={movie.photo}
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          alt={movie.movieName}
+          loading="lazy"
+        />
+        <span className="sr-only">View {movie.movieName}</span>
+      </a>
+
+      <div className="pointer-events-none absolute inset-x-3 top-3 flex items-start justify-between gap-2 font-sans text-xs font-semibold text-monkey-white">
+        <span className="rounded-md bg-monkey-ink/75 px-2 py-0.5 backdrop-blur">
+          {movie.rating}
+        </span>
+        <span className="rounded-md bg-monkey-ink/75 px-2 py-0.5 backdrop-blur">
+          🍅 {movie.critics_score}%
+        </span>
       </div>
+
+      {/* Actions slide up on hover/focus; always shown on touch devices */}
+      <div className="absolute inset-x-0 bottom-0 flex translate-y-full items-center gap-2 bg-gradient-to-t from-black/70 to-transparent p-3 pt-10 opacity-0 transition duration-300 ease-out group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:translate-y-0 group-hover:opacity-100 [@media(hover:none)]:translate-y-0 [@media(hover:none)]:opacity-100">
+        <button
+          onClick={() => document.getElementById(modalId).showModal()}
+          className="btn btn-sm flex-1 gap-1.5 border-none bg-white/20 text-monkey-white backdrop-blur hover:bg-white/30"
+        >
+          <Play className="h-3.5 w-3.5 fill-current" />
+          Trailer
+        </button>
+        <a
+          className="btn btn-accent btn-sm flex-1 border-none"
+          href={`/details/${movie.id}`}
+        >
+          Book
+        </a>
+      </div>
+
       {/* Unique modal for each movie */}
-      <dialog id={modalId} className="modal bg-transparent">
-        <div className="modal-box shadow-none max-w-6xl p-4 rounded-lg aspect-video bg-transparent">
+      <dialog id={modalId} className="modal">
+        <div className="modal-box relative aspect-video w-11/12 max-w-5xl overflow-visible bg-transparent p-0 shadow-none">
           <button
             onClick={() => {
               const iframe = document.querySelector(`#${modalId} iframe`);
@@ -51,18 +52,17 @@ export function MovieCard({ movie }) {
 
               document.getElementById(modalId).close();
             }}
-            className="btn btn-sm z-[1000] btn-circle absolute -right-0 -top-0"
+            className="btn btn-circle btn-sm absolute -right-3 -top-3 z-[1000] border-none bg-white shadow"
           >
             ✕
           </button>
-          <div className="p-2 bg-monkey-white h-full w-full rounded-lg">
-            <iframe
-              className="rounded-lg h-full w-full"
-              src={movie.trailer}
-              title="YouTube video player"
-              allowFullScreen
-            ></iframe>
-          </div>
+          <iframe
+            className="h-full w-full rounded-2xl bg-black"
+            src={movie.trailer}
+            title="YouTube video player"
+            loading="lazy"
+            allowFullScreen
+          ></iframe>
         </div>
       </dialog>
     </div>

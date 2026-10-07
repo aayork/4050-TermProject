@@ -1,6 +1,7 @@
 from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
 from dj_rest_auth.registration.serializers import RegisterSerializer
+from dj_rest_auth.serializers import LoginSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from CinemaApp.models import (MovieProfile, Payment, Address, Order,
@@ -11,6 +12,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
+
+
+class CustomLoginSerializer(LoginSerializer):
+    # Admins made via createsuperuser have no EmailAddress row, so skip the verification check for them
+    @staticmethod
+    def validate_email_verification_status(user, email=None):
+        if user.is_staff or user.is_superuser:
+            return
+        LoginSerializer.validate_email_verification_status(user, email)
 
 
 class CustomRegisterSerializer(RegisterSerializer):

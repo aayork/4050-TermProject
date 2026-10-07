@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import {} from "react-router-dom";
+import { CircleUserRound } from "lucide-react";
 import { logout, validateAdmin } from "../utils/API";
+import banana from "../assets/banana.png";
 
 export function NavBar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -58,119 +59,111 @@ export function NavBar() {
     setDropdownOpen(!dropdownOpen);
   };
 
+  // NavBar renders outside the Router, so read the path directly
+  const currentPath = window.location.pathname;
+  const navLink = (href) =>
+    `rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+      currentPath === href || (href !== "/" && currentPath.startsWith(href))
+        ? "bg-monkey-green text-monkey-white"
+        : "text-monkey-ink/70 hover:bg-monkey-yellow/40 hover:text-monkey-ink"
+    }`;
+
   return (
-    <div>
-      <nav className="bg-white mb-2 mx-2 rounded-lg relative top-2 border border-gray-200 shadow-xl">
-        <div className="mx-auto px-2">
-          <div className="relative flex h-16 items-center justify-between">
-            <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-              <div className="flex flex-shrink-0 items-center">
-                <a href="/">
-                  <img
-                    className="h-8 w-auto text-black text-xs ml-2"
-                    src="/src/assets/banana.png"
-                    alt="Movie Monkey"
-                  />
-                </a>
-              </div>
-              <div className="hidden sm:ml-6 sm:block">
-                <div className="flex space-x-2">
-                  <a
-                    href="/"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-monkey-yellow hover:text-black"
-                    aria-current="page"
-                  >
-                    Home
-                  </a>
-                  <a
-                    href="/search"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-monkey-yellow hover:text-black"
-                    aria-current="page"
-                  >
-                    Search
-                  </a>
-                  {isAdmin && (
-                    <a
-                      href="/admin"
-                      className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-monkey-yellow hover:text-black"
-                    >
-                      Admin
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <div className="relative ml-3">
-                {loggedIn ? (
-                  <div>
-                    <button
-                      type="button"
-                      className="r4"
-                      id="user-menu-button"
-                      aria-expanded="false"
-                      aria-haspopup="true"
-                      onClick={toggleDropDown}
-                    >
-                      <span className="absolute -inset-1.5"></span>
-                      <span className="sr-only">Open user menu</span>
-                      <img
-                        className="mt-2 mr-2 h-8 w-8 rounded-full"
-                        src="https://img.icons8.com/?size=100&id=83190&format=png&color=000000"
-                        alt=""
-                      />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex space-x-2">
-                    <a
-                      className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-monkey-yellow hover:text-black"
-                      href="/login"
-                    >
-                      Login
-                    </a>
-                    <a
-                      className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-monkey-yellow hover:text-black"
-                      href="/register"
-                    >
-                      Register
-                    </a>
-                  </div>
-                )}
-              </div>
-              {dropdownOpen && (
-                <div
-                  className="absolute right-0 top-10 z-50 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="user-menu-button"
-                  tabIndex="-1"
-                >
-                  <a
-                    href="/profile"
-                    className="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                    tabIndex="-1"
-                    id="user-menu-item-0"
-                  >
-                    Your Profile
-                  </a>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                    tabIndex="-1"
-                    id="user-menu-item-2"
-                    onClick={logoutUser}
-                  >
-                    Sign out
-                  </a>
-                </div>
-              )}
-            </div>
+    <header className="sticky top-0 z-40 border-b border-base-300/80 bg-monkey-white/85 backdrop-blur">
+      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-6">
+          <a href="/" className="flex items-center gap-2">
+            <img className="h-8 w-auto" src={banana} alt="" />
+            <span className="font-serif text-xl font-semibold tracking-tight">
+              Movie Monkey
+            </span>
+          </a>
+          <div className="hidden items-center gap-1 font-sans sm:flex">
+            <a href="/" className={navLink("/")}>
+              Home
+            </a>
+            <a href="/search" className={navLink("/search")}>
+              Search
+            </a>
+            {isAdmin && (
+              <a href="/admin" className={navLink("/admin")}>
+                Admin
+              </a>
+            )}
           </div>
         </div>
+
+        <div className="relative font-sans">
+          {loggedIn ? (
+            <button
+              type="button"
+              className="flex h-10 w-10 items-center justify-center rounded-full text-monkey-green transition-colors hover:bg-monkey-yellow/40"
+              id="user-menu-button"
+              aria-expanded={dropdownOpen}
+              aria-haspopup="true"
+              onClick={toggleDropDown}
+            >
+              <span className="sr-only">Open user menu</span>
+              <CircleUserRound className="h-7 w-7" strokeWidth={1.75} />
+            </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <a
+                className="rounded-full px-3 py-1.5 text-sm font-medium text-monkey-ink/70 transition-colors hover:text-monkey-ink"
+                href="/login"
+              >
+                Log in
+              </a>
+              <a className="btn btn-primary btn-sm rounded-full px-4" href="/register">
+                Sign up
+              </a>
+            </div>
+          )}
+          {dropdownOpen && (
+            <div
+              className="absolute right-0 top-12 z-50 w-48 overflow-hidden rounded-xl border border-base-300 bg-white py-1 shadow-lg"
+              role="menu"
+              aria-orientation="vertical"
+              aria-labelledby="user-menu-button"
+              tabIndex="-1"
+            >
+              {/* Page links are hidden in the bar on mobile, so repeat them here */}
+              <div className="border-b border-base-300 pb-1 sm:hidden">
+                <a href="/" className="block px-4 py-2 text-sm hover:bg-base-200" role="menuitem">
+                  Home
+                </a>
+                <a href="/search" className="block px-4 py-2 text-sm hover:bg-base-200" role="menuitem">
+                  Search
+                </a>
+                {isAdmin && (
+                  <a href="/admin" className="block px-4 py-2 text-sm hover:bg-base-200" role="menuitem">
+                    Admin
+                  </a>
+                )}
+              </div>
+              <a
+                href="/profile"
+                className="block px-4 py-2 text-sm hover:bg-base-200"
+                role="menuitem"
+                tabIndex="-1"
+                id="user-menu-item-0"
+              >
+                Your Profile
+              </a>
+              <a
+                href="#"
+                className="block px-4 py-2 text-sm text-error hover:bg-base-200"
+                role="menuitem"
+                tabIndex="-1"
+                id="user-menu-item-2"
+                onClick={logoutUser}
+              >
+                Sign out
+              </a>
+            </div>
+          )}
+        </div>
       </nav>
-    </div>
+    </header>
   );
 }

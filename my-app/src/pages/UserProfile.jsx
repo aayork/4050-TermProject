@@ -159,7 +159,7 @@ export function UserProfile() {
         <div className="w-full flex justify-center">
           <div className="w-full grid grid-cols-1 lg:grid-cols-2 xl:w-2xl">
             <div className="">
-              <div className="card">
+              <div className="card p-6">
                 <div className="card-title flex justify-between px-2">
                   <div>Profile Details</div>
                   <div className="flex justify-end gap-2">
@@ -295,7 +295,7 @@ export function UserProfile() {
                   </div>
                 </form>
               </div>
-              <div className="card">
+              <div className="card p-6">
                 <div className="card-title">Saved Cards</div>
                 <div className="card-content">
                   {payments.map((card) => (
@@ -326,7 +326,7 @@ export function UserProfile() {
             </div>
             {/* Right column */}
             <div className="">
-              <div className="card">
+              <div className="card p-6">
                 <div className="card-title px-2">Past Orders</div>
                 <div className="card-content">
                   {orders.map((order) => (

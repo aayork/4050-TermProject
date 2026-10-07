@@ -8,7 +8,7 @@ export function UserCard({ user, onEdit, onSusAction }) {
         </h2>
         <h3>
           <b className="font-semibold">Email:</b>
-          <span className={user.emailStatus.verified ? "" : "text-red-600"}>
+          <span className={user?.emailStatus?.verified ? "" : "text-red-600"}>
             {user.email}
           </span>
         </h3>

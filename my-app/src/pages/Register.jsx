@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { register } from "../utils/API";
 import { useNavigate } from "react-router-dom";
+import { AuthCard, AuthField } from "../components/AuthCard";
 
 export function Register() {
   const navigate = useNavigate();
@@ -56,93 +57,78 @@ export function Register() {
   };
 
   return (
-    <div className="flex justify-center align-center h-full">
-      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12 min-w-fit w-1/5 shadow-xl">
-        <h1 className="text-lg mb-2 text-white font-semibold ">
-          Create Account
-        </h1>
-        <div className="border"></div>
-        <form action="" onSubmit={handleFormSubmit}>
-          <div className="text-white flex flex-col my-2">
-            <label className="text-sm">First Name</label>
-            <input
-              className="firstName text-black px-1 rounded"
-              name="firstName"
-              type="text"
-              onChange={handleChange}
-            ></input>
-          </div>
-          <div className="text-white flex flex-col my-2">
-            <label className="text-sm">Last Name</label>
-            <input
-              className="lastName text-black px-1 rounded"
-              type="text"
-              name="lastName"
-              onChange={handleChange}
-            ></input>
-          </div>
-          <div className="text-white flex flex-col my-2">
-            <label className="text-sm">Email</label>
-            <input
-              className="email text-black px-1 rounded"
-              name="email"
-              type="text"
-              onChange={handleChange}
-            ></input>
-          </div>
-          <div className="text-white flex flex-col my-2">
-            <label className="text-sm">Username</label>
-            <input
-              className="userName text-black px-1 rounded"
-              name="username"
-              type="text"
-              onChange={handleChange}
-            ></input>
-          </div>
-          <div className=" text-white flex flex-col my-2">
-            <label className="text-sm">Password</label>
-            <input
-              className="password text-black px-1 rounded"
-              name="password"
-              type="password"
-              onChange={handleChange}
-            ></input>
-          </div>
-          <div className=" text-white flex flex-col my-2">
-            <label className="text-sm">Confirm Password</label>
-            <input
-              className="password text-black px-1 rounded"
-              name="confirmPassword"
-              type="password"
-              onChange={handleChange}
-            ></input>
-          </div>
-          <div className="w-full flex ">
-            <label className="label cursor-pointer">
-              <span className="label-text text-sm text-white">
-                Do you wish to receive promotions?
-              </span>
-              <input
-                type="checkbox"
-                name="receive_promotions"
-                onChange={handleChange}
-                className="checkbox checkbox-secondary checkbox-sm mx-2"
-              />
-            </label>
-          </div>
-          <div className="flex flex-col">
-            <button
-              className="bg-monkey-white mt-4 mb-1 rounded-md"
-              type="submit"
-            >
-              Register
-            </button>
-            <a className="text-xs text-white underline" href="/login">
-              Have an account? Login in here!
-            </a>
-          </div>
-        </form>
-      </div>
-    </div>
+    <AuthCard
+      title="Create your account"
+      subtitle="Join Movie Monkey to book tickets in seconds."
+      footer={
+        <>
+          Already have an account?{" "}
+          <a className="link link-primary font-medium" href="/login">
+            Log in
+          </a>
+        </>
+      }
+    >
+      <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <AuthField
+            label="First name"
+            name="firstName"
+            type="text"
+            autoComplete="given-name"
+            onChange={handleChange}
+          />
+          <AuthField
+            label="Last name"
+            name="lastName"
+            type="text"
+            autoComplete="family-name"
+            onChange={handleChange}
+          />
+        </div>
+        <AuthField
+          label="Email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          onChange={handleChange}
+        />
+        <AuthField
+          label="Username"
+          name="username"
+          type="text"
+          autoComplete="username"
+          onChange={handleChange}
+        />
+        <AuthField
+          label="Password"
+          name="password"
+          type="password"
+          autoComplete="new-password"
+          onChange={handleChange}
+        />
+        <AuthField
+          label="Confirm password"
+          name="confirmPassword"
+          type="password"
+          autoComplete="new-password"
+          onChange={handleChange}
+        />
+        <label className="flex cursor-pointer items-center gap-3 rounded-xl bg-base-200 px-4 py-3">
+          <input
+            type="checkbox"
+            name="receive_promotions"
+            onChange={handleChange}
+            className="checkbox checkbox-primary checkbox-sm"
+          />
+          <span className="text-sm text-monkey-ink/80">
+            Email me about promotions and deals
+          </span>
+        </label>
+        <button className="btn btn-primary mt-2 w-full" type="submit">
+          Create account
+        </button>
+      </form>
+    </AuthCard>
   );
 }

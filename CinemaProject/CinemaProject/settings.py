@@ -77,6 +77,10 @@ REST_FRAMEWORK = {
     ]
 }
 
+REST_AUTH = {
+    'LOGIN_SERIALIZER': 'authentication.serializers.CustomLoginSerializer',
+}
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp-relay.brevo.com"
 EMAIL_USE_TLS = False
@@ -126,12 +130,8 @@ WSGI_APPLICATION = 'CinemaProject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'movie_monkey',
-        'USER': 'admin',
-        'PASSWORD': 'Tatum515',
-        'HOST': 'movie-monkey.c7k2ok6mc24d.us-east-1.rds.amazonaws.com',
-        'PORT': 3306
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

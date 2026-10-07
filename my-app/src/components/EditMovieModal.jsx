@@ -60,7 +60,7 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
   const handleDelete = (e) => {
     e.preventDefault();
 
-    if (window.confirm("Are you sure you want to delete " + movie.movieName)) {
+    if (window.confirm("Are you sure you want to delete " + movie?.movieName)) {
       onDelete();
       onClose();
     }
@@ -81,7 +81,7 @@ export function EditMovieModal({ onClose, onSave, movie, onDelete }) {
               className="grow"
               onChange={handleChange}
               name="movieName"
-              value={movieDetails.movieName}
+              value={movieDetails?.movieName}
             />
           </label>
           <label className="input input-bordered  input-primary flex items-center gap-2">

@@ -14,12 +14,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='payment',
             name='CVV',
-            field=models.BinaryField(default=0),
+            field=models.BinaryField(default=b""),
         ),
         migrations.AddField(
             model_name='payment',
             name='cardNumber',
-            field=models.BinaryField(default=0),
+            field=models.BinaryField(default=b""),
         ),
         migrations.AlterField(
             model_name='payment',

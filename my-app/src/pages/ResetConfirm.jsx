@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { confirmPasswordReset } from "../utils/API";
+import { AuthCard, AuthField } from "../components/AuthCard";
 
 export function ResetConfirm() {
   const { uid, token } = useParams();
@@ -37,41 +38,26 @@ export function ResetConfirm() {
   };
 
   return (
-    <div className="flex justify-center align-center h-full">
-      <div className="bg-monkey-green p-4 flex flex-col justify-between rounded-md m-12 min-w-fit w-1/4">
-        <h1 className="text-lg mb-2 text-white font-semibold">
-          Reset Password
-        </h1>
-        <div className="border"></div>
-        <form onSubmit={handleFormSubmit}>
-          <div className="text-white flex flex-col my-2">
-            <label className="text-sm">New Password</label>
-            <input
-              className="password text-black px-1 rounded"
-              name="password"
-              type="password"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="text-white flex flex-col my-2">
-            <label className="text-sm">Confirm Password</label>
-            <input
-              className="confirmPassword text-black px-1 rounded"
-              name="confirmPassword"
-              type="password"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="flex flex-col">
-            <button
-              className="bg-monkey-white mt-4 mb-1 rounded-md"
-              type="submit"
-            >
-              Reset
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <AuthCard title="Reset password" subtitle="Choose a new password for your account.">
+      <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
+        <AuthField
+          label="New password"
+          name="password"
+          type="password"
+          autoComplete="new-password"
+          onChange={handleChange}
+        />
+        <AuthField
+          label="Confirm password"
+          name="confirmPassword"
+          type="password"
+          autoComplete="new-password"
+          onChange={handleChange}
+        />
+        <button className="btn btn-primary mt-2 w-full" type="submit">
+          Reset password
+        </button>
+      </form>
+    </AuthCard>
   );
 }

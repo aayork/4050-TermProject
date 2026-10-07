@@ -9,6 +9,7 @@ import {
 import { Loading } from "../../components/Loading";
 import { EditMovieModal } from "../../components/EditMovieModal";
 import { ViewTimesModal } from "../../components/ViewTimesModal";
+import { Plus } from "lucide-react";
 
 export function ManageMovies() {
   const [movies, setMovies] = useState([]);
@@ -81,24 +82,11 @@ export function ManageMovies() {
     <div>
       <div>
         <button
-          className="btn my-2 flex items-center"
+          className="btn btn-primary gap-2"
           onClick={openAddMovieModal}
         >
-          Add Movie
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="3"
-            stroke="currentColor"
-            className="w-4 h-4"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 4.75v14.5m7.25-7.25H4.75"
-            />
-          </svg>
+          <Plus className="h-4 w-4" />
+          Add movie
         </button>
         <dialog id="movieModal" className="modal">
           <EditMovieModal
@@ -116,10 +104,15 @@ export function ManageMovies() {
           />
         </dialog>
       </div>
-      <div className="flex flex-col">
-        <div className="">
-          <h1 className="font-semibold"> Currently Showing:</h1>
-          <div className="grid gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+      <div className="mt-8 flex flex-col gap-12">
+        <div>
+          <div className="mb-5 flex items-baseline justify-between border-b border-base-300 pb-3">
+            <h2 className="text-2xl font-semibold">Currently showing</h2>
+            <span className="font-sans text-sm text-monkey-ink/60">
+              {movies.filter((movie) => movie.is_active).length} films
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {movies
               .filter((movie) => movie.is_active)
               .map((movie) => (
@@ -133,9 +126,14 @@ export function ManageMovies() {
               ))}
           </div>
         </div>
-        <div className="my-4">
-          <h1 className="font-semibold"> Inactive:</h1>
-          <div className="grid gap-4 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3">
+        <div>
+          <div className="mb-5 flex items-baseline justify-between border-b border-base-300 pb-3">
+            <h2 className="text-2xl font-semibold">Inactive</h2>
+            <span className="font-sans text-sm text-monkey-ink/60">
+              {movies.filter((movie) => !movie.is_active).length} films
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {movies
               .filter((movie) => !movie.is_active)
               .map((movie) => (
